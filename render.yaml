@@ -1,12 +1,12 @@
-# Render blueprint — API + frontend, both on Render.
+# Render blueprint — API + frontend + cron worker, all on Render.
 #
 # Deploy: Render dashboard → New → Blueprint → connect this repo.
 # Set env vars in the dashboard after the first deploy:
-#   deal-scanner-api   → DATABASE_URL, CORS_ORIGINS
+#   deal-scanner-api    → DATABASE_URL, CORS_ORIGINS
+#   deal-scanner-worker → DATABASE_URL, REDDIT_USER_AGENT
 #
 # CORS_ORIGINS should be the URL of the deal-scanner-frontend service,
 # e.g. https://deal-scanner-frontend.onrender.com
-# Update it once you know the frontend URL, then redeploy the API.
 
 services:
   # ── API ────────────────────────────────────────────────────────────────
@@ -25,6 +25,25 @@ services:
         sync: false       # Paste your Neon connection string in the dashboard
       - key: CORS_ORIGINS
         sync: false       # e.g. https://deal-scanner-frontend.onrender.com
+      - key: PYTHON_VERSION
+        value: "3.12"
+
+  # ── Cron worker (Reddit ingest every 10 min) ──────────────────────────
+  - type: cron
+    name: deal-scanner-worker
+    runtime: python
+    schedule: "*/10 * * * *"
+    buildCommand: pip install -r requirements.txt
+    startCommand: python worker.py
+    envVars:
+      - key: DATABASE_URL
+        sync: false       # Same Neon connection string as the API
+      - key: REDDIT_USER_AGENT
+        value: "deal-scanner/0.1 (contact: mannydotco@gmail.com)"
+      - key: SUBREDDITS
+        value: "buildapcsales,GameDeals,AppleDeals,PS5Deals,SwitchDeals,tradingcards,photomarket"
+      - key: FETCH_LIMIT
+        value: "100"
       - key: PYTHON_VERSION
         value: "3.12"
 
