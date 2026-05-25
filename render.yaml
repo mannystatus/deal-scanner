@@ -1,0 +1,24 @@
+# Render deployment blueprint — API only.
+#
+# This config deploys just the FastAPI read service. Postgres lives on Neon,
+# the worker runs as a GitHub Actions cron, and the frontend ships on
+# Cloudflare Pages. See README.md for the full deploy walkthrough.
+
+services:
+  - type: web
+    name: deal-scanner-api
+    runtime: python
+    plan: free            # Bump to "starter" ($7/mo) when cold starts annoy you
+    region: oregon
+    rootDir: .
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn api:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: DATABASE_URL
+        sync: false       # Paste your Neon connection string in the Render dashboard
+      - key: CORS_ORIGINS
+        sync: false       # e.g. https://deal-scanner.pages.dev
+      - key: PYTHON_VERSION
+        value: "3.12"

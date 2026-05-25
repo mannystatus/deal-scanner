@@ -1,0 +1,19 @@
+# Cloudflare Pages headers config.
+# Reference: https://developers.cloudflare.com/pages/configuration/headers/
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=()
+
+# HTML: short cache so users see config/UI updates within minutes
+/index.html
+  Cache-Control: public, max-age=300, must-revalidate
+/
+  Cache-Control: public, max-age=300, must-revalidate
+
+# Config is intentionally short-cached too — it's how you point the frontend
+# at a new API URL without a redeploy.
+/config.js
+  Cache-Control: public, max-age=60, must-revalidate

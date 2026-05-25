@@ -1,0 +1,45 @@
+name: Reddit ingest
+
+# Runs the worker every 10 minutes. Replaces the Render cron job — free for
+# public repos, and easily inside the 2,000-min/month free quota for private
+# repos (one cycle ≈ 30-60 seconds, ~50-90 min/month total).
+#
+# Required repo secrets (Settings → Secrets and variables → Actions):
+#   - DATABASE_URL        Neon Postgres connection string with ?sslmode=require
+#   - REDDIT_USER_AGENT   e.g. "deal-scanner/0.1 (contact: you@example.com)"
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch: {}   # Lets you trigger a run manually from the Actions tab
+
+concurrency:
+  group: reddit-ingest
+  cancel-in-progress: false   # If a run is slow, let it finish before the next
+
+permissions:
+  contents: read
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run worker
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          REDDIT_USER_AGENT: ${{ secrets.REDDIT_USER_AGENT }}
+          SUBREDDITS: "buildapcsales,GameDeals,AppleDeals,PS5Deals,SwitchDeals,tradingcards,photomarket"
+          FETCH_LIMIT: "100"
+          LOG_LEVEL: INFO
+        run: python worker.py
