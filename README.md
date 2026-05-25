@@ -1,10 +1,10 @@
 # Deal Scanner
 
-Reddit ingest → Neon Postgres → FastAPI on Render → React frontend on Cloudflare Pages.
+Reddit ingest → Neon Postgres → FastAPI on Render → React frontend on Render.
 
 ## Architecture
 
-Four independent pieces, one shared database. Each runs on its provider's free tier.
+Everything on Render, database on Neon. All free tier.
 
 ```
 ┌────────────────────────────┐
@@ -25,12 +25,12 @@ Four independent pieces, one shared database. Each runs on its provider's free t
                │ JSON over HTTPS
                ▼
 ┌──────────────────────────────┐
-│  Cloudflare Pages            │  ← static, free, global CDN
+│  Render static site          │  ← free, auto-deploys on push
 │  (frontend/)                 │
 └──────────────────────────────┘
 ```
 
-Why this split: the worker is idle 99% of the time, so paying for a 24/7 cron is wasteful. The API needs to be reachable but is cheap. The DB is tiny. The frontend is flat files. Total cost at MVP: **$0/month**. Flip the Render service to Starter once cold starts annoy you: **$7/month**.
+Why this split: the worker is idle 99% of the time, so paying for a 24/7 cron is wasteful. The API needs to be reachable but is cheap. The DB is tiny. The frontend is flat files. Total cost at MVP: **$0/month**. Flip the API service to Starter once cold starts annoy you: **$7/month**.
 
 ## Layout
 
@@ -85,13 +85,17 @@ git init && git add . && git commit -m "initial"
 gh repo create deal-scanner --public --source=. --push
 ```
 
-### 3. Render (API) — 5 min
+### 3. Render (API + frontend) — 7 min
 1. [render.com](https://render.com) → New → Blueprint → connect the GitHub repo.
-2. It reads `render.yaml` and creates the `deal-scanner-api` web service.
-3. Before first deploy, set two env vars:
+2. It reads `render.yaml` and creates **two** services: `deal-scanner-api` and `deal-scanner-frontend`.
+3. Set env vars on **deal-scanner-api** before the first deploy:
    - `DATABASE_URL` = your Neon connection string
-   - `CORS_ORIGINS` = leave as `https://deal-scanner.pages.dev` for now (update in step 5)
-4. Deploy. Note the URL — something like `https://deal-scanner-api.onrender.com`.
+   - `CORS_ORIGINS` = leave blank for now (update in step 5 once you have the frontend URL)
+4. Deploy both services. Note the URLs:
+   - API → something like `https://deal-scanner-api.onrender.com`
+   - Frontend → something like `https://deal-scanner-frontend.onrender.com`
+5. Edit `frontend/config.js` so `window.API_BASE` points at your API URL, commit and push. Render auto-redeploys on push.
+6. Go back to Render → **deal-scanner-api** → Environment → set `CORS_ORIGINS` to your frontend URL (e.g. `https://deal-scanner-frontend.onrender.com`) → "Manual Deploy".
 
 ### 4. GitHub Actions (worker) — 2 min
 1. Repo → Settings → Secrets and variables → Actions → New repository secret. Add:
@@ -99,27 +103,18 @@ gh repo create deal-scanner --public --source=. --push
    - `REDDIT_USER_AGENT` = `deal-scanner/0.1 (contact: you@example.com)`
 2. Repo → Actions → "Reddit ingest" → Run workflow. This seeds the DB with the first batch so the API has something to return. After that it runs automatically every 10 min.
 
-### 5. Cloudflare Pages (frontend) — 5 min
-1. [Cloudflare dashboard](https://dash.cloudflare.com) → Workers & Pages → Create → Pages → Connect to Git → select repo.
-2. Build settings:
-   - Build command: *(leave empty)*
-   - Build output directory: `frontend`
-3. Deploy. Note the URL — `https://deal-scanner.pages.dev` or similar.
-4. Edit `frontend/config.js` so `window.API_BASE` points at your Render URL, commit and push. Cloudflare auto-redeploys on push.
-5. Go back to Render → set `CORS_ORIGINS` to the actual Pages URL → "Manual Deploy" → "Deploy latest commit".
-
-That's it. Open the Pages URL and you should see live deals.
+That's it. Open the frontend URL and you should see live deals.
 
 ## Configuration reference
 
 | Variable | Where | Notes |
 |---|---|---|
 | `DATABASE_URL` | Render env, GitHub secret | Neon connection string; same value in both |
-| `CORS_ORIGINS` | Render env | Cloudflare Pages URL(s), comma-separated |
+| `CORS_ORIGINS` | Render env (API) | Frontend URL(s), comma-separated |
 | `REDDIT_USER_AGENT` | GitHub secret | Reddit asks for a descriptive UA; include your email |
 | `SUBREDDITS` | GitHub workflow | Comma-separated list, edit in `.github/workflows/ingest.yml` |
 | `FETCH_LIMIT` | GitHub workflow | Max posts per subreddit per cycle (100 cap) |
-| `window.API_BASE` | `frontend/config.js` | Render API URL — edit this file, push, CF redeploys |
+| `window.API_BASE` | `frontend/config.js` | Render API URL — edit this file, push, Render redeploys |
 
 ## API surface
 
@@ -145,7 +140,7 @@ pytest test_parsers.py -v
 
 **Outgrow Neon free tier.** You'd need >0.5 GB or >100 CU-hours/month (~3,000 hours of active DB time). Upgrade to Neon Launch ($19/mo) or migrate to Render Postgres ($7/mo) — either is a connection-string swap.
 
-**Custom domain.** Both Render and Cloudflare Pages support custom domains for free. Add DNS records and point them. Update `CORS_ORIGINS` to the new domain.
+**Custom domain.** Render supports custom domains on all plans. Add a custom domain to the frontend service in the dashboard, update `CORS_ORIGINS` on the API service to match.
 
 **Worker outgrows GitHub Actions.** If you push the cycle to every 1-2 min or add lots of sources, you'll start eating into the 2,000 min/month quota on private repos (public repos stay free). At that point, move the worker to Render (`type: cron` in `render.yaml`) or a tiny Hetzner VPS.
 
