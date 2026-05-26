@@ -32,7 +32,7 @@ services:
   - type: cron
     name: deal-scanner-worker
     runtime: python
-    schedule: "*/10 * * * *"
+    schedule: "0 */12 * * *"
     buildCommand: pip install -r requirements.txt
     startCommand: python worker.py
     envVars:
