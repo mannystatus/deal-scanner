@@ -18,6 +18,10 @@ logger = logging.getLogger(__name__)
 
 
 def main() -> int:
+    from urllib.parse import urlparse
+    db_url = os.getenv("DATABASE_URL", "sqlite:///deals.db")
+    parsed = urlparse(db_url)
+    logger.info("Connecting to: %s://%s%s", parsed.scheme, parsed.hostname or "(local)", parsed.path)
     init_db()
     total_new = 0
 
