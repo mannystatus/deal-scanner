@@ -14,6 +14,7 @@ AT_MERCHANT_RE = re.compile(r'[@]\s*([A-Za-z][A-Za-z0-9\s&.]{1,40}?)(?:\s*[\(\)\
 AT_WORD_MERCHANT_RE = re.compile(r'\bat\s+([A-Z][A-Za-z0-9\s&.]{1,40}?)(?:\s*[\(\)\|,]|\s*$)')
 
 SUBREDDIT_CATEGORIES = {
+    # Reddit subreddits (legacy)
     "buildapcsales": "computers",
     "gamedeals": "gaming",
     "appledeals": "apple",
@@ -25,6 +26,12 @@ SUBREDDIT_CATEGORIES = {
     "magictcg": "trading_cards",
     "photomarket": "cameras",
     "photography": "cameras",
+    # RSS feed sources
+    "9to5mac": "apple",
+    "9to5toys": "gaming",
+    "dealnews": "computers",
+    "slickdeals": "other",
+    "bensbargains": "other",
 }
 
 # Bracket tags like [Camera] or [Software] at the start of titles override the
