@@ -52,6 +52,112 @@
         { id: "trading_cards", label: "Trading Cards" },
       ];
 
+      const AFFILIATE_PICKS = [
+        {
+          label: "Essentials",
+          items: [
+            { title: "Amazon Basics AA Batteries (48-Pack)", url: "https://amzn.to/4oDQnXV" },
+            { title: "Anker Nano 45W GaN USB-C Charger", url: "https://amzn.to/4e9BE23" },
+            { title: "Amazon Basics 9V Batteries (8-Pack)", url: "https://amzn.to/3SDVZ8p" },
+            { title: "Drift Teak Scented Reed Diffuser", url: "https://amzn.to/4eUZTT2" },
+          ],
+        },
+        {
+          label: "Tech",
+          items: [
+            { title: "PICTRON U200 Handheld LED Ring Light Rig", url: "https://amzn.to/4vsE9DW" },
+            { title: "Google Pixel 10a 128GB", url: "https://amzn.to/4aHWLr8" },
+            { title: "Insta360 X5 8K 360° Action Camera", url: "https://amzn.to/4fS5x9w" },
+            { title: "PNY NVIDIA GeForce RTX 5080 Epic-X ARGB", url: "https://amzn.to/4uH15hr" },
+            { title: "CORSAIR Vengeance RGB DDR5 32GB 6000MHz", url: "https://amzn.to/4w2anWw" },
+            { title: "Amazon eero Pro 7 Wi-Fi 7 Mesh Router", url: "https://amzn.to/4evKUgT" },
+            { title: 'INSIGNIA 55" Fire TV 4K Smart TV', url: "https://amzn.to/3QPObzU" },
+          ],
+        },
+      ];
+
+      function AffiliateCard({ title, url }) {
+        return React.createElement(
+          "a",
+          {
+            href: url,
+            target: "_blank",
+            rel: "noopener noreferrer sponsored",
+            className:
+              "flex-none w-44 rounded-xl p-3 border transition hover:border-[var(--accent)] flex flex-col",
+            style: { background: "var(--surface)", borderColor: "var(--border)" },
+          },
+          React.createElement(
+            "span",
+            {
+              className:
+                "text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full self-start",
+              style: { background: "rgba(255,153,0,0.12)", color: "#ff9900" },
+            },
+            "Amazon"
+          ),
+          React.createElement(
+            "p",
+            { className: "text-sm font-medium leading-snug mt-2 line-clamp-3 flex-1" },
+            title
+          ),
+          React.createElement(
+            "span",
+            { className: "text-xs mt-3 inline-block", style: { color: "var(--accent)" } },
+            "View deal →"
+          )
+        );
+      }
+
+      function AffiliateSection() {
+        return React.createElement(
+          "section",
+          { className: "max-w-6xl mx-auto px-4 pt-5 pb-1" },
+          React.createElement(
+            "div",
+            { className: "flex items-center justify-between mb-3" },
+            React.createElement(
+              "h2",
+              {
+                className: "text-xs font-semibold uppercase tracking-widest",
+                style: { color: "var(--muted)" },
+              },
+              "Our Picks"
+            ),
+            React.createElement(
+              "span",
+              { className: "text-[10px]", style: { color: "var(--muted)" } },
+              "As an Amazon Associate I earn from qualifying purchases"
+            )
+          ),
+          AFFILIATE_PICKS.map((group) =>
+            React.createElement(
+              "div",
+              { key: group.label, className: "mb-4" },
+              React.createElement(
+                "p",
+                {
+                  className: "text-[11px] uppercase tracking-wider mb-2",
+                  style: { color: "var(--muted)" },
+                },
+                group.label
+              ),
+              React.createElement(
+                "div",
+                { className: "flex gap-3 overflow-x-auto pb-1" },
+                group.items.map((item) =>
+                  React.createElement(AffiliateCard, {
+                    key: item.url,
+                    title: item.title,
+                    url: item.url,
+                  })
+                )
+              )
+            )
+          )
+        );
+      }
+
       function formatPrice(v, currency = "USD") {
         if (v === null || v === undefined) return null;
         return new Intl.NumberFormat("en-US", {
@@ -290,6 +396,7 @@
               )
             )
           ),
+          React.createElement(AffiliateSection, null),
           React.createElement(
             "main",
             { className: "max-w-6xl mx-auto px-4 py-6" },
