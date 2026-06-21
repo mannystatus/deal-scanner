@@ -519,7 +519,7 @@
           React.createElement(AffiliateSection, null),
           React.createElement(
             "main",
-            { className: "max-w-6xl mx-auto px-4 py-6" },
+            { className: "max-w-6xl mx-auto px-4 pb-6 pt-2" },
             loading
               ? React.createElement(
                   "p",
@@ -542,6 +542,22 @@
                     React.createElement(DealCard, { key: d.id, deal: d })
                   )
                 )
+          ),
+          React.createElement(
+            "footer",
+            {
+              className: "border-t mt-10 py-6 text-center text-xs",
+              style: { borderColor: "var(--border)", color: "var(--muted)" },
+            },
+            "© 2025 DealScanner. As an Amazon Associate I earn from qualifying purchases. ",
+            React.createElement(
+              "a",
+              {
+                href: "/privacy.html",
+                className: "underline hover:text-[var(--accent)] transition",
+              },
+              "Privacy Policy"
+            )
           )
         );
       }
