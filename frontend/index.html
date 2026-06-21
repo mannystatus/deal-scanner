@@ -3,7 +3,47 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Deal Scanner</title>
+
+    <!-- Primary SEO -->
+    <title>DealScanner – Best Tech, Gaming &amp; Daily Deals | Live Price Drops</title>
+    <meta name="description" content="Find the best online deals, discounts, and price drops on tech, gaming, Apple, cameras, trading cards, and daily essentials. DealScanner scans live deals from top retailers so you never miss a sale." />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0a0a0b" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="DealScanner – Best Tech, Gaming &amp; Daily Deals" />
+    <meta property="og:description" content="Live price drops on tech, gaming, Apple, cameras, trading cards, and daily essentials. Updated continuously from top retailers." />
+    <meta property="og:site_name" content="DealScanner" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="DealScanner – Best Tech, Gaming &amp; Daily Deals" />
+    <meta name="twitter:description" content="Live price drops on tech, gaming, Apple, cameras, and more. Never miss a sale." />
+
+    <!-- Resource hints -->
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" />
+    <link rel="preconnect" href="https://esm.sh" crossorigin />
+    <link rel="preconnect" href="https://deal-scanner-api.onrender.com" crossorigin />
+
+    <!-- Structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "DealScanner",
+      "description": "Live deal tracker for tech, gaming, Apple, cameras, trading cards, and daily essentials.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "/?search={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
       :root {
@@ -18,6 +58,21 @@
     </style>
   </head>
   <body>
+    <noscript>
+      <div style="max-width:900px;margin:40px auto;padding:0 20px;font-family:sans-serif;color:#e7e7ea;background:#0a0a0b">
+        <h1>DealScanner – Best Tech &amp; Daily Deals</h1>
+        <p>DealScanner tracks live price drops across tech, gaming, Apple, cameras, trading cards, and everyday essentials. Enable JavaScript to browse hundreds of current deals and discounts.</p>
+        <h2>Popular Deal Categories</h2>
+        <ul>
+          <li>Computer &amp; Laptop Deals</li>
+          <li>Gaming Deals</li>
+          <li>Apple &amp; iPhone Deals</li>
+          <li>Camera &amp; Photography Deals</li>
+          <li>Software Deals</li>
+          <li>Trading Card Deals</li>
+        </ul>
+      </div>
+    </noscript>
     <div id="root"></div>
 
     <script src="./config.js"></script>
@@ -350,6 +405,14 @@
           const t = setTimeout(fetchDeals, 200); // debounce search
           return () => clearTimeout(t);
         }, [fetchDeals]);
+
+        useEffect(() => {
+          const cat = CATEGORIES.find((c) => c.id === activeCat);
+          const catLabel = cat && cat.id ? cat.label : null;
+          document.title = catLabel
+            ? `Best ${catLabel} Deals Today – ${total.toLocaleString()} Live Price Drops | DealScanner`
+            : `DealScanner – Best Tech, Gaming & Daily Deals | ${total.toLocaleString()} Live Price Drops`;
+        }, [activeCat, total]);
 
         return React.createElement(
           "div",
