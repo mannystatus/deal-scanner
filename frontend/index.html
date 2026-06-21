@@ -60,6 +60,18 @@
             { title: "Anker Nano 45W GaN USB-C Charger", url: "https://amzn.to/4e9BE23" },
             { title: "Amazon Basics 9V Batteries (8-Pack)", url: "https://amzn.to/3SDVZ8p" },
             { title: "Drift Teak Scented Reed Diffuser", url: "https://amzn.to/4eUZTT2" },
+            { title: "Anker 65W 3-Port GaN USB-C Charger", url: "https://amzn.to/4vZU3FF" },
+            { title: "DASH Fresh Pop Air Popcorn Maker", url: "https://amzn.to/3QW80We" },
+            { title: "Owala FreeSip 32oz Insulated Water Bottle", url: "https://amzn.to/43NrI9G" },
+            { title: "GOLDEN HOUR Ultra-Thin Digital Watch", url: "https://amzn.to/4ezIAWq" },
+            { title: "Sun Bum SPF 50 Sunscreen Lotion", url: "https://amzn.to/4vpP55i" },
+            { title: "Sun Bum Hair Care Travel Kit", url: "https://amzn.to/3SnfUbB" },
+            { title: "Sun Bum SPF 40 Cooling Sunscreen Stick", url: "https://amzn.to/4eUT189" },
+            { title: "chubbycable 240W USB-C Charging Cable", url: "https://amzn.to/4a7ogKE" },
+            { title: "chubbycable 240W USB-C Cables 2-Pack", url: "https://amzn.to/4oZ3T8J" },
+            { title: "Salt & Stone Aluminum-Free Deodorant", url: "https://amzn.to/4xHfPQg" },
+            { title: "Salt & Stone Body Wash", url: "https://amzn.to/4eFInRx" },
+            { title: "Olay Super Serum Body Wash", url: "https://amzn.to/4oBYfcc" },
           ],
         },
         {
@@ -72,6 +84,40 @@
             { title: "CORSAIR Vengeance RGB DDR5 32GB 6000MHz", url: "https://amzn.to/4w2anWw" },
             { title: "Amazon eero Pro 7 Wi-Fi 7 Mesh Router", url: "https://amzn.to/4evKUgT" },
             { title: 'INSIGNIA 55" Fire TV 4K Smart TV', url: "https://amzn.to/3QPObzU" },
+            { title: "JONSBO D33 White Micro ATX PC Case", url: "https://amzn.to/4vpr7XZ" },
+            { title: "Bambu Lab P1S 3D Printer", url: "https://amzn.to/4eTuPmx" },
+            { title: "Cork Dual-Sided Desk Mat", url: "https://amzn.to/44lfpkZ" },
+            { title: "Baseus 9-in-1 USB-C Dual Monitor Dock", url: "https://amzn.to/4vratXU" },
+            { title: "Anker Prime 250W 6-Port GaN Charging Station", url: "https://amzn.to/4oCozCW" },
+            { title: "Razer Basilisk V3 Gaming Mouse", url: "https://amzn.to/4evfatP" },
+            { title: "SteelSeries Rival 5 Gaming Mouse", url: "https://amzn.to/4grRbNi" },
+            { title: "SteelSeries Arctis Nova 7 Wireless Headset", url: "https://amzn.to/4vtFUAW" },
+            { title: "Apple iPad mini (A17 Pro) 128GB", url: "https://amzn.to/4oZ39At" },
+            { title: "TORRAS MagSafe iPhone 17 Pro Max Case", url: "https://amzn.to/4xHvyi4" },
+            { title: "Nintendo Switch OLED w/ White Joy-Con", url: "https://amzn.to/3ScdUmD" },
+            { title: "Belkin Switch 2 Grip Case + 30W Power Bank", url: "https://amzn.to/4gxxzaw" },
+            { title: "tomtoc Slim Carrying Case for Switch 2", url: "https://amzn.to/4guPO0f" },
+            { title: "Anker Prime 14-Port 160W Docking Station", url: "https://amzn.to/3QeVEbH" },
+            { title: "Anker 8-in-1 USB-C Dual Monitor Dock", url: "https://amzn.to/44jHjhh" },
+            { title: "Samsung 990 PRO 1TB M.2 NVMe SSD", url: "https://amzn.to/3SkcExK" },
+            { title: "Insta360 X5 Invisible Dive Case", url: "https://amzn.to/4acrSuM" },
+          ],
+        },
+        {
+          label: "Streaming Kits",
+          items: [
+            { title: "Lume Cube Panel Pro 2.0 RGB Camera Light", url: "https://amzn.to/4eBzj04" },
+            { title: "Blue Yeti USB Microphone (Blackout)", url: "https://amzn.to/3QPSECG" },
+            { title: "Elgato Stream Deck+", url: "https://amzn.to/3Sku3q1" },
+            { title: "Anker PowerConf C200 2K Webcam", url: "https://amzn.to/4xHAljJ" },
+            { title: "Belkin MagSafe Magnetic Wireless Car Charger", url: "https://amzn.to/4oNoeh6" },
+            { title: "PICTRON U200 Handheld LED Ring Light Rig", url: "https://amzn.to/43RwnY7" },
+          ],
+        },
+        {
+          label: "Trading Cards",
+          items: [
+            { title: "2026 Panini FIFA World Cup Sticker Box (50 Packs)", url: "https://amzn.to/4uPaV0T" },
           ],
         },
       ];
@@ -84,7 +130,7 @@
             target: "_blank",
             rel: "noopener noreferrer sponsored",
             className:
-              "flex-none w-44 rounded-xl p-3 border transition hover:border-[var(--accent)] flex flex-col",
+              "rounded-xl p-3 border transition hover:border-[var(--accent)] flex flex-col",
             style: { background: "var(--surface)", borderColor: "var(--border)" },
           },
           React.createElement(
@@ -133,7 +179,7 @@
           AFFILIATE_PICKS.map((group) =>
             React.createElement(
               "div",
-              { key: group.label, className: "mb-4" },
+              { key: group.label, className: "mb-6" },
               React.createElement(
                 "p",
                 {
@@ -144,7 +190,7 @@
               ),
               React.createElement(
                 "div",
-                { className: "flex gap-3 overflow-x-auto pb-1" },
+                { className: "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3" },
                 group.items.map((item) =>
                   React.createElement(AffiliateCard, {
                     key: item.url,
