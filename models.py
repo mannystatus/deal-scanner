@@ -29,6 +29,7 @@ class Deal(Base):
     posted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     ingested_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     confidence: Mapped[float] = mapped_column(Float, default=0.5)
+    thumbnail_url: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
     __table_args__ = (
         Index("ix_deals_category_posted", "category", "posted_at"),

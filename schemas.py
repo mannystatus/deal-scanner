@@ -19,6 +19,7 @@ class DealOut(BaseModel):
     merchant: Optional[str] = None
     posted_at: datetime
     confidence: float
+    thumbnail_url: Optional[str] = None
 
     model_config = {"from_attributes": True}
 
