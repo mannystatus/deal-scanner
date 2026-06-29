@@ -376,7 +376,7 @@
     </script>
 
     <script type="module">
-      import React, { useEffect, useState, useCallback } from "react";
+      import React, { useEffect, useState } from "react";
       import { createRoot } from "react-dom/client";
 
       const isLocal =
@@ -396,6 +396,27 @@
       ];
 
       const AFFILIATE_PICKS = [
+        {
+          label: "Top Rated",
+          items: [
+            { title: "Instant Pot Duo 7-in-1 Electric Pressure Cooker (6 Qt)", url: "https://www.amazon.com/dp/B00FLYWNYQ/?tag=wisedealsxyz-20" },
+            { title: "Amazon Echo Dot (5th Gen) Smart Speaker with Alexa", url: "https://www.amazon.com/dp/B09B8W65Q6/?tag=wisedealsxyz-20" },
+            { title: "Kindle Paperwhite 16GB — Glare-Free Display", url: "https://www.amazon.com/s?k=kindle+paperwhite+16gb&tag=wisedealsxyz-20" },
+            { title: "Fire TV Stick 4K Max with Wi-Fi 6E Support", url: "https://www.amazon.com/dp/B0BP9SNVH9/?tag=wisedealsxyz-20" },
+            { title: "Sony WH-1000XM5 Wireless Noise Canceling Headphones", url: "https://www.amazon.com/dp/B09XS7JWHH/?tag=wisedealsxyz-20" },
+            { title: "Apple AirPods Pro (2nd Gen) with MagSafe Case", url: "https://www.amazon.com/dp/B0BDHWDR12/?tag=wisedealsxyz-20" },
+            { title: "Ninja AF101 Air Fryer 4 Qt — Less Fat, Crispy Results", url: "https://www.amazon.com/dp/B07FDJMC9Q/?tag=wisedealsxyz-20" },
+            { title: "TP-Link Kasa Smart Plug Mini 15A with Energy Monitoring", url: "https://www.amazon.com/s?k=kasa+smart+plug+mini+15a&tag=wisedealsxyz-20" },
+            { title: "Logitech C920 HD Pro Webcam 1080p/30fps", url: "https://www.amazon.com/dp/B006JH8T3S/?tag=wisedealsxyz-20" },
+            { title: "Tile Mate (2022) Bluetooth Item Tracker 4-Pack", url: "https://www.amazon.com/s?k=tile+mate+4+pack&tag=wisedealsxyz-20" },
+            { title: "Hydro Flask 32oz Wide-Mouth Insulated Water Bottle", url: "https://www.amazon.com/s?k=hydro+flask+32oz+wide+mouth&tag=wisedealsxyz-20" },
+            { title: "Logitech MX Keys S Advanced Wireless Keyboard", url: "https://www.amazon.com/s?k=logitech+mx+keys+s&tag=wisedealsxyz-20" },
+            { title: "LEVOIT Air Purifier Core 300S for Bedroom, Smart Control", url: "https://www.amazon.com/s?k=levoit+core+300s+air+purifier&tag=wisedealsxyz-20" },
+            { title: "iRobot Roomba i3+ Self-Emptying Robot Vacuum", url: "https://www.amazon.com/s?k=irobot+roomba+i3+plus&tag=wisedealsxyz-20" },
+            { title: "Nespresso Vertuo Pop+ Coffee and Espresso Machine", url: "https://www.amazon.com/s?k=nespresso+vertuo+pop+plus&tag=wisedealsxyz-20" },
+            { title: "Philips Hue White & Color Ambiance Starter Kit (4 Bulbs)", url: "https://www.amazon.com/s?k=philips+hue+starter+kit+4+bulbs&tag=wisedealsxyz-20" },
+          ],
+        },
         {
           label: "Essentials",
           items: [
@@ -600,29 +621,30 @@
         const [loading, setLoading] = useState(true);
         const [total, setTotal] = useState(0);
 
-        const fetchDeals = useCallback(async () => {
-          setLoading(true);
-          const params = new URLSearchParams({ limit: "30" });
-          if (activeCat) params.set("category", activeCat);
-          if (minDiscount > 0) params.set("min_discount", String(minDiscount));
-          if (search) params.set("search", search);
-          try {
-            const r = await fetch(`${API_BASE}/deals?${params}`);
-            const data = await r.json();
-            setDeals(data.items || []);
-            setTotal(data.total || 0);
-          } catch (err) {
-            console.error(err);
-            setDeals([]);
-          } finally {
-            setLoading(false);
-          }
-        }, [activeCat, minDiscount, search]);
-
         useEffect(() => {
-          const t = setTimeout(fetchDeals, 200);
-          return () => clearTimeout(t);
-        }, [fetchDeals]);
+          let cancelled = false;
+          const t = setTimeout(async () => {
+            setLoading(true);
+            const params = new URLSearchParams({ limit: "30" });
+            if (activeCat) params.set("category", activeCat);
+            if (minDiscount > 0) params.set("min_discount", String(minDiscount));
+            if (search) params.set("search", search);
+            try {
+              const r = await fetch(`${API_BASE}/deals?${params}`);
+              const data = await r.json();
+              if (!cancelled) {
+                setDeals(data.items || []);
+                setTotal(data.total || 0);
+              }
+            } catch (err) {
+              console.error(err);
+              if (!cancelled) setDeals([]);
+            } finally {
+              if (!cancelled) setLoading(false);
+            }
+          }, 200);
+          return () => { cancelled = true; clearTimeout(t); };
+        }, [activeCat, minDiscount, search]);
 
         useEffect(() => {
           const cat = CATEGORIES.find((c) => c.id === activeCat);
