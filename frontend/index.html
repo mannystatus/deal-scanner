@@ -15,7 +15,7 @@
     <title>DealScanner – Best Tech, Gaming &amp; Daily Deals | Live Price Drops</title>
     <meta name="description" content="Find the best online deals, discounts, and price drops on tech, gaming, Apple, cameras, trading cards, and daily essentials. DealScanner scans live deals from top retailers so you never miss a sale." />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#0a0a0b" />
+    <meta name="theme-color" content="#ffffff" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
@@ -54,14 +54,292 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
       :root {
-        --bg: #0a0a0b;
-        --surface: #131316;
-        --border: #26262b;
-        --text: #e7e7ea;
-        --muted: #8a8a93;
+        --bg: #f5f5f6;
+        --surface: #ffffff;
+        --border: #e2e2e6;
+        --text: #111112;
+        --muted: #6b6b74;
         --accent: #00ffd5;
+        --accent-text: #007f68;
+        --accent-dim: rgba(0, 255, 213, 0.15);
       }
-      body { background: var(--bg); color: var(--text); }
+
+      * { box-sizing: border-box; }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      }
+
+      /* Scrollbar */
+      ::-webkit-scrollbar { width: 6px; height: 6px; }
+      ::-webkit-scrollbar-track { background: var(--bg); }
+      ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+      /* Header network bar */
+      .network-bar {
+        background: #111112;
+        color: #aaa;
+        font-size: 11px;
+        letter-spacing: 0.04em;
+      }
+      .network-bar a {
+        color: #aaa;
+        text-decoration: none;
+        transition: color 0.15s;
+      }
+      .network-bar a:hover { color: var(--accent); }
+
+      /* Main header */
+      .site-header {
+        background: var(--surface);
+        border-bottom: 3px solid var(--accent);
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      }
+
+      /* Logo */
+      .logo {
+        font-size: 22px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        color: var(--text);
+        text-decoration: none;
+        line-height: 1;
+      }
+      .logo span { color: var(--accent-text); }
+
+      /* Category nav pills */
+      .cat-pill {
+        font-size: 12px;
+        font-weight: 600;
+        padding: 5px 14px;
+        border-radius: 999px;
+        border: 1.5px solid var(--border);
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.15s;
+        white-space: nowrap;
+      }
+      .cat-pill:hover {
+        border-color: var(--accent);
+        color: var(--accent-text);
+      }
+      .cat-pill.active {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #000;
+      }
+
+      /* Search input */
+      .search-input {
+        font-size: 13px;
+        padding: 6px 12px;
+        border-radius: 6px;
+        border: 1.5px solid var(--border);
+        background: var(--bg);
+        color: var(--text);
+        outline: none;
+        transition: border-color 0.15s;
+        min-width: 160px;
+      }
+      .search-input:focus { border-color: var(--accent); }
+      .search-input::placeholder { color: var(--muted); }
+
+      /* Deal card */
+      .deal-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        overflow: hidden;
+        transition: box-shadow 0.15s, transform 0.15s, border-color 0.15s;
+        display: flex;
+        flex-direction: column;
+        text-decoration: none;
+        color: inherit;
+      }
+      .deal-card:hover {
+        box-shadow: 0 6px 24px rgba(0,0,0,0.10);
+        transform: translateY(-2px);
+        border-color: var(--accent);
+      }
+      .deal-card img {
+        width: 100%;
+        height: 160px;
+        object-fit: cover;
+        display: block;
+        background: var(--bg);
+      }
+      .deal-card-body { padding: 14px; flex: 1; display: flex; flex-direction: column; }
+
+      /* Category chip on card */
+      .cat-chip {
+        display: inline-block;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        padding: 2px 8px;
+        border-radius: 4px;
+        background: var(--accent-dim);
+        color: var(--accent-text);
+      }
+
+      /* Discount badge */
+      .discount-badge {
+        font-size: 11px;
+        font-weight: 800;
+        padding: 2px 8px;
+        border-radius: 4px;
+        background: var(--accent);
+        color: #000;
+        white-space: nowrap;
+      }
+
+      /* Price */
+      .price-current {
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--text);
+        letter-spacing: -0.3px;
+      }
+      .price-original {
+        font-size: 13px;
+        color: var(--muted);
+        text-decoration: line-through;
+      }
+
+      /* Deal title */
+      .deal-title {
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 1.4;
+        color: var(--text);
+        margin: 8px 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        flex: 1;
+      }
+
+      /* Merchant / time row */
+      .deal-meta {
+        font-size: 11px;
+        color: var(--muted);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid var(--border);
+      }
+
+      /* Affiliate card */
+      .aff-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        text-decoration: none;
+        color: inherit;
+        transition: box-shadow 0.15s, border-color 0.15s;
+      }
+      .aff-card:hover {
+        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        border-color: var(--accent);
+      }
+      .aff-badge {
+        display: inline-block;
+        font-size: 9px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        padding: 2px 7px;
+        border-radius: 4px;
+        background: rgba(255, 153, 0, 0.12);
+        color: #c47500;
+        align-self: flex-start;
+      }
+      .aff-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text);
+        line-height: 1.4;
+        margin-top: 8px;
+        flex: 1;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .aff-cta {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--accent-text);
+        margin-top: 10px;
+        letter-spacing: 0.02em;
+      }
+
+      /* Section heading */
+      .section-label {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+      }
+
+      /* Divider accent */
+      .section-title-bar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+      .section-title-bar::after {
+        content: '';
+        flex: 1;
+        height: 2px;
+        background: var(--border);
+        border-radius: 1px;
+      }
+
+      /* Discount slider */
+      input[type="range"] {
+        accent-color: var(--accent);
+        cursor: pointer;
+      }
+
+      /* Footer */
+      .site-footer {
+        background: #111112;
+        color: #888;
+        border-top: 3px solid var(--accent);
+      }
+      .site-footer a {
+        color: var(--accent);
+        text-decoration: none;
+        transition: opacity 0.15s;
+      }
+      .site-footer a:hover { opacity: 0.8; }
+
+      /* Loading skeleton */
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+      }
+      .skeleton {
+        background: var(--border);
+        border-radius: 6px;
+        animation: pulse 1.5s ease-in-out infinite;
+      }
     </style>
   </head>
   <body>
@@ -70,9 +348,9 @@
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager -->
     <noscript>
-      <div style="max-width:900px;margin:40px auto;padding:0 20px;font-family:sans-serif;color:#e7e7ea;background:#0a0a0b">
+      <div style="max-width:900px;margin:40px auto;padding:0 20px;font-family:sans-serif;">
         <h1>DealScanner – Best Tech &amp; Daily Deals</h1>
-        <p>DealScanner tracks live price drops across tech, gaming, Apple, cameras, trading cards, and everyday essentials. Enable JavaScript to browse hundreds of current deals and discounts.</p>
+        <p>DealScanner tracks live price drops across tech, gaming, Apple, cameras, trading cards, and everyday essentials. Enable JavaScript to browse hundreds of current deals.</p>
         <h2>Popular Deal Categories</h2>
         <ul>
           <li>Computer &amp; Laptop Deals</li>
@@ -101,7 +379,6 @@
       import React, { useEffect, useState, useCallback } from "react";
       import { createRoot } from "react-dom/client";
 
-      // API_BASE comes from config.js. Localhost and file:// fall back to local dev API.
       const isLocal =
         ["localhost", "127.0.0.1"].includes(location.hostname) ||
         location.protocol === "file:";
@@ -109,7 +386,7 @@
         (!isLocal && window.API_BASE) || "http://localhost:8000";
 
       const CATEGORIES = [
-        { id: "", label: "All" },
+        { id: "", label: "All Deals" },
         { id: "computers", label: "Computers" },
         { id: "gaming", label: "Gaming" },
         { id: "apple", label: "Apple" },
@@ -188,81 +465,48 @@
         },
       ];
 
+      function e(tag, props, ...children) {
+        return React.createElement(tag, props, ...children);
+      }
+
       function AffiliateCard({ title, url }) {
-        return React.createElement(
+        return e(
           "a",
-          {
-            href: url,
-            target: "_blank",
-            rel: "noopener noreferrer sponsored",
-            className:
-              "rounded-xl p-3 border transition hover:border-[var(--accent)] flex flex-col",
-            style: { background: "var(--surface)", borderColor: "var(--border)" },
-          },
-          React.createElement(
-            "span",
-            {
-              className:
-                "text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full self-start",
-              style: { background: "rgba(255,153,0,0.12)", color: "#ff9900" },
-            },
-            "Amazon"
-          ),
-          React.createElement(
-            "p",
-            { className: "text-sm font-medium leading-snug mt-2 line-clamp-3 flex-1" },
-            title
-          ),
-          React.createElement(
-            "span",
-            { className: "text-xs mt-3 inline-block", style: { color: "var(--accent)" } },
-            "View deal →"
-          )
+          { href: url, target: "_blank", rel: "noopener noreferrer sponsored", className: "aff-card" },
+          e("span", { className: "aff-badge" }, "Amazon"),
+          e("p", { className: "aff-title" }, title),
+          e("span", { className: "aff-cta" }, "View deal →")
         );
       }
 
       function AffiliateSection() {
-        return React.createElement(
+        return e(
           "section",
-          { className: "max-w-6xl mx-auto px-4 pt-5 pb-1" },
-          React.createElement(
+          { style: { background: "var(--bg)", borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)", padding: "24px 0" } },
+          e(
             "div",
-            { className: "flex items-center justify-between mb-3" },
-            React.createElement(
-              "h2",
-              {
-                className: "text-xs font-semibold uppercase tracking-widest",
-                style: { color: "var(--muted)" },
-              },
-              "Our Picks"
-            ),
-            React.createElement(
-              "span",
-              { className: "text-[10px]", style: { color: "var(--muted)" } },
-              "As an Amazon Associate I earn from qualifying purchases"
-            )
-          ),
-          AFFILIATE_PICKS.map((group) =>
-            React.createElement(
+            { style: { maxWidth: 1152, margin: "0 auto", padding: "0 16px" } },
+            e(
               "div",
-              { key: group.label, className: "mb-6" },
-              React.createElement(
-                "p",
-                {
-                  className: "text-[11px] uppercase tracking-wider mb-2",
-                  style: { color: "var(--muted)" },
-                },
-                group.label
-              ),
-              React.createElement(
+              { style: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 } },
+              e("span", { className: "section-label" }, "Our Picks"),
+              e("span", { style: { fontSize: 10, color: "var(--muted)" } }, "As an Amazon Associate I earn from qualifying purchases")
+            ),
+            AFFILIATE_PICKS.map((group) =>
+              e(
                 "div",
-                { className: "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3" },
-                group.items.map((item) =>
-                  React.createElement(AffiliateCard, {
-                    key: item.url,
-                    title: item.title,
-                    url: item.url,
-                  })
+                { key: group.label, style: { marginBottom: 20 } },
+                e(
+                  "div",
+                  { className: "section-title-bar" },
+                  e("span", { style: { fontSize: 11, fontWeight: 700, color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.07em", whiteSpace: "nowrap" } }, group.label)
+                ),
+                e(
+                  "div",
+                  { style: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(170px, 1fr))", gap: 10 } },
+                  group.items.map((item) =>
+                    e(AffiliateCard, { key: item.url, title: item.title, url: item.url })
+                  )
                 )
               )
             )
@@ -289,110 +533,67 @@
 
       function DealCard({ deal }) {
         const target = deal.affiliate_url || deal.url;
-        return React.createElement(
+        return e(
           "a",
-          {
-            href: target,
-            target: "_blank",
-            rel: "noopener noreferrer",
-            className:
-              "block rounded-xl border transition hover:border-[var(--accent)] overflow-hidden",
-            style: {
-              background: "var(--surface)",
-              borderColor: "var(--border)",
-            },
-          },
+          { href: target, target: "_blank", rel: "noopener noreferrer", className: "deal-card" },
           deal.thumbnail_url
-            ? React.createElement("img", {
+            ? e("img", {
                 src: deal.thumbnail_url,
                 alt: deal.title,
-                className: "w-full h-36 object-cover",
                 loading: "lazy",
-                onError: (e) => { e.currentTarget.style.display = "none"; },
+                onError: (ev) => { ev.currentTarget.style.display = "none"; },
               })
             : null,
-          React.createElement(
+          e(
             "div",
-            { className: "p-4" },
-            React.createElement(
+            { className: "deal-card-body" },
+            e(
               "div",
-              { className: "flex items-start justify-between gap-3 mb-2" },
-              React.createElement(
-                "span",
-                {
-                  className:
-                    "text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full",
-                  style: {
-                    background: "rgba(0,255,213,0.08)",
-                    color: "var(--accent)",
-                  },
-                },
-                deal.category
-              ),
+              { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6 } },
+              e("span", { className: "cat-chip" }, deal.category),
               deal.discount_pct
-                ? React.createElement(
-                    "span",
-                    {
-                      className: "text-xs font-bold",
-                      style: { color: "var(--accent)" },
-                    },
-                    `${Math.round(deal.discount_pct)}% off`
-                  )
+                ? e("span", { className: "discount-badge" }, `${Math.round(deal.discount_pct)}% off`)
                 : null
             ),
-            React.createElement(
-              "h3",
-              { className: "font-medium leading-snug mb-3 line-clamp-2" },
-              deal.title
-            ),
-            React.createElement(
+            e("p", { className: "deal-title" }, deal.title),
+            e(
               "div",
-              { className: "flex items-baseline gap-2 mb-3" },
+              { style: { display: "flex", alignItems: "baseline", gap: 8 } },
               deal.deal_price !== null
-                ? React.createElement(
-                    "span",
-                    { className: "text-xl font-semibold" },
-                    formatPrice(deal.deal_price, deal.currency)
-                  )
-                : React.createElement(
-                    "span",
-                    {
-                      className: "text-sm",
-                      style: { color: "var(--muted)" },
-                    },
-                    "See deal"
-                  ),
+                ? e("span", { className: "price-current" }, formatPrice(deal.deal_price, deal.currency))
+                : e("span", { style: { fontSize: 13, color: "var(--muted)" } }, "See deal"),
               deal.original_price !== null
-                ? React.createElement(
-                    "span",
-                    {
-                      className: "text-sm line-through",
-                      style: { color: "var(--muted)" },
-                    },
-                    formatPrice(deal.original_price, deal.currency)
-                  )
+                ? e("span", { className: "price-original" }, formatPrice(deal.original_price, deal.currency))
                 : null
             ),
-            React.createElement(
+            e(
               "div",
-              {
-                className: "flex items-center justify-between text-xs",
-                style: { color: "var(--muted)" },
-              },
-              React.createElement(
-                "span",
-                null,
-                deal.merchant || deal.source
-              ),
-              React.createElement("span", null, timeAgo(deal.posted_at))
+              { className: "deal-meta" },
+              e("span", null, deal.merchant || deal.source),
+              e("span", null, timeAgo(deal.posted_at))
             )
+          )
+        );
+      }
+
+      function SkeletonCard() {
+        return e(
+          "div",
+          { style: { background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 10, overflow: "hidden" } },
+          e("div", { className: "skeleton", style: { height: 160 } }),
+          e(
+            "div",
+            { style: { padding: 14 } },
+            e("div", { className: "skeleton", style: { height: 12, width: "40%", marginBottom: 10 } }),
+            e("div", { className: "skeleton", style: { height: 14, marginBottom: 6 } }),
+            e("div", { className: "skeleton", style: { height: 14, width: "70%", marginBottom: 12 } }),
+            e("div", { className: "skeleton", style: { height: 22, width: "35%" } })
           )
         );
       }
 
       function App() {
         const [deals, setDeals] = useState([]);
-        const [categories, setCategories] = useState([]);
         const [activeCat, setActiveCat] = useState("");
         const [minDiscount, setMinDiscount] = useState(0);
         const [search, setSearch] = useState("");
@@ -410,8 +611,8 @@
             const data = await r.json();
             setDeals(data.items || []);
             setTotal(data.total || 0);
-          } catch (e) {
-            console.error(e);
+          } catch (err) {
+            console.error(err);
             setDeals([]);
           } finally {
             setLoading(false);
@@ -419,14 +620,7 @@
         }, [activeCat, minDiscount, search]);
 
         useEffect(() => {
-          fetch(`${API_BASE}/categories`)
-            .then((r) => r.json())
-            .then(setCategories)
-            .catch(() => setCategories([]));
-        }, []);
-
-        useEffect(() => {
-          const t = setTimeout(fetchDeals, 200); // debounce search
+          const t = setTimeout(fetchDeals, 200);
           return () => clearTimeout(t);
         }, [fetchDeals]);
 
@@ -438,146 +632,136 @@
             : `DealScanner – Best Tech, Gaming & Daily Deals | ${total.toLocaleString()} Live Price Drops`;
         }, [activeCat, total]);
 
-        return React.createElement(
+        return e(
           "div",
-          { className: "min-h-screen" },
-          React.createElement(
-            "header",
-            {
-              className: "border-b sticky top-0 z-10 backdrop-blur",
-              style: {
-                background: "rgba(10,10,11,0.85)",
-                borderColor: "var(--border)",
-              },
-            },
-            React.createElement(
+          { style: { minHeight: "100vh", display: "flex", flexDirection: "column" } },
+
+          /* ── Network bar ── */
+          e(
+            "div",
+            { className: "network-bar" },
+            e(
               "div",
-              { className: "max-w-6xl mx-auto px-4 py-4 flex flex-col gap-3" },
-              React.createElement(
+              { style: { maxWidth: 1152, margin: "0 auto", padding: "6px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" } },
+              e("span", null, "Your source for the best deals on the web"),
+              e("span", { style: { fontSize: 10 } }, `${total.toLocaleString()} live deals updated continuously`)
+            )
+          ),
+
+          /* ── Site header ── */
+          e(
+            "header",
+            { className: "site-header" },
+            e(
+              "div",
+              { style: { maxWidth: 1152, margin: "0 auto", padding: "12px 16px" } },
+
+              /* Logo row */
+              e(
                 "div",
-                { className: "flex items-center justify-between" },
-                React.createElement(
-                  "h1",
-                  { className: "text-xl font-bold tracking-tight" },
+                { style: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 } },
+                e(
+                  "a",
+                  { href: "/", className: "logo" },
                   "deal",
-                  React.createElement(
-                    "span",
-                    { style: { color: "var(--accent)" } },
-                    "scanner"
-                  )
+                  e("span", null, "scanner")
                 ),
-                React.createElement(
-                  "span",
-                  {
-                    className: "text-xs",
-                    style: { color: "var(--muted)" },
-                  },
-                  `${total.toLocaleString()} live deals`
-                )
+                e("input", {
+                  type: "search",
+                  placeholder: "Search deals…",
+                  value: search,
+                  onChange: (ev) => setSearch(ev.target.value),
+                  className: "search-input",
+                })
               ),
-              React.createElement(
+
+              /* Category + filter row */
+              e(
                 "div",
-                { className: "flex flex-wrap items-center gap-2" },
+                { style: { display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6 } },
                 CATEGORIES.map((c) =>
-                  React.createElement(
+                  e(
                     "button",
                     {
                       key: c.id,
                       onClick: () => setActiveCat(c.id),
-                      className:
-                        "text-xs px-3 py-1.5 rounded-full border transition",
-                      style:
-                        activeCat === c.id
-                          ? {
-                              background: "var(--accent)",
-                              color: "#000",
-                              borderColor: "var(--accent)",
-                            }
-                          : {
-                              borderColor: "var(--border)",
-                              color: "var(--text)",
-                            },
+                      className: `cat-pill${activeCat === c.id ? " active" : ""}`,
                     },
                     c.label
                   )
                 ),
-                React.createElement("input", {
-                  type: "search",
-                  placeholder: "Search…",
-                  value: search,
-                  onChange: (e) => setSearch(e.target.value),
-                  className:
-                    "ml-auto text-sm px-3 py-1.5 rounded-md border bg-transparent outline-none focus:border-[var(--accent)]",
-                  style: { borderColor: "var(--border)" },
-                }),
-                React.createElement(
+                e(
                   "label",
-                  {
-                    className: "text-xs flex items-center gap-2",
-                    style: { color: "var(--muted)" },
-                  },
-                  `min ${minDiscount}% off`,
-                  React.createElement("input", {
+                  { style: { display: "flex", alignItems: "center", gap: 6, marginLeft: "auto", fontSize: 11, color: "var(--muted)", fontWeight: 600 } },
+                  `Min ${minDiscount}% off`,
+                  e("input", {
                     type: "range",
                     min: "0",
                     max: "80",
                     step: "5",
                     value: minDiscount,
-                    onChange: (e) => setMinDiscount(Number(e.target.value)),
+                    onChange: (ev) => setMinDiscount(Number(ev.target.value)),
+                    style: { width: 80 },
                   })
                 )
               )
             )
           ),
-          React.createElement(AffiliateSection, null),
-          React.createElement(
+
+          /* ── Affiliate section ── */
+          e(AffiliateSection, null),
+
+          /* ── Deals grid ── */
+          e(
             "main",
-            { className: "max-w-6xl mx-auto px-4 pb-6 pt-2" },
+            { style: { maxWidth: 1152, margin: "0 auto", padding: "24px 16px 40px", flex: 1, width: "100%" } },
+            e(
+              "div",
+              { className: "section-title-bar" },
+              e("span", { className: "section-label" }, "Latest Deals")
+            ),
             loading
-              ? React.createElement(
-                  "p",
-                  { style: { color: "var(--muted)" } },
-                  "Loading…"
+              ? e(
+                  "div",
+                  { style: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 16 } },
+                  Array.from({ length: 9 }).map((_, i) => e(SkeletonCard, { key: i }))
                 )
               : deals.length === 0
-              ? React.createElement(
-                  "p",
-                  { style: { color: "var(--muted)" } },
-                  "No deals match your filters."
-                )
-              : React.createElement(
+              ? e(
                   "div",
-                  {
-                    className:
-                      "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4",
-                  },
-                  deals.map((d) =>
-                    React.createElement(DealCard, { key: d.id, deal: d })
+                  { style: { textAlign: "center", padding: "60px 0", color: "var(--muted)" } },
+                  e("p", { style: { fontSize: 15 } }, "No deals match your filters."),
+                  e(
+                    "button",
+                    {
+                      onClick: () => { setActiveCat(""); setMinDiscount(0); setSearch(""); },
+                      style: { marginTop: 12, fontSize: 13, color: "var(--accent-text)", background: "none", border: "none", cursor: "pointer", textDecoration: "underline" },
+                    },
+                    "Clear all filters"
                   )
                 )
+              : e(
+                  "div",
+                  { style: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 16 } },
+                  deals.map((d) => e(DealCard, { key: d.id, deal: d }))
+                )
           ),
-          React.createElement(
+
+          /* ── Footer ── */
+          e(
             "footer",
-            {
-              className: "border-t mt-10 py-6 text-center text-xs",
-              style: { borderColor: "var(--border)", color: "var(--muted)" },
-            },
-            "© Hack the Deal 2026. As an Amazon Associate I earn from qualifying purchases. ",
-            React.createElement(
-              "a",
-              {
-                href: "/privacy.html",
-                className: "underline hover:text-[var(--accent)] transition",
-              },
-              "Privacy Policy"
+            { className: "site-footer" },
+            e(
+              "div",
+              { style: { maxWidth: 1152, margin: "0 auto", padding: "20px 16px", display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 8, fontSize: 12 } },
+              e("span", null, "© Hack the Deal 2026. As an Amazon Associate I earn from qualifying purchases."),
+              e("a", { href: "/privacy.html" }, "Privacy Policy")
             )
           )
         );
       }
 
-      createRoot(document.getElementById("root")).render(
-        React.createElement(App)
-      );
+      createRoot(document.getElementById("root")).render(e(App));
     </script>
   </body>
 </html>
