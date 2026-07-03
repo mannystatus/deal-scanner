@@ -260,6 +260,21 @@
         box-shadow: 0 4px 16px rgba(0,0,0,0.08);
         border-color: var(--accent);
       }
+      .aff-thumb {
+        height: 76px;
+        margin: -12px -12px 10px -12px;
+        border-radius: 8px 8px 0 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .aff-thumb svg { width: 26px; height: 26px; }
+      .aff-thumb.icon-star   { background: rgba(255, 153, 0, 0.12); color: #c47500; }
+      .aff-thumb.icon-box    { background: var(--accent-dim); color: var(--accent-text); }
+      .aff-thumb.icon-cpu    { background: rgba(59, 130, 246, 0.12); color: #2563eb; }
+      .aff-thumb.icon-camera { background: rgba(168, 85, 247, 0.12); color: #7c3aed; }
+      .aff-thumb.icon-cards  { background: rgba(244, 63, 94, 0.12); color: #be123c; }
+
       .aff-badge {
         display: inline-block;
         font-size: 9px;
@@ -403,6 +418,7 @@
       const AFFILIATE_PICKS = [
         {
           label: "Top Rated",
+          icon: "star",
           items: [
             { title: "Instant Pot Duo 7-in-1 Electric Pressure Cooker (6 Qt)", url: "https://www.amazon.com/s?k=instant+pot+duo+7-in-1+6+quart&tag=wisedealsxyz-20" },
             { title: "Amazon Echo Dot (5th Gen) Smart Speaker with Alexa", url: "https://www.amazon.com/s?k=echo+dot+5th+gen+smart+speaker&tag=wisedealsxyz-20" },
@@ -435,6 +451,7 @@
         },
         {
           label: "Essentials",
+          icon: "box",
           items: [
             { title: "Amazon Basics AA Batteries (48-Pack)", url: "https://amzn.to/4oDQnXV" },
             { title: "Anker Nano 45W GaN USB-C Charger", url: "https://amzn.to/4e9BE23" },
@@ -456,6 +473,7 @@
         },
         {
           label: "Tech",
+          icon: "cpu",
           items: [
             { title: "PICTRON U200 Handheld LED Ring Light Rig", url: "https://amzn.to/4vsE9DW" },
             { title: "Google Pixel 10a 128GB", url: "https://amzn.to/4aHWLr8" },
@@ -485,6 +503,7 @@
         },
         {
           label: "Streaming Kits",
+          icon: "camera",
           items: [
             { title: "Lume Cube Panel Pro 2.0 RGB Camera Light", url: "https://amzn.to/4eBzj04" },
             { title: "Blue Yeti USB Microphone (Blackout)", url: "https://amzn.to/3QPSECG" },
@@ -496,6 +515,7 @@
         },
         {
           label: "Trading Cards",
+          icon: "cards",
           items: [
             { title: "2026 Panini FIFA World Cup Sticker Box (50 Packs)", url: "https://amzn.to/4uPaV0T" },
           ],
@@ -506,10 +526,46 @@
         return React.createElement(tag, props, ...children);
       }
 
-      function AffiliateCard({ title, url }) {
+      const ICON_PROPS = { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round" };
+
+      const AFF_ICONS = {
+        star: e("svg", ICON_PROPS, e("polygon", { points: "12,2.5 15,9.5 22,10.3 16.8,15.1 18.2,22 12,18.3 5.8,22 7.2,15.1 2,10.3 9,9.5" })),
+        box: e(
+          "svg", ICON_PROPS,
+          e("path", { d: "M3 7l9-4 9 4-9 4-9-4z" }),
+          e("path", { d: "M3 7v10l9 4 9-4V7" }),
+          e("path", { d: "M12 11v10" })
+        ),
+        cpu: e(
+          "svg", ICON_PROPS,
+          e("rect", { x: 6, y: 6, width: 12, height: 12, rx: 2 }),
+          e("rect", { x: 9, y: 9, width: 6, height: 6 }),
+          e("line", { x1: 9, y1: 2, x2: 9, y2: 6 }),
+          e("line", { x1: 15, y1: 2, x2: 15, y2: 6 }),
+          e("line", { x1: 9, y1: 18, x2: 9, y2: 22 }),
+          e("line", { x1: 15, y1: 18, x2: 15, y2: 22 }),
+          e("line", { x1: 2, y1: 9, x2: 6, y2: 9 }),
+          e("line", { x1: 2, y1: 15, x2: 6, y2: 15 }),
+          e("line", { x1: 18, y1: 9, x2: 22, y2: 9 }),
+          e("line", { x1: 18, y1: 15, x2: 22, y2: 15 })
+        ),
+        camera: e(
+          "svg", ICON_PROPS,
+          e("path", { d: "M23 7l-7 5 7 5V7z" }),
+          e("rect", { x: 1, y: 5, width: 15, height: 14, rx: 2 })
+        ),
+        cards: e(
+          "svg", ICON_PROPS,
+          e("rect", { x: 2, y: 4, width: 14, height: 18, rx: 2 }),
+          e("rect", { x: 8, y: 2, width: 14, height: 18, rx: 2 })
+        ),
+      };
+
+      function AffiliateCard({ title, url, icon }) {
         return e(
           "a",
           { href: url, target: "_blank", rel: "noopener noreferrer sponsored", className: "aff-card" },
+          e("div", { className: `aff-thumb icon-${icon}` }, AFF_ICONS[icon]),
           e("span", { className: "aff-badge" }, "Amazon"),
           e("p", { className: "aff-title" }, title),
           e("span", { className: "aff-cta" }, "View deal →")
@@ -542,7 +598,7 @@
                   "div",
                   { style: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(170px, 1fr))", gap: 10 } },
                   group.items.map((item) =>
-                    e(AffiliateCard, { key: item.url, title: item.title, url: item.url })
+                    e(AffiliateCard, { key: item.url, title: item.title, url: item.url, icon: group.icon })
                   )
                 )
               )
