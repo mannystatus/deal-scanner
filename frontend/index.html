@@ -274,6 +274,7 @@
       .aff-thumb.icon-cpu    { background: rgba(59, 130, 246, 0.12); color: #2563eb; }
       .aff-thumb.icon-camera { background: rgba(168, 85, 247, 0.12); color: #7c3aed; }
       .aff-thumb.icon-cards  { background: rgba(244, 63, 94, 0.12); color: #be123c; }
+      .aff-thumb.icon-sparkle { background: rgba(99, 102, 241, 0.12); color: #4f46e5; }
 
       .aff-badge {
         display: inline-block;
@@ -520,6 +521,19 @@
             { title: "2026 Panini FIFA World Cup Sticker Box (50 Packs)", url: "https://amzn.to/4uPaV0T" },
           ],
         },
+        {
+          label: "Unique Finds",
+          icon: "sparkle",
+          items: [
+            { title: "Cozeware 9000 BTU Mini Split Air Conditioner — Ductless Heat Pump, 18 SEER2", url: "https://www.amazon.com/dp/B0GYG2359B?ref=t_ac_view_request_product_image&campaignId=amzn1.campaign.3TT8AORF75OAR&linkCode=tr1&tag=wisedealsxyz-20&linkId=amzn1.campaign.3TT8AORF75OAR_1783052621929" },
+            { title: "mqajdv Dog Hair Bow Headbands (3-Pack) — Adjustable Grooming Accessory", url: "https://www.amazon.com/dp/B0FG8HL29D?ref=t_ac_view_request_product_image&campaignId=amzn1.campaign.3H73BJH9XKBFC&linkCode=tr1&tag=wisedealsxyz-20&linkId=amzn1.campaign.3H73BJH9XKBFC_1783052966543" },
+            { title: 'Yoever Smart Watch — 1.57" HD Display, Call/Text, Heart Rate & SpO2 Tracking', url: "https://www.amazon.com/dp/B0GVHKC91D?ref=t_ac_view_request_product_image&campaignId=amzn1.campaign.2FZFXRV6SZL6G&linkCode=tr1&tag=wisedealsxyz-20&linkId=amzn1.campaign.2FZFXRV6SZL6G_1783052986396" },
+            { title: "1 Body 60 Billion Probiotics for Men & Women — 60 Vegan Capsules", url: "https://www.amazon.com/dp/B07CSFLWVJ?ref=t_ac_view_request_product_image&campaignId=amzn1.campaign.39J4UJ74IUYS9&linkCode=tr1&tag=wisedealsxyz-20&linkId=amzn1.campaign.39J4UJ74IUYS9_1783053002528" },
+            { title: "Onforu Smart Bird Feeder with Camera — 2.5K QHD, Solar Powered, AI Identification", url: "https://www.amazon.com/dp/B0G2B9PMQ1?ref=t_ac_view_request_product_image&campaignId=amzn1.campaign.J2CQ4P0FI71I&linkCode=tr1&tag=wisedealsxyz-20&linkId=amzn1.campaign.J2CQ4P0FI71I_1783053039506" },
+            { title: "iFu Mini Electric Screwdriver Set — 90-in-1 Precision Kit with LED Light & 64 Magnetic Bits", url: "https://www.amazon.com/dp/B0CSSXZSKV?ref=t_ac_view_request_product_image&campaignId=amzn1.campaign.1QT6MHZIEUHYA&linkCode=tr1&tag=wisedealsxyz-20&linkId=amzn1.campaign.1QT6MHZIEUHYA_1783053054652" },
+            { title: "Rechargeable Portable Camping Fan — 60-Hour Runtime, 5 Speeds & 3 Lights", url: "https://www.amazon.com/dp/B0GLP1116V?ref=t_ac_view_request_product_image&campaignId=amzn1.campaign.3POK6NZ15OKFF&linkCode=tr1&tag=wisedealsxyz-20&linkId=amzn1.campaign.3POK6NZ15OKFF_1783053067204" },
+          ],
+        },
       ];
 
       function e(tag, props, ...children) {
@@ -559,6 +573,7 @@
           e("rect", { x: 2, y: 4, width: 14, height: 18, rx: 2 }),
           e("rect", { x: 8, y: 2, width: 14, height: 18, rx: 2 })
         ),
+        sparkle: e("svg", ICON_PROPS, e("polygon", { points: "12,2 15,9 22,12 15,15 12,22 9,15 2,12 9,9" })),
       };
 
       function AffiliateCard({ title, url, icon }) {
