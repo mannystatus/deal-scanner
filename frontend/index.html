@@ -277,6 +277,7 @@
       .aff-thumb.icon-camera { background: rgba(168, 85, 247, 0.12); color: #7c3aed; }
       .aff-thumb.icon-cards  { background: rgba(244, 63, 94, 0.12); color: #be123c; }
       .aff-thumb.icon-sparkle { background: rgba(99, 102, 241, 0.12); color: #4f46e5; }
+      .aff-thumb.icon-heart  { background: rgba(220, 38, 38, 0.12); color: #dc2626; }
 
       .aff-badge {
         display: inline-block;
@@ -536,6 +537,13 @@
             { title: "Rechargeable Portable Camping Fan — 60-Hour Runtime, 5 Speeds & 3 Lights", url: "https://www.amazon.com/dp/B0GLP1116V?ref=t_ac_view_request_product_image&campaignId=amzn1.campaign.3POK6NZ15OKFF&linkCode=tr1&tag=wisedealsxyz-20&linkId=amzn1.campaign.3POK6NZ15OKFF_1783053067204" },
           ],
         },
+        {
+          label: "Staff Favorites",
+          icon: "heart",
+          items: [
+            { title: "Apple AirTag (2nd Generation) — 4 Pack", url: "https://amzn.to/4wouD4I" },
+          ],
+        },
       ];
 
       function e(tag, props, ...children) {
@@ -576,6 +584,7 @@
           e("rect", { x: 8, y: 2, width: 14, height: 18, rx: 2 })
         ),
         sparkle: e("svg", ICON_PROPS, e("polygon", { points: "12,2 15,9 22,12 15,15 12,22 9,15 2,12 9,9" })),
+        heart: e("svg", ICON_PROPS, e("path", { d: "M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" })),
       };
 
       function AffiliateCard({ title, url, icon }) {
