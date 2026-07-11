@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Hack the Deal — favicon</title>
+  <desc id="desc">Square app icon: dark rounded square with a blue dollar sign and green underscore cursor centered, in monospace.</desc>
+  <defs>
+    <style>
+      .mono { font-family: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Code", Menlo, Consolas, "DejaVu Sans Mono", monospace; }
+    </style>
+  </defs>
+
+  <rect width="512" height="512" rx="112" fill="#0E1116"/>
+
+  <text x="256" y="345" text-anchor="middle" class="mono" font-size="260" font-weight="900">
+    <tspan fill="#7AA2F7">$</tspan><tspan fill="#A6E3A1">_</tspan>
+  </text>
+</svg>
