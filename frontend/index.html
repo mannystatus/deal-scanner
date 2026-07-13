@@ -126,6 +126,7 @@
 
       /* Category nav pills */
       .cat-pill {
+        display: inline-block;
         font-size: 12px;
         font-weight: 600;
         padding: 5px 14px;
@@ -133,6 +134,7 @@
         border: 1.5px solid var(--border);
         background: transparent;
         color: var(--muted);
+        text-decoration: none;
         cursor: pointer;
         transition: all 0.15s;
         white-space: nowrap;
@@ -382,12 +384,12 @@
         <p>DealScanner tracks live price drops across tech, gaming, Apple, cameras, trading cards, and everyday essentials. Enable JavaScript to browse hundreds of current deals.</p>
         <h2>Popular Deal Categories</h2>
         <ul>
-          <li>Computer &amp; Laptop Deals</li>
-          <li>Gaming Deals</li>
-          <li>Apple &amp; iPhone Deals</li>
-          <li>Camera &amp; Photography Deals</li>
-          <li>Software Deals</li>
-          <li>Trading Card Deals</li>
+          <li><a href="/computers">Computer &amp; Laptop Deals</a></li>
+          <li><a href="/gaming">Gaming Deals</a></li>
+          <li><a href="/apple">Apple &amp; iPhone Deals</a></li>
+          <li><a href="/cameras">Camera &amp; Photography Deals</a></li>
+          <li><a href="/software">Software Deals</a></li>
+          <li><a href="/trading_cards">Trading Card Deals</a></li>
         </ul>
       </div>
     </noscript>
@@ -423,6 +425,52 @@
         { id: "software", label: "Software" },
         { id: "trading_cards", label: "Trading Cards" },
       ];
+
+      const CATEGORY_IDS = new Set(CATEGORIES.filter((c) => c.id).map((c) => c.id));
+
+      const CATEGORY_COPY = {
+        "": {
+          h1: "Live Deals on Tech, Gaming, Apple & Daily Essentials",
+          description: "Find the best online deals, discounts, and price drops on tech, gaming, Apple, cameras, trading cards, and daily essentials. DealScanner scans live deals from top retailers so you never miss a sale.",
+        },
+        computers: {
+          h1: "Best Computer & Laptop Deals Today",
+          description: "Live price drops on laptops, desktops, monitors, and PC components. DealScanner tracks computer deals from top retailers continuously.",
+        },
+        gaming: {
+          h1: "Best Gaming Deals Today",
+          description: "Live price drops on gaming consoles, PC games, accessories, and peripherals. DealScanner tracks gaming deals from top retailers continuously.",
+        },
+        apple: {
+          h1: "Best Apple & iPhone Deals Today",
+          description: "Live price drops on iPhone, iPad, Mac, AirPods, and Apple Watch. DealScanner tracks Apple deals from top retailers continuously.",
+        },
+        cameras: {
+          h1: "Best Camera & Photography Deals Today",
+          description: "Live price drops on cameras, lenses, drones, and photography gear. DealScanner tracks camera deals from top retailers continuously.",
+        },
+        software: {
+          h1: "Best Software Deals Today",
+          description: "Live price drops on software licenses, subscriptions, and digital tools. DealScanner tracks software deals from top retailers continuously.",
+        },
+        trading_cards: {
+          h1: "Best Trading Card Deals Today",
+          description: "Live price drops on trading card boxes, packs, and singles across Pokémon, sports, and TCGs. DealScanner tracks trading card deals continuously.",
+        },
+      };
+
+      function categoryFromPath(pathname) {
+        const slug = pathname.replace(/^\/+|\/+$/g, "");
+        return CATEGORY_IDS.has(slug) ? slug : "";
+      }
+
+      function pageTitle(activeCat, total) {
+        const totalLabel = total ? `${total.toLocaleString()} Live Price Drops` : "Live Price Drops";
+        if (!activeCat) {
+          return `DealScanner – Best Tech, Gaming & Daily Deals | ${totalLabel}`;
+        }
+        return `${CATEGORY_COPY[activeCat].h1} – ${totalLabel} | DealScanner`;
+      }
 
       const AFFILIATE_PICKS = [
         {
@@ -613,7 +661,7 @@
             e(
               "div",
               { style: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 } },
-              e("span", { className: "section-label" }, "Our Picks"),
+              e("h2", { className: "section-label", style: { margin: 0 } }, "Our Picks"),
               e("span", { style: { fontSize: 10, color: "var(--muted)" } }, "As an Amazon Associate I earn from qualifying purchases")
             ),
             AFFILIATE_PICKS.map((group) =>
@@ -623,7 +671,7 @@
                 e(
                   "div",
                   { className: "section-title-bar" },
-                  e("span", { style: { fontSize: 11, fontWeight: 700, color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.07em", whiteSpace: "nowrap" } }, group.label)
+                  e("h3", { style: { fontSize: 11, fontWeight: 700, color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.07em", whiteSpace: "nowrap", margin: 0 } }, group.label)
                 ),
                 e(
                   "div",
@@ -718,11 +766,25 @@
 
       function App() {
         const [deals, setDeals] = useState([]);
-        const [activeCat, setActiveCat] = useState("");
+        const [activeCat, setActiveCat] = useState(() => categoryFromPath(location.pathname));
         const [minDiscount, setMinDiscount] = useState(0);
         const [search, setSearch] = useState("");
         const [loading, setLoading] = useState(true);
         const [total, setTotal] = useState(0);
+
+        function navigateToCategory(id) {
+          const path = id ? `/${id}` : "/";
+          if (location.pathname !== path) {
+            history.pushState(null, "", path);
+          }
+          setActiveCat(id);
+        }
+
+        useEffect(() => {
+          const onPopState = () => setActiveCat(categoryFromPath(location.pathname));
+          window.addEventListener("popstate", onPopState);
+          return () => window.removeEventListener("popstate", onPopState);
+        }, []);
 
         useEffect(() => {
           let cancelled = false;
@@ -750,12 +812,57 @@
         }, [activeCat, minDiscount, search]);
 
         useEffect(() => {
-          const cat = CATEGORIES.find((c) => c.id === activeCat);
-          const catLabel = cat && cat.id ? cat.label : null;
-          document.title = catLabel
-            ? `Best ${catLabel} Deals Today – ${total.toLocaleString()} Live Price Drops | DealScanner`
-            : `DealScanner – Best Tech, Gaming & Daily Deals | ${total.toLocaleString()} Live Price Drops`;
+          const copy = CATEGORY_COPY[activeCat] || CATEGORY_COPY[""];
+          const path = activeCat ? `/${activeCat}` : "/";
+          const url = `https://www.hackthedeal.com${path}`;
+          const title = pageTitle(activeCat, total);
+
+          document.title = title;
+          const setAttr = (selector, attr, value) => {
+            const el = document.querySelector(selector);
+            if (el) el.setAttribute(attr, value);
+          };
+          setAttr('meta[name="description"]', "content", copy.description);
+          setAttr('meta[property="og:title"]', "content", title);
+          setAttr('meta[property="og:description"]', "content", copy.description);
+          setAttr('meta[property="og:url"]', "content", url);
+          setAttr('link[rel="canonical"]', "href", url);
         }, [activeCat, total]);
+
+        useEffect(() => {
+          let script = document.getElementById("deals-jsonld");
+          if (!script) {
+            script = document.createElement("script");
+            script.type = "application/ld+json";
+            script.id = "deals-jsonld";
+            document.head.appendChild(script);
+          }
+          if (!deals.length) {
+            script.textContent = "";
+            return;
+          }
+          script.textContent = JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            itemListElement: deals.slice(0, 20).map((d, i) => ({
+              "@type": "ListItem",
+              position: i + 1,
+              item: {
+                "@type": "Product",
+                name: d.title,
+                image: d.thumbnail_url || undefined,
+                url: d.affiliate_url || d.url,
+                offers: {
+                  "@type": "Offer",
+                  price: d.deal_price ?? undefined,
+                  priceCurrency: d.currency || "USD",
+                  availability: "https://schema.org/InStock",
+                  url: d.affiliate_url || d.url,
+                },
+              },
+            })),
+          });
+        }, [deals]);
 
         return e(
           "div",
@@ -805,10 +912,11 @@
                 { style: { display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6 } },
                 CATEGORIES.map((c) =>
                   e(
-                    "button",
+                    "a",
                     {
                       key: c.id,
-                      onClick: () => setActiveCat(c.id),
+                      href: c.id ? `/${c.id}` : "/",
+                      onClick: (ev) => { ev.preventDefault(); navigateToCategory(c.id); },
                       className: `cat-pill${activeCat === c.id ? " active" : ""}`,
                     },
                     c.label
@@ -839,6 +947,8 @@
           e(
             "main",
             { style: { maxWidth: 1152, margin: "0 auto", padding: "24px 16px 40px", flex: 1, width: "100%" } },
+            e("h1", { style: { fontSize: 22, fontWeight: 800, letterSpacing: "-0.3px", margin: "0 0 4px" } }, (CATEGORY_COPY[activeCat] || CATEGORY_COPY[""]).h1),
+            e("p", { style: { fontSize: 13, color: "var(--muted)", margin: "0 0 20px", maxWidth: 640 } }, (CATEGORY_COPY[activeCat] || CATEGORY_COPY[""]).description),
             e(
               "div",
               { className: "section-title-bar" },
@@ -877,7 +987,22 @@
             { className: "site-footer" },
             e(
               "div",
-              { style: { maxWidth: 1152, margin: "0 auto", padding: "20px 16px", display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 8, fontSize: 12 } },
+              { style: { maxWidth: 1152, margin: "0 auto", padding: "16px 16px 0", display: "flex", flexWrap: "wrap", gap: 14, fontSize: 12 } },
+              CATEGORIES.filter((c) => c.id).map((c) =>
+                e(
+                  "a",
+                  {
+                    key: c.id,
+                    href: `/${c.id}`,
+                    onClick: (ev) => { ev.preventDefault(); navigateToCategory(c.id); },
+                  },
+                  c.label + " Deals"
+                )
+              )
+            ),
+            e(
+              "div",
+              { style: { maxWidth: 1152, margin: "0 auto", padding: "12px 16px 20px", display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 8, fontSize: 12 } },
               e("span", null, "© Hack the Deal 2026. As an Amazon Associate I earn from qualifying purchases."),
               e("a", { href: "/privacy.html" }, "Privacy Policy")
             )
