@@ -2,6 +2,7 @@ import logging
 import os
 import re
 import sys
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 import httpx
@@ -20,6 +21,10 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 _UA = os.getenv("RSS_USER_AGENT", "deal-scanner/0.1 (contact: mannydotco@gmail.com)")
+
+# Skip stale entries (e.g. evergreen coupon listings with an old pubDate) so
+# the DB doesn't accumulate deals that are already too old to ever be shown.
+_MAX_DEAL_AGE_DAYS = int(os.getenv("MAX_DEAL_AGE_DAYS", "60"))
 _OG_PROP_FIRST = re.compile(
     r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)["\']',
     re.IGNORECASE,
@@ -54,8 +59,12 @@ def main() -> int:
     init_db()
     total_new = 0
 
+    cutoff = datetime.now(timezone.utc) - timedelta(days=_MAX_DEAL_AGE_DAYS)
+
     with get_session() as session:
         for post in iter_all_feeds():
+            if post["posted_at"] < cutoff:
+                continue
             parsed = parse_title(post["title"], post["url"], post["source"])
             thumbnail_url = None
             if not deal_exists(session, parsed.url):

@@ -2,6 +2,7 @@ import logging
 import os
 import sys
 from contextlib import asynccontextmanager
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 print(
@@ -23,6 +24,10 @@ from sqlalchemy import desc, func, or_, select
 from db import SessionLocal, engine, init_db
 from models import Deal
 from schemas import CategoryCount, DealListOut, DealOut, HealthOut
+
+# Deals older than this never show, even if they're still sitting in the DB
+# (e.g. stale evergreen listings, or old rows from a past ingestion source).
+MAX_DEAL_AGE_DAYS = int(os.getenv("MAX_DEAL_AGE_DAYS", "60"))
 
 logging.basicConfig(
     level=os.getenv("LOG_LEVEL", "INFO"),
@@ -60,8 +65,10 @@ def health():
 @app.get("/categories", response_model=list[CategoryCount])
 def categories():
     with SessionLocal() as session:
+        cutoff = datetime.now(timezone.utc) - timedelta(days=MAX_DEAL_AGE_DAYS)
         rows = session.execute(
             select(Deal.category, func.count(Deal.id).label("count"))
+            .where(Deal.posted_at >= cutoff)
             .group_by(Deal.category)
             .order_by(desc("count"))
         ).all()
@@ -80,7 +87,8 @@ def list_deals(
     offset: int = Query(0),
 ):
     with SessionLocal() as session:
-        q = select(Deal).where(Deal.confidence >= min_confidence)
+        cutoff = datetime.now(timezone.utc) - timedelta(days=MAX_DEAL_AGE_DAYS)
+        q = select(Deal).where(Deal.confidence >= min_confidence, Deal.posted_at >= cutoff)
         if category:
             q = q.where(Deal.category == category)
         if source:
