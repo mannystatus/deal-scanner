@@ -21,10 +21,9 @@ logger = logging.getLogger(__name__)
 DEFAULT_FEEDS: list[tuple[str, str]] = [
     ("slickdeals",   "https://slickdeals.net/newsearch.php?mode=frontpage&searcharea=deals&searchin=first&rss=1"),
     ("slickdeals",   "https://slickdeals.net/newsearch.php?mode=popdeals&searcharea=deals&searchin=first&rss=1"),
-    ("dealnews",     "https://www.dealnews.com/c142/Technology/?rss=1"),
+    ("dealnews",     "https://www.dealnews.com/c142/Electronics/?rss=1"),
     ("dealnews",     "https://www.dealnews.com/c39/Computers/?rss=1"),
-    ("dealnews",     "https://www.dealnews.com/c38/Electronics/?rss=1"),
-    ("bensbargains", "https://bensbargains.com/feed/"),
+    ("bensbargains", "https://bensbargains.com/rss/"),
     ("9to5toys",     "https://9to5toys.com/feed/"),
     ("9to5mac",      "https://9to5mac.com/guides/deals/feed/"),
 ]
