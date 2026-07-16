@@ -300,6 +300,7 @@
       .aff-thumb.icon-lipstick { background: rgba(234, 88, 12, 0.12); color: #ea580c; }
       .aff-thumb.icon-shoe   { background: rgba(8, 145, 178, 0.12); color: #0891b2; }
       .aff-thumb.icon-suitcase { background: rgba(22, 163, 74, 0.12); color: #16a34a; }
+      .aff-thumb.icon-bag    { background: rgba(180, 83, 9, 0.12); color: #b45309; }
 
       .aff-badge {
         display: inline-block;
@@ -445,6 +446,10 @@
         { id: "cameras", label: "Cameras" },
         { id: "software", label: "Software" },
         { id: "trading_cards", label: "Trading Cards" },
+        { id: "fashion", label: "Fashion" },
+        { id: "beauty", label: "Beauty" },
+        { id: "shoes", label: "Shoes" },
+        { id: "travel", label: "Travel" },
       ];
 
       const CATEGORY_IDS = new Set(CATEGORIES.filter((c) => c.id).map((c) => c.id));
@@ -477,6 +482,22 @@
         trading_cards: {
           h1: "Best Trading Card Deals Today",
           description: "Live price drops on trading card boxes, packs, and singles across Pokémon, sports, and TCGs. DealScanner tracks trading card deals continuously.",
+        },
+        fashion: {
+          h1: "Best Fashion & Clothing Deals Today",
+          description: "Live price drops on clothing, shoes, and accessories for men and women. DealScanner tracks fashion deals from top retailers continuously.",
+        },
+        beauty: {
+          h1: "Best Beauty & Health Deals Today",
+          description: "Live price drops on makeup, skincare, haircare, and health essentials. DealScanner tracks beauty deals from top retailers continuously.",
+        },
+        shoes: {
+          h1: "Best Shoe Deals Today",
+          description: "Live price drops on sneakers, boots, and shoes for men, women, and kids. DealScanner tracks shoe deals from top retailers continuously.",
+        },
+        travel: {
+          h1: "Best Travel Deals Today",
+          description: "Live price drops on flights, hotels, cruises, and travel gear. DealScanner tracks travel deals from top retailers continuously.",
         },
       };
 
@@ -665,6 +686,38 @@
           ],
         },
         {
+          label: "Men's Clothing",
+          icon: "shirt",
+          items: [
+            { title: "Amazon Essentials Men's Slim-Fit Short-Sleeve Shirt", url: "https://www.amazon.com/s?k=amazon+essentials+men+slim+fit+short+sleeve+shirt&tag=wisedealsxyz-20" },
+            { title: "Levi's Men's 501 Original Fit Jeans", url: "https://www.amazon.com/s?k=levis+mens+501+original+fit+jeans&tag=wisedealsxyz-20" },
+            { title: "Gildan Men's Crew T-Shirt Multipack", url: "https://www.amazon.com/s?k=gildan+mens+crew+tshirt+multipack&tag=wisedealsxyz-20" },
+            { title: "Champion Men's Powerblend Fleece Hoodie", url: "https://www.amazon.com/s?k=champion+mens+powerblend+fleece+hoodie&tag=wisedealsxyz-20" },
+            { title: "Amazon Essentials Men's Classic-Fit Chino Pant", url: "https://www.amazon.com/s?k=amazon+essentials+men+classic+fit+chino+pant&tag=wisedealsxyz-20" },
+            { title: "Carhartt Men's Loose Fit Midweight Sweatshirt", url: "https://www.amazon.com/s?k=carhartt+mens+loose+fit+midweight+sweatshirt&tag=wisedealsxyz-20" },
+            { title: "Dockers Men's Straight Fit Jeans", url: "https://www.amazon.com/s?k=dockers+mens+straight+fit+jeans&tag=wisedealsxyz-20" },
+            { title: "Amazon Essentials Men's Regular-Fit Quarter-Zip Sweater", url: "https://www.amazon.com/s?k=amazon+essentials+men+quarter+zip+sweater&tag=wisedealsxyz-20" },
+            { title: "The North Face Men's Antora Rain Jacket", url: "https://www.amazon.com/s?k=north+face+mens+antora+rain+jacket&tag=wisedealsxyz-20" },
+            { title: "Amazon Essentials Men's Cotton Sweatpants", url: "https://www.amazon.com/s?k=amazon+essentials+men+cotton+sweatpants&tag=wisedealsxyz-20" },
+          ],
+        },
+        {
+          label: "Accessories",
+          icon: "bag",
+          items: [
+            { title: "Fossil Gen 6 Smartwatch", url: "https://www.amazon.com/s?k=fossil+gen+6+smartwatch&tag=wisedealsxyz-20" },
+            { title: "Ray-Ban Wayfarer Classic Sunglasses", url: "https://www.amazon.com/s?k=ray+ban+wayfarer+classic+sunglasses&tag=wisedealsxyz-20" },
+            { title: "Michael Kors Jet Set Travel Tote Bag", url: "https://www.amazon.com/s?k=michael+kors+jet+set+travel+tote+bag&tag=wisedealsxyz-20" },
+            { title: "Fossil Men's Minimalist Leather Wallet", url: "https://www.amazon.com/s?k=fossil+mens+minimalist+leather+wallet&tag=wisedealsxyz-20" },
+            { title: "Pandora Moments Charm Bracelet", url: "https://www.amazon.com/s?k=pandora+moments+charm+bracelet&tag=wisedealsxyz-20" },
+            { title: "Herschel Supply Co. Classic Backpack", url: "https://www.amazon.com/s?k=herschel+supply+co+classic+backpack&tag=wisedealsxyz-20" },
+            { title: "Timex Weekender Analog Watch", url: "https://www.amazon.com/s?k=timex+weekender+analog+watch&tag=wisedealsxyz-20" },
+            { title: "Kate Spade New York Crossbody Bag", url: "https://www.amazon.com/s?k=kate+spade+new+york+crossbody+bag&tag=wisedealsxyz-20" },
+            { title: "Levi's Men's Leather Belt", url: "https://www.amazon.com/s?k=levis+mens+leather+belt&tag=wisedealsxyz-20" },
+            { title: "PAVOI 14K Gold Plated Hoop Earrings", url: "https://www.amazon.com/s?k=pavoi+14k+gold+plated+hoop+earrings&tag=wisedealsxyz-20" },
+          ],
+        },
+        {
           label: "Travel",
           icon: "suitcase",
           items: [
@@ -757,6 +810,11 @@
           e("rect", { x: 3, y: 7, width: 18, height: 13, rx: 2 }),
           e("path", { d: "M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" }),
           e("line", { x1: 3, y1: 12, x2: 21, y2: 12 })
+        ),
+        bag: e(
+          "svg", ICON_PROPS,
+          e("path", { d: "M6 8h12l1 12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L6 8z" }),
+          e("path", { d: "M9 8V6a3 3 0 0 1 6 0v2" })
         ),
       };
 

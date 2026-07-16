@@ -32,6 +32,10 @@ SUBREDDIT_CATEGORIES = {
     "dealnews": "computers",
     "slickdeals": "other",
     "bensbargains": "other",
+    "dealnews-fashion": "fashion",
+    "dealnews-shoes": "shoes",
+    "dealnews-beauty": "beauty",
+    "dealnews-travel": "travel",
 }
 
 # Bracket tags like [Camera] or [Software] at the start of titles override the

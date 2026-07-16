@@ -43,6 +43,30 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.hackthedeal.com/fashion</loc>
+    <lastmod>2026-07-16</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.hackthedeal.com/beauty</loc>
+    <lastmod>2026-07-16</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.hackthedeal.com/shoes</loc>
+    <lastmod>2026-07-16</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.hackthedeal.com/travel</loc>
+    <lastmod>2026-07-16</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.hackthedeal.com/privacy.html</loc>
     <lastmod>2026-07-12</lastmod>
     <changefreq>monthly</changefreq>

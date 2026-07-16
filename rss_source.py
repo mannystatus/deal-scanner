@@ -26,6 +26,10 @@ DEFAULT_FEEDS: list[tuple[str, str]] = [
     ("bensbargains", "https://bensbargains.com/rss/"),
     ("9to5toys",     "https://9to5toys.com/feed/"),
     ("9to5mac",      "https://9to5mac.com/guides/deals/feed/"),
+    ("dealnews-fashion", "https://www.dealnews.com/c202/Clothing-Accessories/?rss=1"),
+    ("dealnews-shoes",   "https://www.dealnews.com/c280/Clothing-Accessories/Shoes/?rss=1"),
+    ("dealnews-beauty",  "https://www.dealnews.com/c756/Health-Beauty/?rss=1"),
+    ("dealnews-travel",  "https://www.dealnews.com/c206/Travel-Entertainment/?rss=1"),
 ]
 
 
