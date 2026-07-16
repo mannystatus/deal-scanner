@@ -1,7 +1,16 @@
 import logging
 import os
+import sys
 from contextlib import asynccontextmanager
 from typing import Optional
+
+print(
+    f"[boot] DATABASE_URL set={bool(os.getenv('DATABASE_URL'))} "
+    f"starts_with_postgresql={os.getenv('DATABASE_URL', '').startswith('postgresql')} "
+    f"RENDER={os.getenv('RENDER')!r}",
+    file=sys.stderr,
+    flush=True,
+)
 
 from dotenv import load_dotenv
 
