@@ -1,13 +1,17 @@
 import hashlib
+import logging
 import os
 from contextlib import contextmanager
 from datetime import datetime, timezone
+from urllib.parse import urlparse
 
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import sessionmaker, Session
 
 from models import Base, Deal
 from parsers import ParsedDeal
+
+logger = logging.getLogger(__name__)
 
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///deals.db")
 
@@ -17,6 +21,19 @@ SessionLocal = sessionmaker(bind=engine)
 
 
 def init_db() -> None:
+    parsed = urlparse(DATABASE_URL)
+    logger.info("Connecting to: %s://%s%s", parsed.scheme, parsed.hostname or "(local)", parsed.path)
+
+    # Render sets RENDER=true on every service it runs. If we're on Render but
+    # DATABASE_URL isn't Postgres, the env var was never picked up — fail loudly
+    # at startup instead of silently serving an empty local SQLite DB.
+    if os.getenv("RENDER") and not DATABASE_URL.startswith("postgresql"):
+        raise RuntimeError(
+            "DATABASE_URL is not set to a PostgreSQL URL on Render. "
+            "Set DATABASE_URL in the Render dashboard -> deal-scanner-api -> "
+            "Environment, then redeploy."
+        )
+
     Base.metadata.create_all(engine)
 
 

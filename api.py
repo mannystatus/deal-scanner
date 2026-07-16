@@ -1,3 +1,4 @@
+import logging
 import os
 from contextlib import asynccontextmanager
 from typing import Optional
@@ -13,6 +14,11 @@ from sqlalchemy import desc, func, or_, select
 from db import SessionLocal, engine, init_db
 from models import Deal
 from schemas import CategoryCount, DealListOut, DealOut, HealthOut
+
+logging.basicConfig(
+    level=os.getenv("LOG_LEVEL", "INFO"),
+    format="%(asctime)s %(levelname)s %(name)s %(message)s",
+)
 
 
 @asynccontextmanager
