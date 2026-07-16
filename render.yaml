@@ -28,11 +28,11 @@ services:
       - key: PYTHON_VERSION
         value: "3.12"
 
-  # ── Cron worker (RSS ingest every 12 hours) ───────────────────────────
+  # ── Cron worker (RSS ingest once a day) ───────────────────────────────
   - type: cron
     name: deal-scanner-worker
     runtime: python
-    schedule: "0 */12 * * *"
+    schedule: "0 12 * * *"
     buildCommand: pip install -r requirements.txt
     startCommand: python worker.py
     envVars:

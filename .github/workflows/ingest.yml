@@ -1,8 +1,8 @@
 name: Reddit ingest
 
-# Runs the worker every 10 minutes. Replaces the Render cron job — free for
-# public repos, and easily inside the 2,000-min/month free quota for private
-# repos (one cycle ≈ 30-60 seconds, ~50-90 min/month total).
+# Runs the worker once a day. Replaces the Render cron job — free for
+# public repos, and well inside the 2,000-min/month free quota for private
+# repos (one cycle ≈ 30-60 seconds).
 #
 # Required repo secrets (Settings → Secrets and variables → Actions):
 #   - DATABASE_URL        Neon Postgres connection string with ?sslmode=require
@@ -10,7 +10,7 @@ name: Reddit ingest
 
 on:
   schedule:
-    - cron: "*/10 * * * *"
+    - cron: "0 12 * * *"
   workflow_dispatch: {}   # Lets you trigger a run manually from the Actions tab
 
 concurrency:
