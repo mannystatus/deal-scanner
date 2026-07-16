@@ -89,6 +89,17 @@
       ::-webkit-scrollbar-track { background: var(--bg); }
       ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
+      /* Amazon affiliate disclosure — must stay clearly visible without scrolling */
+      .disclosure-bar {
+        background: #fff8e6;
+        color: #6b5a1e;
+        font-size: 12.5px;
+        line-height: 1.5;
+        text-align: center;
+        padding: 8px 16px;
+        border-bottom: 1px solid #f0dda0;
+      }
+
       /* Header network bar */
       .network-bar {
         background: #111112;
@@ -376,6 +387,12 @@
     </style>
   </head>
   <body>
+    <!-- Amazon Associates disclosure — kept as static markup (not JS-rendered) so it's
+         guaranteed visible immediately, before React mounts, and to non-JS crawlers. -->
+    <div class="disclosure-bar">
+      DealScanner is a participant in the Amazon Services LLC Associates Program, an affiliate advertising program designed to provide a means for sites to earn advertising fees by advertising and linking to Amazon.com. As an Amazon Associate, we earn from qualifying purchases.
+    </div>
+
     <!-- Google Tag Manager (noscript) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T7MD3LW5"
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -715,7 +732,7 @@
               "div",
               { style: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 } },
               e("h2", { className: "section-label", style: { margin: 0 } }, "Our Picks"),
-              e("span", { style: { fontSize: 10, color: "var(--muted)" } }, "As an Amazon Associate I earn from qualifying purchases")
+              e("span", { style: { fontSize: 12, fontWeight: 600, color: "var(--text)" } }, "As an Amazon Associate I earn from qualifying purchases")
             ),
             AFFILIATE_PICKS.map((group) =>
               e(
