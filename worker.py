@@ -50,7 +50,7 @@ def main() -> int:
             "DATABASE_URL is not set to a PostgreSQL URL. "
             "Set DATABASE_URL in Render → deal-scanner-worker → Environment, then redeploy."
         )
-        return 1
+        return -1
     init_db()
     total_new = 0
 
