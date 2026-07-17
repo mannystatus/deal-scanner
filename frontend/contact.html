@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Google Tag Manager — only loads after the user accepts the privacy
+         notice below, so no analytics cookies are set before consent. -->
+    <script>
+      window.__loadGTM = function () {
+        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-T7MD3LW5');
+      };
+      if (localStorage.getItem('htd_consent_v1') === 'granted') {
+        window.__loadGTM();
+      }
+    </script>
+    <!-- End Google Tag Manager -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Contact & Partnerships – Hack the Deal</title>
+    <meta name="description" content="Get in touch with Hack the Deal for brand partnerships, sponsorships, or general inquiries." />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="canonical" href="https://www.hackthedeal.com/contact.html" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <!-- Google AdSense -->
+    <meta name="google-adsense-account" content="ca-pub-6138840929831792">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6138840929831792"
+     crossorigin="anonymous"></script>
+
+    <!-- Impact affiliate tracking -->
+    <script type="text/javascript">(function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A7472737-23ec-4d35-ab04-eefb61abf5d81.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');</script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      :root {
+        --bg: #f5f5f6;
+        --surface: #ffffff;
+        --border: #e2e2e6;
+        --text: #111112;
+        --muted: #6b6b74;
+        --accent: #00ffd5;
+        --accent-text: #007f68;
+      }
+      * { box-sizing: border-box; }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      }
+      .network-bar {
+        background: #111112;
+        color: #aaa;
+        font-size: 11px;
+        letter-spacing: 0.04em;
+        padding: 6px 16px;
+        text-align: center;
+      }
+      .site-header {
+        background: var(--surface);
+        border-bottom: 3px solid var(--accent);
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      }
+      .logo {
+        font-size: 22px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        color: var(--text);
+        text-decoration: none;
+      }
+      .logo span { color: var(--accent-text); }
+      .back-link {
+        font-size: 13px;
+        color: var(--muted);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.15s;
+      }
+      .back-link:hover { color: var(--accent-text); }
+      .content-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 40px 48px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+      }
+      @media (max-width: 640px) {
+        .content-card { padding: 24px 20px; }
+      }
+      h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; color: var(--text); margin: 0 0 4px; }
+      p { color: #444; line-height: 1.75; margin: 0 0 12px; font-size: 14px; }
+      a { color: var(--accent-text); text-decoration: underline; }
+      a:hover { opacity: 0.8; }
+      strong { color: var(--text); }
+
+      .contact-form { margin-top: 28px; display: flex; flex-direction: column; gap: 16px; max-width: 480px; }
+      .form-field { display: flex; flex-direction: column; gap: 6px; }
+      .form-field label { font-size: 13px; font-weight: 700; color: var(--text); }
+      .form-field input, .form-field select, .form-field textarea {
+        font: inherit;
+        font-size: 14px;
+        padding: 10px 12px;
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        background: var(--bg);
+        color: var(--text);
+      }
+      .form-field input:focus, .form-field select:focus, .form-field textarea:focus {
+        outline: none;
+        border-color: var(--accent-text);
+      }
+      .form-field textarea { resize: vertical; min-height: 110px; }
+      .submit-btn {
+        align-self: flex-start;
+        background: #ff5f00;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 28px;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .submit-btn:hover { opacity: 0.85; }
+      .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+      .form-status { font-size: 13px; font-weight: 600; }
+      .form-status.success { color: #16a34a; }
+      .form-status.error { color: #dc2626; }
+
+      .site-footer {
+        background: #111112;
+        color: #888;
+        border-top: 3px solid var(--accent);
+        font-size: 12px;
+        padding: 20px 16px;
+        text-align: center;
+      }
+      .site-footer a { color: var(--accent); text-decoration: none; }
+    </style>
+  </head>
+  <body>
+    <!-- Privacy / cookie consent notice — static markup so it's visible even
+         before any script runs. Dismissing it loads Google Tag Manager. -->
+    <div id="consent-overlay" class="consent-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 999; align-items: flex-end; justify-content: center; padding: 16px;">
+      <div style="max-width:560px; width:100%; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; box-shadow:0 8px 30px rgba(0,0,0,0.25); display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+        <div style="flex:1 1 320px;">
+          <p style="margin:0 0 4px; font-size:14px; font-weight:800;">🍪 We use cookies</p>
+          <p style="margin:0; font-size:13px; line-height:1.5; color:var(--text);">
+            This site uses cookies to measure site performance and improve your experience.
+            By clicking OK, you accept our use of cookies as described in our
+            <a href="/privacy.html">Privacy Policy</a>.
+          </p>
+        </div>
+        <button id="consent-ok" type="button" style="flex:0 0 auto; background:var(--text); color:#fff; border:none; border-radius:8px; padding:10px 24px; font-size:13px; font-weight:700; cursor:pointer;">OK</button>
+      </div>
+    </div>
+    <script>
+      (function () {
+        if (localStorage.getItem('htd_consent_v1') !== 'granted') {
+          document.getElementById('consent-overlay').style.display = 'flex';
+        }
+        document.getElementById('consent-ok').addEventListener('click', function () {
+          localStorage.setItem('htd_consent_v1', 'granted');
+          document.getElementById('consent-overlay').style.display = 'none';
+          window.__loadGTM();
+        });
+      })();
+    </script>
+
+    <div class="network-bar">Your source for the best deals on the web</div>
+
+    <header class="site-header">
+      <div style="max-width:900px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
+        <a href="/" class="logo"><img src="/assets/logo.svg" alt="Hack the Deal" style="height:32px;display:block;" /></a>
+        <a href="/" class="back-link">← Back to deals</a>
+      </div>
+    </header>
+
+    <main style="max-width:900px;margin:32px auto;padding:0 16px 48px;">
+      <div class="content-card">
+        <h1>Contact &amp; Partnerships</h1>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:24px;">Brands, retailers, and partners — reach out below.</p>
+
+        <p>
+          Interested in a partnership, affiliate deal feed, or sponsored placement on Hack the Deal?
+          Fill out the form and we'll get back to you.
+        </p>
+
+        <form id="contact-form" class="contact-form" action="https://formspree.io/f/meeyawde" method="POST">
+          <div class="form-field">
+            <label for="name">Name</label>
+            <input id="name" name="name" type="text" required />
+          </div>
+          <div class="form-field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" required />
+          </div>
+          <div class="form-field">
+            <label for="company">Company / Brand</label>
+            <input id="company" name="company" type="text" />
+          </div>
+          <div class="form-field">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" required></textarea>
+          </div>
+          <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" />
+          <button class="submit-btn" type="submit">Send message</button>
+          <p id="form-status" class="form-status" role="status"></p>
+        </form>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      &copy; Hack the Deal 2026. As an Amazon Associate partner we earn from qualifying purchases.
+    </footer>
+
+    <script>
+      (function () {
+        var form = document.getElementById('contact-form');
+        var status = document.getElementById('form-status');
+        var button = form.querySelector('.submit-btn');
+        form.addEventListener('submit', function (ev) {
+          ev.preventDefault();
+          button.disabled = true;
+          status.className = 'form-status';
+          status.textContent = 'Sending…';
+          fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: { Accept: 'application/json' },
+          })
+            .then(function (res) {
+              if (res.ok) {
+                status.className = 'form-status success';
+                status.textContent = "Thanks — we'll be in touch soon.";
+                form.reset();
+              } else {
+                return res.json().then(function (data) {
+                  throw new Error((data && data.error) || 'Something went wrong.');
+                });
+              }
+            })
+            .catch(function (err) {
+              status.className = 'form-status error';
+              status.textContent = err.message || 'Something went wrong. Please try again.';
+            })
+            .finally(function () {
+              button.disabled = false;
+            });
+        });
+      })();
+    </script>
+  </body>
+</html>

@@ -438,6 +438,27 @@
         transition: opacity 0.15s;
       }
       .site-footer a:hover { opacity: 0.8; }
+      .footer-contact-link {
+        font-weight: 800 !important;
+        color: #ff5f00 !important;
+      }
+
+      /* Header contact CTA — sized to match .cat-pill exactly so it sits
+         flush in the category row without looking out of place */
+      .header-contact-link {
+        display: inline-block;
+        font-size: 12px;
+        font-weight: 800;
+        color: #fff;
+        background: #ff5f00;
+        text-decoration: none;
+        padding: 5px 14px;
+        border: 1.5px solid #ff5f00;
+        border-radius: 999px;
+        white-space: nowrap;
+        transition: opacity 0.15s;
+      }
+      .header-contact-link:hover { opacity: 0.85; }
 
       /* Loading skeleton */
       @keyframes pulse {
@@ -1232,8 +1253,8 @@
               e(
                 "div",
                 { style: { display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6 } },
-                CATEGORIES.map((c) =>
-                  e(
+                CATEGORIES.flatMap((c, i) => {
+                  const pill = e(
                     "a",
                     {
                       key: c.id,
@@ -1242,8 +1263,13 @@
                       className: `cat-pill${activeCat === c.id ? " active" : ""}`,
                     },
                     c.label
-                  )
-                ),
+                  );
+                  if (i !== 0) return [pill];
+                  return [
+                    pill,
+                    e("a", { key: "contact-cta", href: "/contact.html", className: "header-contact-link" }, "Partner With Us"),
+                  ];
+                }),
                 e(
                   "label",
                   { style: { display: "flex", alignItems: "center", gap: 6, marginLeft: "auto", fontSize: 11, color: "var(--muted)", fontWeight: 600 } },
@@ -1337,6 +1363,7 @@
                 e("a", { href: "https://www.instagram.com/hackthedeal_", target: "_blank", rel: "noopener noreferrer" }, "Instagram"),
                 e("a", { href: "https://www.threads.net/@hackthedeal_", target: "_blank", rel: "noopener noreferrer" }, "Threads"),
                 e("a", { href: "https://x.com/hackthedeal", target: "_blank", rel: "noopener noreferrer" }, "X"),
+                e("a", { href: "/contact.html", className: "footer-contact-link" }, "Partner With Us"),
                 e("a", { href: "/privacy.html" }, "Privacy Policy")
               )
             )
