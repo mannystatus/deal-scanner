@@ -1,12 +1,20 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-T7MD3LW5');</script>
+    <!-- Google Tag Manager — only loads after the user accepts the privacy
+         notice below, so no analytics cookies are set before consent. -->
+    <script>
+      window.__loadGTM = function () {
+        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-T7MD3LW5');
+      };
+      if (localStorage.getItem('htd_consent_v1') === 'granted') {
+        window.__loadGTM();
+      }
+    </script>
     <!-- End Google Tag Manager -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -96,6 +104,62 @@
         font-size: 11px;
         text-align: center;
         padding: 4px 16px;
+      }
+
+      /* Privacy / cookie consent overlay */
+      .consent-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.55);
+        z-index: 999;
+        align-items: flex-end;
+        justify-content: center;
+        padding: 16px;
+      }
+      .consent-box {
+        max-width: 560px;
+        width: 100%;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 18px 20px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      .consent-text {
+        flex: 1 1 320px;
+      }
+      .consent-title {
+        margin: 0 0 4px;
+        font-size: 14px;
+        font-weight: 800;
+      }
+      .consent-box p {
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.5;
+        color: var(--text);
+      }
+      .consent-box a {
+        color: var(--accent-text);
+        font-weight: 600;
+      }
+      .consent-box button {
+        flex: 0 0 auto;
+        background: var(--text);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 24px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .consent-box button:hover {
+        opacity: 0.85;
       }
 
       /* Header network bar */
@@ -394,10 +458,34 @@
       As an Amazon Associate partner we earn from qualifying purchases.
     </div>
 
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T7MD3LW5"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager -->
+    <!-- Privacy / cookie consent notice — static markup so it's visible even
+         before React mounts. Dismissing it loads Google Tag Manager. -->
+    <div id="consent-overlay" class="consent-overlay" style="display: none;">
+      <div class="consent-box">
+        <div class="consent-text">
+          <p class="consent-title">🍪 We use cookies</p>
+          <p>
+            This site uses cookies to measure site performance and improve your experience.
+            By clicking OK, you accept our use of cookies as described in our
+            <a href="/privacy.html">Privacy Policy</a>.
+          </p>
+        </div>
+        <button id="consent-ok" type="button">OK</button>
+      </div>
+    </div>
+    <script>
+      (function () {
+        if (localStorage.getItem('htd_consent_v1') !== 'granted') {
+          document.getElementById('consent-overlay').style.display = 'flex';
+        }
+        document.getElementById('consent-ok').addEventListener('click', function () {
+          localStorage.setItem('htd_consent_v1', 'granted');
+          document.getElementById('consent-overlay').style.display = 'none';
+          window.__loadGTM();
+        });
+      })();
+    </script>
+
     <noscript>
       <div style="max-width:900px;margin:40px auto;padding:0 20px;font-family:sans-serif;">
         <h1>DealScanner – Best Tech &amp; Daily Deals</h1>
