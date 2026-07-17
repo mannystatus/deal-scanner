@@ -536,6 +536,8 @@
         { id: "beauty", label: "Beauty" },
         { id: "shoes", label: "Shoes" },
         { id: "travel", label: "Travel" },
+        { id: "drones", label: "Drones" },
+        { id: "3d_printing", label: "3D Printing" },
       ];
 
       const CATEGORY_IDS = new Set(CATEGORIES.filter((c) => c.id).map((c) => c.id));
@@ -584,6 +586,14 @@
         travel: {
           h1: "Best Travel Deals Today",
           description: "Live price drops on flights, hotels, cruises, and travel gear. DealScanner tracks travel deals from top retailers continuously.",
+        },
+        drones: {
+          h1: "Best Drone & FPV Parts Deals Today",
+          description: "Live price drops on drones, FPV parts, batteries, motors, and accessories straight from vendors like Pyrodrone and RaceDayQuads. DealScanner tracks drone deals continuously.",
+        },
+        "3d_printing": {
+          h1: "Best 3D Printer & Filament Deals Today",
+          description: "Live price drops on 3D printers, filament, and supplies straight from vendors like Elegoo, Anycubic, Sovol, Polymaker, and Overture. DealScanner tracks 3D printing deals continuously.",
         },
       };
 
@@ -1321,7 +1331,12 @@
                 "© Hack the Deal 2026. ",
                 e("strong", { style: { fontWeight: 700 } }, "As an Amazon Associate partner we earn from qualifying purchases.")
               ),
-              e("a", { href: "/privacy.html" }, "Privacy Policy")
+              e(
+                "div",
+                { style: { display: "flex", alignItems: "center", gap: 14 } },
+                e("a", { href: "https://www.instagram.com/hackthedeal_", target: "_blank", rel: "noopener noreferrer" }, "Instagram"),
+                e("a", { href: "/privacy.html" }, "Privacy Policy")
+              )
             )
           )
         );

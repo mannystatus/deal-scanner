@@ -40,6 +40,13 @@ SUBREDDIT_CATEGORIES = {
     "slickdeals-levis": "fashion",
     "slickdeals-rei": "fashion",
     "slickdeals-northface": "fashion",
+    "pyrodrone": "drones",
+    "racedayquads": "drones",
+    "elegoo": "3d_printing",
+    "anycubic": "3d_printing",
+    "sovol": "3d_printing",
+    "polymaker": "3d_printing",
+    "overture": "3d_printing",
 }
 
 # Bracket tags like [Camera] or [Software] at the start of titles override the

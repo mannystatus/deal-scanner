@@ -9,6 +9,7 @@ import calendar
 import hashlib
 import logging
 import os
+import re
 from datetime import datetime, timezone
 from typing import Iterator
 
@@ -36,7 +37,26 @@ DEFAULT_FEEDS: list[tuple[str, str]] = [
     ("slickdeals-levis",      "https://slickdeals.net/newsearch.php?q=levi&rss=1"),
     ("slickdeals-rei",        "https://slickdeals.net/newsearch.php?q=rei&rss=1"),
     ("slickdeals-northface",  "https://slickdeals.net/newsearch.php?q=the+north+face&rss=1"),
+    # Direct-from-vendor Shopify "sale" collection feeds — real deals
+    # straight from the retailer, not a third-party aggregator.
+    ("pyrodrone",     "https://pyrodrone.com/collections/sale.atom"),
+    ("racedayquads",  "https://www.racedayquads.com/collections/sale.atom"),
+    ("elegoo",        "https://www.elegoo.com/collections/sale.atom"),
+    ("anycubic",      "https://store.anycubic.com/collections/sale.atom"),
+    ("sovol",         "https://www.sovol3d.com/collections/sale.atom"),
+    ("polymaker",     "https://shop.polymaker.com/collections/sale.atom"),
+    ("overture",      "https://overture3d.com/collections/sale.atom"),
 ]
+
+# Shopify's Atom feed embeds price as HTML in the summary rather than the
+# title (e.g. "<strong>Price: </strong>79.99"). Extracted and folded into
+# the title so the existing $-price regex in parsers.py picks it up.
+_SHOPIFY_PRICE_RE = re.compile(r'Price:\s*</strong>\s*([\d,]+\.\d+)', re.S)
+
+
+def _shopify_price(summary: str) -> str | None:
+    m = _SHOPIFY_PRICE_RE.search(summary or "")
+    return m.group(1) if m else None
 
 
 def _load_feeds() -> list[tuple[str, str]]:
@@ -90,6 +110,11 @@ def iter_feed(source: str, url: str) -> Iterator[dict]:
         link  = (entry.get("link")  or "").strip()
         if not title or not link:
             continue
+
+        if "$" not in title:
+            price = _shopify_price(entry.get("summary"))
+            if price:
+                title = f"{title} - ${price}"
 
         posted_at = _parse_time(
             entry.get("published_parsed") or entry.get("updated_parsed")
