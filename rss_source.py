@@ -23,13 +23,19 @@ DEFAULT_FEEDS: list[tuple[str, str]] = [
     ("slickdeals",   "https://slickdeals.net/newsearch.php?mode=popdeals&searcharea=deals&searchin=first&rss=1"),
     ("dealnews",     "https://www.dealnews.com/c142/Electronics/?rss=1"),
     ("dealnews",     "https://www.dealnews.com/c39/Computers/?rss=1"),
-    ("bensbargains", "https://bensbargains.com/rss/"),
     ("9to5toys",     "https://9to5toys.com/feed/"),
     ("9to5mac",      "https://9to5mac.com/guides/deals/feed/"),
     ("dealnews-fashion", "https://www.dealnews.com/c202/Clothing-Accessories/?rss=1"),
     ("dealnews-shoes",   "https://www.dealnews.com/c280/Clothing-Accessories/Shoes/?rss=1"),
     ("dealnews-beauty",  "https://www.dealnews.com/c756/Health-Beauty/?rss=1"),
     ("dealnews-travel",  "https://www.dealnews.com/c206/Travel-Entertainment/?rss=1"),
+    # Brand-direct searches, so deals surface from the brands themselves
+    # instead of general deal-blog aggregators.
+    ("slickdeals-nike",       "https://slickdeals.net/newsearch.php?q=nike&rss=1"),
+    ("slickdeals-adidas",     "https://slickdeals.net/newsearch.php?q=adidas&rss=1"),
+    ("slickdeals-levis",      "https://slickdeals.net/newsearch.php?q=levi&rss=1"),
+    ("slickdeals-rei",        "https://slickdeals.net/newsearch.php?q=rei&rss=1"),
+    ("slickdeals-northface",  "https://slickdeals.net/newsearch.php?q=the+north+face&rss=1"),
 ]
 
 

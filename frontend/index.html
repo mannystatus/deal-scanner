@@ -1118,9 +1118,6 @@
             )
           ),
 
-          /* ── Affiliate section ── */
-          e(AffiliateSection, null),
-
           /* ── Deals grid ── */
           e(
             "main",
@@ -1158,6 +1155,9 @@
                   deals.map((d) => e(DealCard, { key: d.id, deal: d }))
                 )
           ),
+
+          /* ── Affiliate section ── */
+          e(AffiliateSection, null),
 
           /* ── Footer ── */
           e(
