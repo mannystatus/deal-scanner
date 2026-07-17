@@ -816,6 +816,27 @@
         ),
       };
 
+      // Picks each item's own icon by keyword match instead of reusing one
+      // icon for every item in the group — first match wins, else the
+      // group's default icon.
+      const ITEM_ICON_RULES = [
+        ["shoe", ["sneaker", "shoes", "boot", "clog", "sandal", "slide"]],
+        ["lipstick", ["mascara", "lip ", "lip cream", "serum", "foundation", "blush", "primer", "cleanser", "moisturizer", "sunscreen", "cosmetic", "makeup", "deodorant", "body wash", "skincare"]],
+        ["shirt", ["jean", "jacket", "hoodie", "sweater", "cardigan", "legging", "short", "tank", "tunic", "shirt", "dress", "fleece", "sweatpant"]],
+        ["bag", ["watch", "sunglasses", "wallet", "earring", "bracelet", "backpack", "tote", "handbag", "crossbody", "jewelry", "belt"]],
+        ["cards", ["tcg", "booster", "trading card", "pokemon", "panini", "topps", "yu-gi-oh", "magic:", "sleeves"]],
+        ["camera", ["camera", "webcam", "lens", "ring light", "action cam"]],
+        ["suitcase", ["luggage", "travel", "packing cube", "cruise", "duffel", "toiletry", "adapter"]],
+        ["cpu", ["keyboard", "mouse", "charger", "cable", "ssd", "router", "monitor", "dock", "rtx", "ddr5", "laptop", "headset", "earbud", "speaker", "tablet", "iphone", "ipad", "smart tv", " tv ", "printer", "switch", "controller", "webcam"]],
+      ];
+      function pickIcon(title, fallback) {
+        const t = title.toLowerCase();
+        for (const [icon, keywords] of ITEM_ICON_RULES) {
+          if (keywords.some((k) => t.includes(k))) return icon;
+        }
+        return fallback;
+      }
+
       function AffiliateCard({ title, url, icon }) {
         return e(
           "a",
@@ -827,7 +848,11 @@
         );
       }
 
+      const AFF_DEFAULT_VISIBLE = 6;
+
       function AffiliateSection() {
+        const [expanded, setExpanded] = useState({});
+
         return e(
           "section",
           { style: { background: "var(--bg)", borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)", padding: "24px 0" } },
@@ -840,8 +865,11 @@
               e("h2", { className: "section-label", style: { margin: 0 } }, "Our Picks"),
               e("span", { style: { fontSize: 12.5, fontWeight: 700, color: "var(--text)" } }, "As an Amazon Associate partner we earn from qualifying purchases")
             ),
-            AFFILIATE_PICKS.map((group) =>
-              e(
+            AFFILIATE_PICKS.map((group) => {
+              const isExpanded = !!expanded[group.label];
+              const hasMore = group.items.length > AFF_DEFAULT_VISIBLE;
+              const visibleItems = isExpanded ? group.items : group.items.slice(0, AFF_DEFAULT_VISIBLE);
+              return e(
                 "div",
                 { key: group.label, style: { marginBottom: 20 } },
                 e(
@@ -852,12 +880,32 @@
                 e(
                   "div",
                   { style: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(170px, 1fr))", gap: 10 } },
-                  group.items.map((item) =>
-                    e(AffiliateCard, { key: item.url, title: item.title, url: item.url, icon: group.icon })
+                  visibleItems.map((item) =>
+                    e(AffiliateCard, { key: item.url, title: item.title, url: item.url, icon: pickIcon(item.title, group.icon) })
                   )
-                )
-              )
-            )
+                ),
+                hasMore
+                  ? e(
+                      "button",
+                      {
+                        onClick: () => setExpanded((prev) => ({ ...prev, [group.label]: !isExpanded })),
+                        style: {
+                          marginTop: 10,
+                          fontSize: 12,
+                          fontWeight: 600,
+                          color: "var(--accent-text)",
+                          background: "none",
+                          border: "1.5px solid var(--border)",
+                          borderRadius: 999,
+                          padding: "6px 14px",
+                          cursor: "pointer",
+                        },
+                      },
+                      isExpanded ? "Show less" : `Show all ${group.items.length} →`
+                    )
+                  : null
+              );
+            })
           )
         );
       }
@@ -1071,7 +1119,7 @@
                 e(
                   "a",
                   { href: "/", className: "logo" },
-                  e("img", { src: "/assets/logo.svg", alt: "Hack the Deal", style: { height: 32, display: "block" } })
+                  e("img", { src: "/assets/logo.svg", alt: "Hack the Deal", style: { height: 40, display: "block" } })
                 ),
                 e("input", {
                   type: "search",
