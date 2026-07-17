@@ -27,7 +27,7 @@ from schemas import CategoryCount, DealListOut, DealOut, HealthOut
 
 # Deals older than this never show, even if they're still sitting in the DB
 # (e.g. stale evergreen listings, or old rows from a past ingestion source).
-MAX_DEAL_AGE_DAYS = int(os.getenv("MAX_DEAL_AGE_DAYS", "60"))
+MAX_DEAL_AGE_DAYS = int(os.getenv("MAX_DEAL_AGE_DAYS", "100"))
 
 logging.basicConfig(
     level=os.getenv("LOG_LEVEL", "INFO"),

@@ -5,10 +5,10 @@ Pulls from public RSS/Atom feeds on popular deal sites.
 Add or remove feeds via the FEED_URLS env var (comma-separated) or
 edit DEFAULT_FEEDS below.
 """
+import calendar
 import hashlib
 import logging
 import os
-import time
 from datetime import datetime, timezone
 from typing import Iterator
 
@@ -57,7 +57,7 @@ def _parse_time(t) -> datetime:
     if t is None:
         return datetime.now(timezone.utc)
     try:
-        return datetime.fromtimestamp(time.mktime(t), tz=timezone.utc)
+        return datetime.fromtimestamp(calendar.timegm(t), tz=timezone.utc)
     except Exception:
         return datetime.now(timezone.utc)
 
