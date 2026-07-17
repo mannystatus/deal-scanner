@@ -29,6 +29,11 @@ from schemas import CategoryCount, DealListOut, DealOut, HealthOut
 # (e.g. stale evergreen listings, or old rows from a past ingestion source).
 MAX_DEAL_AGE_DAYS = int(os.getenv("MAX_DEAL_AGE_DAYS", "100"))
 
+# Sources retired from rss_source.py, but whose rows are still sitting in the
+# DB from earlier ingestion runs. Blocked here so they stop showing without
+# needing a DB migration.
+BLOCKED_SOURCES = {"bensbargains"}
+
 logging.basicConfig(
     level=os.getenv("LOG_LEVEL", "INFO"),
     format="%(asctime)s %(levelname)s %(name)s %(message)s",
@@ -68,7 +73,7 @@ def categories():
         cutoff = datetime.now(timezone.utc) - timedelta(days=MAX_DEAL_AGE_DAYS)
         rows = session.execute(
             select(Deal.category, func.count(Deal.id).label("count"))
-            .where(Deal.posted_at >= cutoff)
+            .where(Deal.posted_at >= cutoff, Deal.source.notin_(BLOCKED_SOURCES))
             .group_by(Deal.category)
             .order_by(desc("count"))
         ).all()
@@ -88,7 +93,11 @@ def list_deals(
 ):
     with SessionLocal() as session:
         cutoff = datetime.now(timezone.utc) - timedelta(days=MAX_DEAL_AGE_DAYS)
-        q = select(Deal).where(Deal.confidence >= min_confidence, Deal.posted_at >= cutoff)
+        q = select(Deal).where(
+            Deal.confidence >= min_confidence,
+            Deal.posted_at >= cutoff,
+            Deal.source.notin_(BLOCKED_SOURCES),
+        )
         if category:
             q = q.where(Deal.category == category)
         if source:
