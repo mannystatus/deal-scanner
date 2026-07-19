@@ -26,7 +26,7 @@ _UA = os.getenv("RSS_USER_AGENT", "deal-scanner/0.1 (contact: mannydotco@gmail.c
 
 # Skip stale entries (e.g. evergreen coupon listings with an old pubDate) so
 # the DB doesn't accumulate deals that are already too old to ever be shown.
-_MAX_DEAL_AGE_DAYS = int(os.getenv("MAX_DEAL_AGE_DAYS", "100"))
+_MAX_DEAL_AGE_DAYS = int(os.getenv("MAX_DEAL_AGE_DAYS", "30"))
 _OG_PROP_FIRST = re.compile(
     r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)["\']',
     re.IGNORECASE,

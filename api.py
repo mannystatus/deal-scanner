@@ -27,7 +27,7 @@ from schemas import CategoryCount, DealListOut, DealOut, HealthOut
 
 # Deals older than this never show, even if they're still sitting in the DB
 # (e.g. stale evergreen listings, or old rows from a past ingestion source).
-MAX_DEAL_AGE_DAYS = int(os.getenv("MAX_DEAL_AGE_DAYS", "100"))
+MAX_DEAL_AGE_DAYS = int(os.getenv("MAX_DEAL_AGE_DAYS", "30"))
 
 # Sources retired from rss_source.py, but whose rows are still sitting in the
 # DB from earlier ingestion runs. Blocked here so they stop showing without
