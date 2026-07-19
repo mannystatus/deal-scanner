@@ -846,6 +846,7 @@
           label: "Travel",
           icon: "suitcase",
           items: [
+            { title: "Expedia Summer Travel Deals", url: "https://expedia.com/affiliate/HQh4RJ4" },
             { title: "Samsonite Freeform Hardside Spinner Luggage", url: "https://www.amazon.com/s?k=samsonite+freeform+hardside+spinner+luggage&tag=wisedealsxyz-20" },
             { title: "Bagail Packing Cubes (6-Piece Set)", url: "https://www.amazon.com/s?k=bagail+packing+cubes+6+piece+set&tag=wisedealsxyz-20" },
             { title: "TSA Approved Luggage Locks (4-Pack)", url: "https://www.amazon.com/s?k=tsa+approved+luggage+locks+4+pack&tag=wisedealsxyz-20" },
@@ -964,12 +965,27 @@
         return fallback;
       }
 
+      // Badge is derived from the link's own host rather than hardcoded, since
+      // Our Picks now mixes Amazon Associates links with direct partner links
+      // (e.g. Expedia) — each tile should credit the merchant it actually links to.
+      function merchantFromUrl(url) {
+        try {
+          const host = new URL(url).hostname.replace(/^www\./, "");
+          if (host === "amazon.com" || host === "amzn.to") return "Amazon";
+          if (host === "expedia.com") return "Expedia";
+          const label = host.split(".").slice(-2, -1)[0] || host;
+          return label.charAt(0).toUpperCase() + label.slice(1);
+        } catch {
+          return "Amazon";
+        }
+      }
+
       function AffiliateCard({ title, url, icon }) {
         return e(
           "a",
           { href: url, target: "_blank", rel: "noopener noreferrer sponsored", className: "aff-card" },
           e("div", { className: `aff-thumb icon-${icon}` }, AFF_ICONS[icon]),
-          e("span", { className: "aff-badge" }, "Amazon"),
+          e("span", { className: "aff-badge" }, merchantFromUrl(url)),
           e("p", { className: "aff-title" }, title),
           e("span", { className: "aff-cta" }, "View deal →")
         );
