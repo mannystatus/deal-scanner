@@ -1,4 +1,5 @@
 import html
+import itertools
 import logging
 import os
 import re
@@ -14,6 +15,7 @@ load_dotenv()
 
 from db import init_db, get_session, upsert_deal, deal_exists
 from parsers import parse_title
+from reddit_source import iter_all_subreddits
 from rss_source import iter_all_feeds
 
 logging.basicConfig(
@@ -141,7 +143,7 @@ def main() -> int:
     cutoff = datetime.now(timezone.utc) - timedelta(days=_MAX_DEAL_AGE_DAYS)
 
     with get_session() as session:
-        for post in iter_all_feeds():
+        for post in itertools.chain(iter_all_feeds(), iter_all_subreddits()):
             if post["posted_at"] < cutoff:
                 continue
             parsed = parse_title(post["title"], post["url"], post["source"])

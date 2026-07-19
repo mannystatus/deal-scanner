@@ -86,4 +86,18 @@ def iter_posts(subreddit: str, limit: int = 100, token: Optional[str] = None) ->
             "posted_at": datetime.fromtimestamp(
                 d.get("created_utc", time.time()), tz=timezone.utc
             ),
+            "source": subreddit,
         }
+
+
+def iter_all_subreddits() -> Iterator[dict]:
+    """Iterate over every subreddit configured via SUBREDDITS and yield post dicts."""
+    subreddits = [s.strip() for s in os.getenv("SUBREDDITS", "").split(",") if s.strip()]
+    if not subreddits:
+        return
+
+    limit = int(os.getenv("FETCH_LIMIT", "100"))
+    token = get_oauth_token()
+    for subreddit in subreddits:
+        logger.info("Fetching r/%s", subreddit)
+        yield from iter_posts(subreddit, limit=limit, token=token)
