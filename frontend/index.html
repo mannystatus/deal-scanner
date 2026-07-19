@@ -19,6 +19,16 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+    <!-- Apply the saved/system theme before first paint, so there's no
+         flash of the wrong theme on load. -->
+    <script>
+      (function () {
+        var saved = localStorage.getItem('htd_theme');
+        var theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
+
     <!-- Primary SEO -->
     <title>DealScanner – Best Tech, Gaming &amp; Daily Deals | Live Price Drops</title>
     <meta name="description" content="Find the best online deals, discounts, and price drops on tech, gaming, Apple, cameras, trading cards, and daily essentials. DealScanner scans live deals from top retailers so you never miss a sale." />
@@ -91,8 +101,20 @@
         --accent-text: #007f68;
         --accent-dim: rgba(0, 255, 213, 0.15);
       }
+      :root[data-theme="dark"] {
+        --bg: #0b0d0f;
+        --surface: #17191c;
+        --border: #2b2e32;
+        --text: #f2f2f3;
+        --muted: #9a9aa2;
+        --accent: #00ffd5;
+        --accent-text: #00e6c0;
+        --accent-dim: rgba(0, 255, 213, 0.12);
+      }
 
       * { box-sizing: border-box; }
+
+      html, body { overflow-x: hidden; max-width: 100%; }
 
       body {
         background: var(--bg);
@@ -114,17 +136,20 @@
         padding: 4px 16px;
       }
 
-      /* Privacy / cookie consent overlay */
+      /* Privacy / cookie consent banner — non-blocking: sits at the bottom
+         without a page-covering scrim, so visitors can keep browsing while
+         it's up instead of being gated behind it. */
       .consent-overlay {
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.55);
         z-index: 999;
         align-items: flex-end;
         justify-content: center;
         padding: 16px;
+        pointer-events: none;
       }
       .consent-box {
+        pointer-events: auto;
         max-width: 560px;
         width: 100%;
         background: var(--surface);
@@ -157,8 +182,8 @@
       }
       .consent-box button {
         flex: 0 0 auto;
-        background: var(--text);
-        color: #fff;
+        background: var(--accent);
+        color: #000;
         border: none;
         border-radius: 8px;
         padding: 10px 24px;
@@ -183,6 +208,12 @@
         transition: color 0.15s;
       }
       .network-bar a:hover { color: var(--accent); }
+      .network-bar-inner {
+        flex-wrap: wrap;
+        row-gap: 2px;
+        column-gap: 12px;
+      }
+      .network-bar-inner span { min-width: 0; }
 
       /* Main header */
       .site-header {
@@ -240,7 +271,34 @@
         color: var(--text);
         outline: none;
         transition: border-color 0.15s;
-        min-width: 160px;
+        min-width: 0;
+        flex: 1 1 120px;
+      }
+
+      /* Theme toggle */
+      .theme-toggle-btn {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        font-size: 15px;
+        line-height: 1;
+        border-radius: 999px;
+        border: 1.5px solid var(--border);
+        background: transparent;
+        color: var(--text);
+        cursor: pointer;
+        transition: border-color 0.15s;
+      }
+      .theme-toggle-btn:hover { border-color: var(--accent); }
+
+      /* Small screens: let the header row wrap instead of overflowing */
+      @media (max-width: 640px) {
+        .logo-row { flex-wrap: wrap; }
+        .logo-row .logo-controls { flex-basis: 100%; }
+        .search-input { flex-basis: 100%; }
       }
       .search-input:focus { border-color: var(--accent); }
       .search-input::placeholder { color: var(--muted); }
@@ -887,6 +945,30 @@
 
       const ICON_PROPS = { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round" };
 
+      const SOCIAL_ICON_SIZE = { width: 18, height: 18 };
+      const SOCIAL_ICONS = {
+        instagram: e(
+          "svg", { ...SOCIAL_ICON_SIZE, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.8 },
+          e("rect", { x: 3, y: 3, width: 18, height: 18, rx: 5 }),
+          e("circle", { cx: 12, cy: 12, r: 4.2 }),
+          e("circle", { cx: 17.4, cy: 6.6, r: 1.15, fill: "currentColor", stroke: "none" })
+        ),
+        threads: e(
+          "svg", { ...SOCIAL_ICON_SIZE, viewBox: "0 0 24 24", fill: "currentColor" },
+          e("path", { d: "M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.021c.03-3.573.879-6.428 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.834 2.098 1.677 1.287 2.858 3.14 3.509 5.516l-2.293.63c-1.02-3.73-3.601-5.638-7.664-5.67-2.925.022-5.14.933-6.583 2.706-1.35 1.66-2.048 4.008-2.075 6.98.027 2.972.725 5.319 2.075 6.979 1.443 1.773 3.658 2.684 6.583 2.706 2.634-.02 4.38-.65 5.833-2.106 1.66-1.66 1.628-3.698 1.098-4.923-.316-.727-.887-1.33-1.646-1.78-.192 1.352-.622 2.421-1.284 3.196-.878 1.03-2.132 1.58-3.73 1.635-1.213.042-2.379-.234-3.28-.777-1.066-.643-1.69-1.622-1.756-2.756-.13-2.225 1.622-3.822 4.354-3.977a13.9 13.9 0 0 1 3.02.16c-.124-.744-.376-1.335-.75-1.756-.512-.578-1.304-.873-2.354-.877h-.03c-.845 0-1.998.234-2.734 1.343l-1.937-1.328c.988-1.478 2.612-2.29 4.671-2.29h.043c3.334.02 5.315 2.06 5.514 5.628.114.048.227.098.337.15 1.545.73 2.674 1.836 3.267 3.2.822 1.884.897 4.946-1.613 7.454C17.235 23.256 14.976 23.98 12.186 24Z" })
+        ),
+        x: e(
+          "svg", { ...SOCIAL_ICON_SIZE, viewBox: "0 0 24 24", fill: "currentColor" },
+          e("path", { d: "M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" })
+        ),
+      };
+
+      const SOCIAL_LINKS = [
+        { key: "instagram", label: "Instagram", href: "https://www.instagram.com/hackthedeal_" },
+        { key: "threads", label: "Threads", href: "https://www.threads.net/@hackthedeal_" },
+        { key: "x", label: "X", href: "https://x.com/hackthedeal" },
+      ];
+
       const AFF_ICONS = {
         star: e("svg", ICON_PROPS, e("polygon", { points: "12,2.5 15,9.5 22,10.3 16.8,15.1 18.2,22 12,18.3 5.8,22 7.2,15.1 2,10.3 9,9.5" })),
         box: e(
@@ -1172,6 +1254,16 @@
         const [loading, setLoading] = useState(true);
         const [loadingMore, setLoadingMore] = useState(false);
         const [total, setTotal] = useState(0);
+        const [theme, setTheme] = useState(
+          () => document.documentElement.getAttribute("data-theme") || "light"
+        );
+
+        function toggleTheme() {
+          const next = theme === "dark" ? "light" : "dark";
+          setTheme(next);
+          document.documentElement.setAttribute("data-theme", next);
+          localStorage.setItem("htd_theme", next);
+        }
 
         function dealsQuery(extra) {
           const params = new URLSearchParams({ limit: String(DEALS_PAGE_SIZE), ...extra });
@@ -1250,6 +1342,11 @@
         }, [activeCat, total]);
 
         useEffect(() => {
+          const el = document.querySelector('meta[name="theme-color"]');
+          if (el) el.setAttribute("content", theme === "dark" ? "#0b0d0f" : "#ffffff");
+        }, [theme]);
+
+        useEffect(() => {
           let script = document.getElementById("deals-jsonld");
           if (!script) {
             script = document.createElement("script");
@@ -1294,7 +1391,7 @@
             { className: "network-bar" },
             e(
               "div",
-              { style: { maxWidth: 1152, margin: "0 auto", padding: "6px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" } },
+              { className: "network-bar-inner", style: { maxWidth: 1152, margin: "0 auto", padding: "6px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" } },
               e("span", null, "Your source for the best deals on the web"),
               e("span", { style: { fontSize: 10 } }, `${total.toLocaleString()} live deals updated continuously`)
             )
@@ -1311,19 +1408,34 @@
               /* Logo row */
               e(
                 "div",
-                { style: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 } },
+                { className: "logo-row", style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 12 } },
                 e(
                   "a",
                   { href: "/", className: "logo" },
-                  e("img", { src: "/assets/logo.svg", alt: "Hack the Deal", style: { height: 40, display: "block" } })
+                  e("img", { src: theme === "dark" ? "/assets/logo-dark.svg" : "/assets/logo.svg", alt: "Hack the Deal", style: { height: 40, display: "block" } })
                 ),
-                e("input", {
-                  type: "search",
-                  placeholder: "Search deals…",
-                  value: search,
-                  onChange: (ev) => setSearch(ev.target.value),
-                  className: "search-input",
-                })
+                e(
+                  "div",
+                  { className: "logo-controls", style: { display: "flex", alignItems: "center", gap: 8, flex: "1 1 auto", minWidth: 0, justifyContent: "flex-end" } },
+                  e("input", {
+                    type: "search",
+                    placeholder: "Search deals…",
+                    value: search,
+                    onChange: (ev) => setSearch(ev.target.value),
+                    className: "search-input",
+                  }),
+                  e(
+                    "button",
+                    {
+                      type: "button",
+                      className: "theme-toggle-btn",
+                      "aria-label": theme === "dark" ? "Switch to light theme" : "Switch to dark theme",
+                      title: theme === "dark" ? "Switch to light theme" : "Switch to dark theme",
+                      onClick: toggleTheme,
+                    },
+                    theme === "dark" ? "☀️" : "🌙"
+                  )
+                )
               ),
 
               /* Category + filter row */
@@ -1470,10 +1582,27 @@
               ),
               e(
                 "div",
-                { style: { display: "flex", alignItems: "center", gap: 14 } },
-                e("a", { href: "https://www.instagram.com/hackthedeal_", target: "_blank", rel: "noopener noreferrer" }, "Instagram"),
-                e("a", { href: "https://www.threads.net/@hackthedeal_", target: "_blank", rel: "noopener noreferrer" }, "Threads"),
-                e("a", { href: "https://x.com/hackthedeal", target: "_blank", rel: "noopener noreferrer" }, "X"),
+                { style: { display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" } },
+                e(
+                  "div",
+                  { style: { display: "flex", alignItems: "center", gap: 10 } },
+                  e("span", { style: { fontWeight: 700, color: "#888" } }, "Follow us"),
+                  SOCIAL_LINKS.map((s) =>
+                    e(
+                      "a",
+                      {
+                        key: s.key,
+                        href: s.href,
+                        target: "_blank",
+                        rel: "noopener noreferrer",
+                        "aria-label": s.label,
+                        title: s.label,
+                        style: { display: "flex", alignItems: "center" },
+                      },
+                      SOCIAL_ICONS[s.key]
+                    )
+                  )
+                ),
                 e("a", { href: "/contact.html", className: "footer-contact-link" }, "Partner With Us"),
                 e("a", { href: "/privacy.html" }, "Privacy Policy")
               )
