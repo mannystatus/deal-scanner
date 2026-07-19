@@ -2,7 +2,7 @@ from datetime import datetime
 from decimal import Decimal
 from typing import Optional
 
-from sqlalchemy import DateTime, Float, Index, Numeric, String, Text
+from sqlalchemy import DateTime, Float, ForeignKey, Index, Numeric, String, Text, UniqueConstraint
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
@@ -34,4 +34,21 @@ class Deal(Base):
     __table_args__ = (
         Index("ix_deals_category_posted", "category", "posted_at"),
         Index("ix_deals_posted_at", "posted_at"),
+    )
+
+
+class SocialPost(Base):
+    """Records a deal having been posted to a social platform, so the poster
+    script never posts the same deal to the same platform twice."""
+
+    __tablename__ = "social_posts"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    deal_id: Mapped[int] = mapped_column(ForeignKey("deals.id"))
+    platform: Mapped[str] = mapped_column(String(20))
+    external_id: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    posted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+    __table_args__ = (
+        UniqueConstraint("deal_id", "platform", name="uq_social_posts_deal_platform"),
     )
