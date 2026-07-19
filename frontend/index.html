@@ -1070,6 +1070,37 @@
         return `${Math.floor(diff / 86400)}d ago`;
       }
 
+      // Deals are sorted newest-first, and with ~30 new deals landing a day
+      // across 30 days of history, a flat list buries anything older than a
+      // few hours under same-day noise. Grouping by calendar day (local
+      // time) surfaces "yesterday" and "this week" as their own sections
+      // instead of requiring users to load and scroll past hundreds of rows.
+      function dayLabel(iso) {
+        const d = new Date(iso);
+        const startOfDay = (dt) => new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
+        const diffDays = Math.round((startOfDay(new Date()) - startOfDay(d)) / 86400000);
+        if (diffDays <= 0) return "Today";
+        if (diffDays === 1) return "Yesterday";
+        if (diffDays < 7) return d.toLocaleDateString("en-US", { weekday: "long" });
+        return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+      }
+
+      function groupDealsByDay(deals) {
+        const groups = [];
+        const byLabel = new Map();
+        for (const deal of deals) {
+          const label = dayLabel(deal.posted_at);
+          let group = byLabel.get(label);
+          if (!group) {
+            group = { label, items: [] };
+            byLabel.set(label, group);
+            groups.push(group);
+          }
+          group.items.push(deal);
+        }
+        return groups;
+      }
+
       function DealCard({ deal }) {
         const target = deal.affiliate_url || deal.url;
         return e(
@@ -1131,13 +1162,38 @@
         );
       }
 
+      const DEALS_PAGE_SIZE = 60;
+
       function App() {
         const [deals, setDeals] = useState([]);
         const [activeCat, setActiveCat] = useState(() => categoryFromPath(location.pathname));
         const [minDiscount, setMinDiscount] = useState(0);
         const [search, setSearch] = useState("");
         const [loading, setLoading] = useState(true);
+        const [loadingMore, setLoadingMore] = useState(false);
         const [total, setTotal] = useState(0);
+
+        function dealsQuery(extra) {
+          const params = new URLSearchParams({ limit: String(DEALS_PAGE_SIZE), ...extra });
+          if (activeCat) params.set("category", activeCat);
+          if (minDiscount > 0) params.set("min_discount", String(minDiscount));
+          if (search) params.set("search", search);
+          return params;
+        }
+
+        async function loadMore() {
+          setLoadingMore(true);
+          try {
+            const params = dealsQuery({ offset: String(deals.length) });
+            const r = await fetch(`${API_BASE}/deals?${params}`);
+            const data = await r.json();
+            setDeals((prev) => [...prev, ...(data.items || [])]);
+          } catch (err) {
+            console.error(err);
+          } finally {
+            setLoadingMore(false);
+          }
+        }
 
         function navigateToCategory(id) {
           const path = id ? `/${id}` : "/";
@@ -1157,10 +1213,7 @@
           let cancelled = false;
           const t = setTimeout(async () => {
             setLoading(true);
-            const params = new URLSearchParams({ limit: "30" });
-            if (activeCat) params.set("category", activeCat);
-            if (minDiscount > 0) params.set("min_discount", String(minDiscount));
-            if (search) params.set("search", search);
+            const params = dealsQuery();
             try {
               const r = await fetch(`${API_BASE}/deals?${params}`);
               const data = await r.json();
@@ -1345,8 +1398,42 @@
                 )
               : e(
                   "div",
-                  { style: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 16 } },
-                  deals.map((d) => e(DealCard, { key: d.id, deal: d }))
+                  null,
+                  groupDealsByDay(deals).map((group) =>
+                    e(
+                      "div",
+                      { key: group.label, style: { marginBottom: 24 } },
+                      e(
+                        "h3",
+                        { style: { fontSize: 11, fontWeight: 700, color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.07em", margin: "0 0 10px" } },
+                        group.label
+                      ),
+                      e(
+                        "div",
+                        { style: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 16 } },
+                        group.items.map((d) => e(DealCard, { key: d.id, deal: d }))
+                      )
+                    )
+                  ),
+                  deals.length < total
+                    ? e(
+                        "div",
+                        { style: { textAlign: "center", marginTop: 8 } },
+                        e(
+                          "button",
+                          {
+                            onClick: loadMore,
+                            disabled: loadingMore,
+                            style: {
+                              fontSize: 13, fontWeight: 700, padding: "10px 22px", borderRadius: 999,
+                              border: "1.5px solid var(--border)", background: "var(--surface)",
+                              color: "var(--text)", cursor: loadingMore ? "default" : "pointer",
+                            },
+                          },
+                          loadingMore ? "Loading…" : "Load more deals"
+                        )
+                      )
+                    : null
                 )
           ),
 
