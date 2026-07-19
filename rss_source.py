@@ -7,6 +7,7 @@ edit DEFAULT_FEEDS below.
 """
 import calendar
 import hashlib
+import html
 import logging
 import os
 import re
@@ -41,11 +42,18 @@ DEFAULT_FEEDS: list[tuple[str, str]] = [
     # straight from the retailer, not a third-party aggregator.
     ("pyrodrone",     "https://pyrodrone.com/collections/sale.atom"),
     ("racedayquads",  "https://www.racedayquads.com/collections/sale.atom"),
+    ("dronenerds",    "https://www.dronenerds.com/collections/sale.atom"),
     ("elegoo",        "https://www.elegoo.com/collections/sale.atom"),
     ("anycubic",      "https://store.anycubic.com/collections/sale.atom"),
     ("sovol",         "https://www.sovol3d.com/collections/sale.atom"),
     ("polymaker",     "https://shop.polymaker.com/collections/sale.atom"),
     ("overture",      "https://overture3d.com/collections/sale.atom"),
+]
+
+# WooCommerce stores queried via their public Store API for on-sale products
+# (no RSS/Atom feed available). (source_name, store_base_url)
+WOOCOMMERCE_STORES: list[tuple[str, str]] = [
+    ("myfpvstore", "https://www.myfpvstore.com"),
 ]
 
 # Shopify's Atom feed embeds price as HTML in the summary rather than the
@@ -128,8 +136,62 @@ def iter_feed(source: str, url: str) -> Iterator[dict]:
         }
 
 
+def iter_woocommerce_store(source: str, base_url: str, max_pages: int = 3) -> Iterator[dict]:
+    """Fetch on-sale products from a WooCommerce store's public Store API.
+
+    No published-date field is exposed by this API, so posted_at is set to
+    the ingestion time — first-seen ordering, same as everything else here
+    once a deal is already in the DB (upsert_deal never revisits old rows).
+    """
+    ua = os.getenv("RSS_USER_AGENT", "deal-scanner/0.1 (contact: mannydotco@gmail.com)")
+    total = 0
+    for page in range(1, max_pages + 1):
+        url = f"{base_url}/wp-json/wc/store/v1/products?on_sale=true&per_page=100&page={page}"
+        try:
+            resp = httpx.get(url, headers={"User-Agent": ua}, timeout=30)
+            resp.raise_for_status()
+            items = resp.json()
+        except (httpx.HTTPError, ValueError) as e:
+            logger.error("Failed to fetch WooCommerce store %s page %d: %s", source, page, e)
+            return
+        if not items:
+            break
+        total += len(items)
+        for item in items:
+            name = html.unescape(item.get("name") or "")
+            link = item.get("permalink") or ""
+            prices = item.get("prices") or {}
+            if not name or not link:
+                continue
+            try:
+                minor = int(prices.get("currency_minor_unit", 2))
+                scale = 10 ** minor
+                sale = int(prices["sale_price"]) / scale
+                regular = int(prices["regular_price"]) / scale
+            except (KeyError, TypeError, ValueError):
+                continue
+
+            title = f"{name} - ${sale:.2f}"
+            if regular > sale:
+                title = f"{name} - ${sale:.2f} (was ${regular:.2f})"
+
+            yield {
+                "reddit_id": _make_id(link),
+                "title":     title,
+                "url":       link,
+                "posted_at": datetime.now(timezone.utc),
+                "source":    source,
+            }
+        if len(items) < 100:
+            break
+    logger.info("  %s: %d on-sale entries", source, total)
+
+
 def iter_all_feeds() -> Iterator[dict]:
     """Iterate over all configured feeds and yield post dicts."""
     for source, url in _load_feeds():
         logger.info("Fetching %s — %s", source, url)
         yield from iter_feed(source, url)
+    for source, base_url in WOOCOMMERCE_STORES:
+        logger.info("Fetching %s (WooCommerce store) — %s", source, base_url)
+        yield from iter_woocommerce_store(source, base_url)

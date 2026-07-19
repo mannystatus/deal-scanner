@@ -42,6 +42,8 @@ SUBREDDIT_CATEGORIES = {
     "slickdeals-northface": "fashion",
     "pyrodrone": "drones",
     "racedayquads": "drones",
+    "dronenerds": "drones",
+    "myfpvstore": "drones",
     "elegoo": "3d_printing",
     "anycubic": "3d_printing",
     "sovol": "3d_printing",

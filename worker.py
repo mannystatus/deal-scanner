@@ -131,10 +131,11 @@ def main() -> int:
     db_url = os.getenv("DATABASE_URL", "sqlite:///deals.db")
     parsed_url = urlparse(db_url)
     logger.info("Connecting to: %s://%s%s", parsed_url.scheme, parsed_url.hostname or "(local)", parsed_url.path)
-    if not db_url.startswith("postgresql"):
+    if not (db_url.startswith("postgresql") or db_url.startswith("sqlite")):
         logger.error(
-            "DATABASE_URL is not set to a PostgreSQL URL. "
-            "Set DATABASE_URL in Render → deal-scanner-worker → Environment, then redeploy."
+            "DATABASE_URL must be a PostgreSQL or SQLite URL, got %r. "
+            "Set DATABASE_URL in Render → deal-scanner-worker → Environment, then redeploy.",
+            db_url,
         )
         return -1
     init_db()
