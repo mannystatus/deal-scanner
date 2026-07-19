@@ -1,0 +1,59 @@
+name: Social post to X
+
+# Posts the top new deals to X once a day, after the ingest run so there's
+# fresh inventory to pick from. Dedup is handled by social_post.py itself
+# (social_posts table) — safe to run daily indefinitely without reposting.
+#
+# Required repo secrets (Settings → Secrets and variables → Actions):
+#   - DATABASE_URL              Neon Postgres connection string with ?sslmode=require
+#   - X_API_KEY, X_API_SECRET, X_ACCESS_TOKEN, X_ACCESS_TOKEN_SECRET
+#     (developer.x.com → Project/App → User authentication settings →
+#      OAuth 1.0a, "Read and write" → Keys and tokens)
+
+on:
+  schedule:
+    - cron: "0 13 * * *"   # 1 hour after the ingest.yml run
+  workflow_dispatch:
+    inputs:
+      live:
+        description: "Actually post (unchecked = dry run preview only)"
+        type: boolean
+        default: false
+
+concurrency:
+  group: social-post
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Post to X
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+        # Scheduled runs always post live. Manual runs default to a dry-run
+        # preview unless you tick "live" when triggering from the Actions tab.
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ inputs.live }}" = "true" ]; then
+            python social_post.py --platforms x --limit 3 --min-discount 20 --live
+          else
+            python social_post.py --platforms x --limit 3 --min-discount 20
+          fi
