@@ -2,7 +2,8 @@ name: Reddit ingest
 
 # Runs the worker once a day. Replaces the Render cron job — free for
 # public repos, and well inside the 2,000-min/month free quota for private
-# repos (one cycle ≈ 30-60 seconds).
+# repos even at ~15-20 min/cycle (the feed list has grown since this was
+# first ~30-60s/cycle).
 #
 # Required repo secrets (Settings → Secrets and variables → Actions):
 #   - DATABASE_URL        Neon Postgres connection string with ?sslmode=require
@@ -23,7 +24,7 @@ permissions:
 jobs:
   ingest:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
 
