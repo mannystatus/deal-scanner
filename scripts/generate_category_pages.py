@@ -138,15 +138,28 @@ def build_page(template: str, slug: str, h1: str, description: str) -> str:
 
 def main() -> None:
     template = TEMPLATE_PATH.read_text(encoding="utf-8")
+    redirect_lines = []
     for slug, copy in CATEGORIES.items():
         page = build_page(template, slug, copy["h1"], copy["description"])
-        # Flat <slug>.html, not <slug>/index.html — the site is served from
-        # Cloudflare Pages (see frontend/_headers), which resolves a request
-        # for /drones to a real drones.html file via its "pretty URLs"
-        # convention, same as /privacy.html and /contact.html already do.
+        # Flat <slug>.html, not <slug>/index.html. Cloudflare Pages does NOT
+        # auto-resolve extensionless URLs to a matching .html file (verified
+        # empirically: /drones.html served the right page, /drones fell
+        # through to the generic index.html SPA fallback) — the _redirects
+        # rewrite rules below are what actually make /drones serve this file
+        # while keeping the URL clean.
         out_path = ROOT / "frontend" / f"{slug}.html"
         out_path.write_text(page, encoding="utf-8")
         print(f"wrote {out_path.relative_to(ROOT)}")
+        redirect_lines.append(f"/{slug}  /{slug}.html  200")
+
+    redirects_path = ROOT / "frontend" / "_redirects"
+    header = (
+        "# Cloudflare Pages rewrite rules (see scripts/generate_category_pages.py).\n"
+        "# Status 200 = serve this file's content while keeping the requested URL,\n"
+        "# as opposed to a 301/302 which would change the browser's address bar.\n"
+    )
+    redirects_path.write_text(header + "\n".join(redirect_lines) + "\n", encoding="utf-8")
+    print(f"wrote {redirects_path.relative_to(ROOT)}")
 
 
 if __name__ == "__main__":

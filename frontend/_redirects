@@ -1,0 +1,16 @@
+# Cloudflare Pages rewrite rules (see scripts/generate_category_pages.py).
+# Status 200 = serve this file's content while keeping the requested URL,
+# as opposed to a 301/302 which would change the browser's address bar.
+/computers  /computers.html  200
+/gaming  /gaming.html  200
+/apple  /apple.html  200
+/cameras  /cameras.html  200
+/software  /software.html  200
+/trading_cards  /trading_cards.html  200
+/fashion  /fashion.html  200
+/beauty  /beauty.html  200
+/shoes  /shoes.html  200
+/travel  /travel.html  200
+/drones  /drones.html  200
+/3d_printing  /3d_printing.html  200
+/filament  /filament.html  200
