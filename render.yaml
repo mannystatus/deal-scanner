@@ -46,7 +46,7 @@ services:
       - key: DATABASE_URL
         sync: false       # Same Neon connection string as the API
       - key: RSS_USER_AGENT
-        value: "deal-scanner/0.1 (contact: mannydotco@gmail.com)"
+        value: "deal-scanner/0.1 (contact: tech@hackthedeal.com)"
       - key: LOG_LEVEL
         value: "INFO"
       - key: PYTHON_VERSION

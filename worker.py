@@ -26,7 +26,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-_UA = os.getenv("RSS_USER_AGENT", "deal-scanner/0.1 (contact: mannydotco@gmail.com)")
+_UA = os.getenv("RSS_USER_AGENT", "deal-scanner/0.1 (contact: tech@hackthedeal.com)")
 
 # Skip stale entries (e.g. evergreen coupon listings with an old pubDate) so
 # the DB doesn't accumulate deals that are already too old to ever be shown.

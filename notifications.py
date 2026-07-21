@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 VAPID_PRIVATE_KEY = os.getenv("VAPID_PRIVATE_KEY", "")
 VAPID_PUBLIC_KEY = os.getenv("VAPID_PUBLIC_KEY", "")
-VAPID_CLAIM_EMAIL = os.getenv("VAPID_CLAIM_EMAIL", "mannydotco@gmail.com")
+VAPID_CLAIM_EMAIL = os.getenv("VAPID_CLAIM_EMAIL", "tech@hackthedeal.com")
 
 # Only notify for deals discounted at least this much — keeps volume low
 # and signal high instead of pushing every new deal that lands.

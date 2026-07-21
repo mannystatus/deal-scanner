@@ -159,7 +159,7 @@ def _parse_time(t) -> datetime:
 
 def iter_feed(source: str, url: str) -> Iterator[dict]:
     """Fetch one RSS/Atom feed and yield normalized post dicts."""
-    ua = os.getenv("RSS_USER_AGENT", "deal-scanner/0.1 (contact: mannydotco@gmail.com)")
+    ua = os.getenv("RSS_USER_AGENT", "deal-scanner/0.1 (contact: tech@hackthedeal.com)")
     try:
         resp = _get_with_retry(url, headers={"User-Agent": ua})
         raw = resp.text
@@ -203,7 +203,7 @@ def iter_woocommerce_store(source: str, base_url: str, max_pages: int = 3) -> It
     the ingestion time — first-seen ordering, same as everything else here
     once a deal is already in the DB (upsert_deal never revisits old rows).
     """
-    ua = os.getenv("RSS_USER_AGENT", "deal-scanner/0.1 (contact: mannydotco@gmail.com)")
+    ua = os.getenv("RSS_USER_AGENT", "deal-scanner/0.1 (contact: tech@hackthedeal.com)")
     total = 0
     for page in range(1, max_pages + 1):
         url = f"{base_url}/wp-json/wc/store/v1/products?on_sale=true&per_page=100&page={page}"
@@ -267,7 +267,7 @@ def iter_bambulab_collection(source: str, collection_url: str) -> Iterator[dict]
     import json as _json
     from urllib.parse import urlparse
 
-    ua = os.getenv("RSS_USER_AGENT", "deal-scanner/0.1 (contact: mannydotco@gmail.com)")
+    ua = os.getenv("RSS_USER_AGENT", "deal-scanner/0.1 (contact: tech@hackthedeal.com)")
     headers = {"User-Agent": ua, "Accept": "text/html"}
     try:
         resp = _get_with_retry(collection_url, headers=headers)
