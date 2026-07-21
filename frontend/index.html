@@ -105,24 +105,34 @@
 
     <style>
       :root {
-        --bg: #f5f5f6;
+        --bg: #f4f5fa;
         --surface: #ffffff;
-        --border: #e2e2e6;
-        --text: #111112;
-        --muted: #6b6b74;
-        --accent: #00ffd5;
-        --accent-text: #007f68;
-        --accent-dim: rgba(0, 255, 213, 0.15);
+        --border: #e1e3ee;
+        --text: #1a1b26;
+        --muted: #5a5f7a;
+        --accent: #16a34a;
+        --accent-text: #15803d;
+        --accent-dim: rgba(22, 163, 74, 0.12);
+        --accent2: #0284c7;
+        --accent2-text: #0369a1;
+        --danger-bg: #fde2e7;
+        --danger-text: #be123c;
+        --icon-bg: #eceef7;
       }
       :root[data-theme="dark"] {
-        --bg: #0b0d0f;
-        --surface: #17191c;
-        --border: #2b2e32;
-        --text: #f2f2f3;
-        --muted: #9a9aa2;
-        --accent: #00ffd5;
-        --accent-text: #00e6c0;
-        --accent-dim: rgba(0, 255, 213, 0.12);
+        --bg: #1a1b26;
+        --surface: #20222f;
+        --border: #2a2d3f;
+        --text: #c0caf5;
+        --muted: #a9b1d6;
+        --accent: #9ece6a;
+        --accent-text: #9ece6a;
+        --accent-dim: rgba(158, 206, 106, 0.14);
+        --accent2: #7dcfff;
+        --accent2-text: #7dcfff;
+        --danger-bg: #2a1519;
+        --danger-text: #f7768e;
+        --icon-bg: #1a1b26;
       }
 
       * { box-sizing: border-box; }
@@ -167,7 +177,7 @@
         width: 100%;
         background: var(--surface);
         border: 1px solid var(--border);
-        border-radius: 12px;
+        border-radius: 16px;
         padding: 18px 20px;
         box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
         display: flex;
@@ -210,8 +220,8 @@
 
       /* Header network bar */
       .network-bar {
-        background: #111112;
-        color: #aaa;
+        background: #1a1b26;
+        color: #a9b1d6;
         font-size: 11px;
         letter-spacing: 0.04em;
       }
@@ -238,16 +248,17 @@
         box-shadow: 0 2px 12px rgba(0,0,0,0.06);
       }
 
-      /* Logo */
+      /* Logo — plain monospace terminal-style wordmark */
       .logo {
+        font-family: "SF Mono", "Courier New", monospace;
         font-size: 22px;
-        font-weight: 800;
-        letter-spacing: -0.5px;
-        color: var(--text);
+        font-weight: 700;
+        letter-spacing: -0.3px;
+        color: var(--accent-text);
         text-decoration: none;
         line-height: 1;
       }
-      .logo span { color: var(--accent-text); }
+      .logo span { color: var(--accent2-text); }
 
       /* Category nav pills */
       .cat-pill {
@@ -271,7 +282,7 @@
       .cat-pill.active {
         background: var(--accent);
         border-color: var(--accent);
-        color: #000;
+        color: #0a0c12;
       }
 
       /* Search input */
@@ -316,11 +327,85 @@
       .search-input:focus { border-color: var(--accent); }
       .search-input::placeholder { color: var(--muted); }
 
+      /* Hero */
+      .hero {
+        max-width: 1152px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 36px;
+        padding: 40px 16px 32px;
+      }
+      .hero-icon { flex-shrink: 0; width: 120px; height: 120px; }
+      .hero-icon svg { width: 100%; height: 100%; }
+      .hero-eyebrow {
+        font-family: "SF Mono", "Courier New", monospace;
+        font-size: 13px;
+        color: var(--accent2-text);
+        margin: 0 0 10px;
+      }
+      .hero-title {
+        font-size: 30px;
+        font-weight: 800;
+        letter-spacing: -0.4px;
+        color: var(--text);
+        margin: 0 0 10px;
+        line-height: 1.15;
+      }
+      .hero-sub {
+        font-size: 14px;
+        color: var(--muted);
+        max-width: 560px;
+        line-height: 1.6;
+        margin: 0;
+      }
+      @media (max-width: 700px) {
+        .hero { flex-direction: column; text-align: center; padding: 32px 16px 24px; }
+        .hero-sub { max-width: none; }
+      }
+
+      /* Category showcase (homepage only) */
+      .cat-showcase {
+        max-width: 1152px;
+        margin: 0 auto;
+        padding: 0 16px 40px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+        gap: 14px;
+      }
+      .cat-showcase-item {
+        text-align: center;
+        cursor: pointer;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 20px 8px 16px;
+        transition: border-color 0.15s, transform 0.15s;
+      }
+      .cat-showcase-item:hover { border-color: var(--accent); transform: translateY(-2px); }
+      .cat-showcase-item svg { width: 48px; height: 48px; }
+      .cat-showcase-label { font-size: 12px; font-weight: 600; color: var(--muted); margin-top: 10px; }
+
+      /* How it works */
+      .how-it-works { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 36px 0; }
+      .how-row {
+        max-width: 1152px;
+        margin: 0 auto;
+        padding: 0 16px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 20px;
+      }
+      .how-step { text-align: center; }
+      .how-step svg { width: 44px; height: 44px; }
+      .how-step-label { font-size: 12.5px; font-weight: 700; color: var(--text); margin-top: 10px; }
+      .how-step-desc { font-size: 11.5px; color: var(--muted); margin-top: 3px; line-height: 1.4; }
+
       /* Deal card */
       .deal-card {
         background: var(--surface);
         border: 1px solid var(--border);
-        border-radius: 10px;
+        border-radius: 16px;
         overflow: hidden;
         transition: box-shadow 0.15s, transform 0.15s, border-color 0.15s;
         display: flex;
@@ -340,6 +425,18 @@
         display: block;
         background: var(--bg);
       }
+      /* Shown instead of .deal-card img when a deal has no thumbnail —
+         the category's own mascot icon on a subtle backdrop, rather than
+         leaving blank space. */
+      .deal-card-icon-fallback {
+        width: 100%;
+        height: 160px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--icon-bg);
+      }
+      .deal-card-icon-fallback svg { width: 64px; height: 64px; }
       .deal-card-body { padding: 14px; flex: 1; display: flex; flex-direction: column; }
 
       /* Category chip on card */
@@ -359,10 +456,10 @@
       .discount-badge {
         font-size: 11px;
         font-weight: 800;
-        padding: 2px 8px;
-        border-radius: 4px;
-        background: var(--accent);
-        color: #000;
+        padding: 3px 9px;
+        border-radius: 8px;
+        background: var(--danger-bg);
+        color: var(--danger-text);
         white-space: nowrap;
       }
 
@@ -370,7 +467,7 @@
       .price-current {
         font-size: 20px;
         font-weight: 800;
-        color: var(--text);
+        color: var(--accent-text);
         letter-spacing: -0.3px;
       }
       .price-original {
@@ -409,7 +506,7 @@
       .aff-card {
         background: var(--surface);
         border: 1px solid var(--border);
-        border-radius: 8px;
+        border-radius: 14px;
         padding: 12px;
         display: flex;
         flex-direction: column;
@@ -424,7 +521,7 @@
       .aff-thumb {
         height: 76px;
         margin: -12px -12px 10px -12px;
-        border-radius: 8px 8px 0 0;
+        border-radius: 14px 14px 0 0;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -507,8 +604,8 @@
 
       /* Footer */
       .site-footer {
-        background: #111112;
-        color: #888;
+        background: #1a1b26;
+        color: #7982a9;
         border-top: 3px solid var(--accent);
       }
       .site-footer a {
@@ -994,6 +1091,141 @@
         { key: "x", label: "X", href: "https://x.com/hackthedeal" },
       ];
 
+      // Hand-illustrated mascot-style icons (circle backdrop + a few flat
+      // shapes), one per real category, matching the site's terminal/hacker
+      // visual identity. Shape colors are fixed across themes — only the
+      // circle backdrop (var(--icon-bg)) adapts to light/dark.
+      function iconCircle(...children) {
+        return e(
+          "svg",
+          { viewBox: "0 0 36 36" },
+          e("circle", { cx: 18, cy: 18, r: 18, fill: "var(--icon-bg)" }),
+          ...children
+        );
+      }
+
+      const CATEGORY_ICONS = {
+        computers: iconCircle(
+          e("rect", { x: 9, y: 11, width: 18, height: 12, rx: 1.5, fill: "#7dcfff" }),
+          e("rect", { x: 14, y: 25, width: 8, height: 2.5, rx: 1, fill: "#414868" })
+        ),
+        gaming: iconCircle(
+          e("rect", { x: 7, y: 13, width: 22, height: 12, rx: 6, fill: "#414868" }),
+          e("circle", { cx: 24, cy: 17, r: 1.6, fill: "#f7768e" }),
+          e("circle", { cx: 24, cy: 22, r: 1.6, fill: "#f7768e" }),
+          e("rect", { x: 10.5, y: 18, width: 5, height: 1.8, rx: 0.9, fill: "#0a0c12" }),
+          e("rect", { x: 12.4, y: 16.1, width: 1.8, height: 5, rx: 0.9, fill: "#0a0c12" })
+        ),
+        apple: iconCircle(
+          e("path", { d: "M18 13c-4 0-8 4-8 10 0 4 2.5 7 4.5 7 1.3 0 1.8-.8 3.5-.8s2.1.8 3.6.8c1.8 0 3-2.6 4-5-3-1.3-3.2-6.5.5-7.8-1.3-2-3.4-2.2-4-2.2-1.4 0-2.6.9-3.4.9s-2-1-4-1.9Z", fill: "#e6ddfa" }),
+          e("path", { d: "M19 9c0 1.8-1.2 3-3 3 0-1.8 1.2-3 3-3Z", fill: "#9ece6a" })
+        ),
+        cameras: iconCircle(
+          e("rect", { x: 7, y: 13, width: 22, height: 14, rx: 3, fill: "#414868" }),
+          e("rect", { x: 14, y: 9, width: 8, height: 4, rx: 1.5, fill: "#414868" }),
+          e("circle", { cx: 18, cy: 20, r: 5.5, fill: "#7dcfff" }),
+          e("circle", { cx: 18, cy: 20, r: 2.4, fill: "#0a0c12" })
+        ),
+        software: iconCircle(
+          e("rect", { x: 7, y: 10, width: 22, height: 16, rx: 3, fill: "#414868" }),
+          e("text", { x: 18, y: 21, fontFamily: "monospace", fontSize: 9, fill: "#9ece6a", textAnchor: "middle" }, ">_")
+        ),
+        trading_cards: iconCircle(
+          e("rect", { x: 8, y: 10, width: 14, height: 18, rx: 2.5, fill: "#7dcfff", transform: "rotate(-8 15 19)" }),
+          e("rect", { x: 14, y: 9, width: 14, height: 18, rx: 2.5, fill: "#f7768e", transform: "rotate(8 21 18)" })
+        ),
+        fashion: iconCircle(
+          e("path", { d: "M10 28 Q12 16 18 14 Q24 16 26 28Z", fill: "#f7768e" }),
+          e("circle", { cx: 18, cy: 12, r: 5.5, fill: "#ffd9c4" })
+        ),
+        beauty: iconCircle(
+          e("rect", { x: 15, y: 17, width: 6, height: 11, rx: 1.5, fill: "#414868" }),
+          e("path", { d: "M15 17 L18 9 L21 17Z", fill: "#f7768e" })
+        ),
+        shoes: iconCircle(
+          e("path", { d: "M8 24c0-2 1.4-3.6 3.6-3.6h2.6l7-4c1.6-.9 3.5-1.2 5.3-.8l2.7.6c1.6.4 2.8 1.9 2.8 3.6v3.2c0 1.8-1.5 3.2-3.3 3.2H10.4C9.1 25.4 8 24.9 8 24Z", fill: "#e0af68" }),
+          e("line", { x1: 18, y1: 16.4, x2: 21.5, y2: 20, stroke: "#0a0c12", strokeWidth: 1.4, strokeLinecap: "round" })
+        ),
+        travel: iconCircle(
+          e("rect", { x: 8, y: 13, width: 20, height: 14, rx: 2.5, fill: "#e0af68" }),
+          e("path", { d: "M14 13v-2.5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2.5", fill: "none", stroke: "#414868", strokeWidth: 2 }),
+          e("line", { x1: 8, y1: 19, x2: 28, y2: 19, stroke: "#0a0c12", strokeWidth: 1.2, opacity: 0.4 })
+        ),
+        drones: iconCircle(
+          e("line", { x1: 12, y1: 14, x2: 24, y2: 24, stroke: "#414868", strokeWidth: 1.6 }),
+          e("line", { x1: 24, y1: 14, x2: 12, y2: 24, stroke: "#414868", strokeWidth: 1.6 }),
+          e("rect", { x: 14.5, y: 16, width: 7, height: 6, rx: 1.5, fill: "#414868" }),
+          e("circle", { cx: 12, cy: 14, r: 3.4, fill: "#7dcfff" }),
+          e("circle", { cx: 24, cy: 14, r: 3.4, fill: "#7dcfff" }),
+          e("circle", { cx: 12, cy: 24, r: 3.4, fill: "#7dcfff" }),
+          e("circle", { cx: 24, cy: 24, r: 3.4, fill: "#7dcfff" })
+        ),
+        "3d_printing": iconCircle(
+          e("rect", { x: 9, y: 8, width: 18, height: 20, rx: 2, fill: "none", stroke: "#414868", strokeWidth: 2 }),
+          e("rect", { x: 14, y: 14, width: 8, height: 3, rx: 1, fill: "#9ece6a" }),
+          e("line", { x1: 12, y1: 24, x2: 24, y2: 24, stroke: "#0a0c12", strokeWidth: 1.6, strokeLinecap: "round" })
+        ),
+        filament: iconCircle(
+          e("circle", { cx: 18, cy: 18, r: 10, fill: "#bb9af7" }),
+          e("circle", { cx: 18, cy: 18, r: 4, fill: "var(--icon-bg)" })
+        ),
+      };
+
+      const HERO_ICON = e(
+        "svg",
+        { viewBox: "0 0 88 88" },
+        e("circle", { cx: 44, cy: 44, r: 44, fill: "var(--icon-bg)" }),
+        e("path", { d: "M14 78 Q44 30 74 78 Z", fill: "#2a2d3f" }),
+        e("circle", { cx: 44, cy: 50, r: 20, fill: "#414868" }),
+        e("rect", { x: 32, y: 45, width: 24, height: 10, rx: 2, fill: "#0a0c12" }),
+        e("path", { d: "M74 58 L90 42 L98 58 L90 74 L74 58Z", fill: "#f7768e" }),
+        e("text", { x: 90, y: 62, fontFamily: "sans-serif", fontSize: 9, fill: "#3b0f18", textAnchor: "middle" }, "%")
+      );
+
+      const HOW_IT_WORKS = [
+        {
+          label: "Live categories",
+          desc: "Drones, gaming, filament, cards & more",
+          icon: iconCircle(
+            e("rect", { x: 10, y: 10, width: 6, height: 6, rx: 1.5, fill: "#7dcfff" }),
+            e("rect", { x: 20, y: 10, width: 6, height: 6, rx: 1.5, fill: "#9ece6a" }),
+            e("rect", { x: 10, y: 20, width: 6, height: 6, rx: 1.5, fill: "#f7768e" }),
+            e("rect", { x: 20, y: 20, width: 6, height: 6, rx: 1.5, fill: "#bb9af7" })
+          ),
+        },
+        {
+          label: "Price tracking",
+          desc: "Filament prices, tracked over time",
+          icon: iconCircle(
+            e("polyline", { points: "9,23 15,17 20,21 27,11", fill: "none", stroke: "#9ece6a", strokeWidth: 2.2, strokeLinecap: "round", strokeLinejoin: "round" })
+          ),
+        },
+        {
+          label: "Real retailers",
+          desc: "Direct links to Amazon, Target & more",
+          icon: iconCircle(
+            e("rect", { x: 9, y: 9, width: 12, height: 12, rx: 2, fill: "none", stroke: "#7dcfff", strokeWidth: 2 }),
+            e("path", { d: "M20 16 L27 9 M22 9h5v5", fill: "none", stroke: "#7dcfff", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" })
+          ),
+        },
+        {
+          label: "Push alerts",
+          desc: "Get notified on 30%+ off drops",
+          icon: iconCircle(
+            e("path", { d: "M18 9c-3 0-5 2.5-5 6v4l-2.5 4h15L23 19v-4c0-3.5-2-6-5-6Z", fill: "#f7768e" }),
+            e("path", { d: "M15.5 25a2.5 2.5 0 0 0 5 0", fill: "none", stroke: "#f7768e", strokeWidth: 1.8 })
+          ),
+        },
+        {
+          label: "Updated daily",
+          desc: "New drops pulled in continuously",
+          icon: iconCircle(
+            e("circle", { cx: 18, cy: 18, r: 8, fill: "none", stroke: "#e0af68", strokeWidth: 2 }),
+            e("path", { d: "M18 13v5l4 2.5", fill: "none", stroke: "#e0af68", strokeWidth: 2, strokeLinecap: "round" })
+          ),
+        },
+      ];
+
       const AFF_ICONS = {
         star: e("svg", ICON_PROPS, e("polygon", { points: "12,2.5 15,9.5 22,10.3 16.8,15.1 18.2,22 12,18.3 5.8,22 7.2,15.1 2,10.3 9,9.5" })),
         box: e(
@@ -1440,6 +1672,8 @@
         const target = deal.affiliate_url || deal.url;
         const isTracked = deal.category === "filament";
         const [showHistory, setShowHistory] = useState(false);
+        const [imgError, setImgError] = useState(false);
+        const showImage = deal.thumbnail_url && !imgError;
 
         const link = e(
           "a",
@@ -1450,14 +1684,14 @@
             className: isTracked ? undefined : "deal-card",
             style: isTracked ? { display: "flex", flexDirection: "column", flex: "1 1 auto", textDecoration: "none", color: "inherit" } : undefined,
           },
-          deal.thumbnail_url
+          showImage
             ? e("img", {
                 src: deal.thumbnail_url,
                 alt: deal.title,
                 loading: "lazy",
-                onError: (ev) => { ev.currentTarget.style.display = "none"; },
+                onError: () => setImgError(true),
               })
-            : null,
+            : e("div", { className: "deal-card-icon-fallback" }, CATEGORY_ICONS[deal.category] || HERO_ICON),
           e(
             "div",
             { className: "deal-card-body" },
@@ -1696,7 +1930,7 @@
                 e(
                   "a",
                   { href: "/", className: "logo" },
-                  e("img", { src: theme === "dark" ? "/assets/logo-dark.svg" : "/assets/logo.svg", alt: "Hack the Deal", style: { height: 40, display: "block" } })
+                  "hackthedeal", e("span", null, "_")
                 ),
                 e(
                   "div",
@@ -1762,12 +1996,59 @@
             )
           ),
 
+          /* ── Hero ── */
+          e(
+            "section",
+            { className: "hero" },
+            e("div", { className: "hero-icon" }, HERO_ICON),
+            e(
+              "div",
+              null,
+              e("p", { className: "hero-eyebrow" }, "$ curl hackthedeal.com --live"),
+              e("h1", { className: "hero-title" }, (CATEGORY_COPY[activeCat] || CATEGORY_COPY[""]).h1),
+              e("p", { className: "hero-sub" }, (CATEGORY_COPY[activeCat] || CATEGORY_COPY[""]).description)
+            )
+          ),
+
+          /* ── Category showcase + How it works (homepage only) ── */
+          !activeCat
+            ? e(
+                "div",
+                { className: "cat-showcase" },
+                CATEGORIES.filter((c) => c.id).map((c) =>
+                  e(
+                    "div",
+                    { key: c.id, className: "cat-showcase-item", onClick: () => navigateToCategory(c.id) },
+                    CATEGORY_ICONS[c.id],
+                    e("div", { className: "cat-showcase-label" }, c.label)
+                  )
+                )
+              )
+            : null,
+          !activeCat
+            ? e(
+                "section",
+                { className: "how-it-works" },
+                e(
+                  "div",
+                  { className: "how-row" },
+                  HOW_IT_WORKS.map((step) =>
+                    e(
+                      "div",
+                      { key: step.label, className: "how-step" },
+                      step.icon,
+                      e("div", { className: "how-step-label" }, step.label),
+                      e("div", { className: "how-step-desc" }, step.desc)
+                    )
+                  )
+                )
+              )
+            : null,
+
           /* ── Deals grid ── */
           e(
             "main",
-            { style: { maxWidth: 1152, margin: "0 auto", padding: "24px 16px 40px", flex: 1, width: "100%" } },
-            e("h1", { style: { fontSize: 22, fontWeight: 800, letterSpacing: "-0.3px", margin: "0 0 4px" } }, (CATEGORY_COPY[activeCat] || CATEGORY_COPY[""]).h1),
-            e("p", { style: { fontSize: 13, color: "var(--muted)", margin: "0 0 20px", maxWidth: 640 } }, (CATEGORY_COPY[activeCat] || CATEGORY_COPY[""]).description),
+            { style: { maxWidth: 1152, margin: "0 auto", padding: "8px 16px 40px", flex: 1, width: "100%" } },
             e(
               "div",
               { className: "section-title-bar" },

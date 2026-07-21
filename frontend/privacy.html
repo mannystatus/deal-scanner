@@ -44,13 +44,13 @@
 
     <style>
       :root {
-        --bg: #f5f5f6;
+        --bg: #f4f5fa;
         --surface: #ffffff;
-        --border: #e2e2e6;
-        --text: #111112;
-        --muted: #6b6b74;
-        --accent: #00ffd5;
-        --accent-text: #007f68;
+        --border: #e1e3ee;
+        --text: #1a1b26;
+        --muted: #5a5f7a;
+        --accent: #16a34a;
+        --accent-text: #15803d;
       }
       * { box-sizing: border-box; }
       body {
@@ -59,7 +59,7 @@
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       }
       .network-bar {
-        background: #111112;
+        background: #1a1b26;
         color: #aaa;
         font-size: 11px;
         letter-spacing: 0.04em;
@@ -79,13 +79,14 @@
         box-shadow: 0 2px 12px rgba(0,0,0,0.06);
       }
       .logo {
-        font-size: 22px;
-        font-weight: 800;
-        letter-spacing: -0.5px;
-        color: var(--text);
+        font-family: "SF Mono", "Courier New", monospace;
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: -0.3px;
+        color: var(--accent-text);
         text-decoration: none;
       }
-      .logo span { color: var(--accent-text); }
+      .logo span { color: #0369a1; }
       .back-link {
         font-size: 13px;
         color: var(--muted);
@@ -121,7 +122,7 @@
       strong { color: var(--text); }
       section { margin-bottom: 32px; }
       .site-footer {
-        background: #111112;
+        background: #1a1b26;
         color: #888;
         border-top: 3px solid var(--accent);
         font-size: 12px;
@@ -142,7 +143,7 @@
 
     <header class="site-header">
       <div style="max-width:900px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
-        <a href="/" class="logo"><img src="/assets/logo.svg" alt="Hack the Deal" style="height:32px;display:block;" /></a>
+        <a href="/" class="logo">hackthedeal<span>_</span></a>
         <a href="/" class="back-link">← Back to deals</a>
       </div>
     </header>
