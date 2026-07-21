@@ -20,18 +20,22 @@ import httpx
 
 logger = logging.getLogger(__name__)
 
-# Retry budget for transient 429/5xx responses — CI runners (shared IP
-# pools) trip vendor rate limits more often than a normal residential IP
-# would, so a short backoff-and-retry clears most of them without the
-# fetch failing outright.
+# One quick retry for 429/5xx — but only if the server's own Retry-After
+# is short. A CI runner's shared IP can trip a vendor's rate limiter over
+# a single brief spike, and that clears in a few seconds. But some vendors
+# (Shopify, confirmed here) return a long Retry-After (60s+) while
+# sustained-blocking a whole shared IP range — waiting that out per feed
+# would eat the entire job's time budget for a retry that's going to fail
+# anyway, so those are treated as a fast, non-retried failure instead.
 _RETRY_STATUSES = {429, 500, 502, 503, 504}
-_MAX_RETRIES = 3
-_RETRY_DELAYS = [5, 15, 30]  # seconds, one per retry attempt
+_MAX_RETRIES = 1
+_RETRY_DELAY = 3          # seconds, used when there's no Retry-After header
+_MAX_HONORED_RETRY_AFTER = 5  # ignore server-requested waits longer than this
 
 # Pause between feeds so requests to different vendor sites don't all land
 # in the same second — that burst pattern is exactly what trips shared
 # rate limiters in the first place.
-_INTER_FEED_DELAY = 2
+_INTER_FEED_DELAY = 1
 
 
 def _get_with_retry(url: str, headers: dict, timeout: int = 30) -> httpx.Response:
@@ -40,11 +44,13 @@ def _get_with_retry(url: str, headers: dict, timeout: int = 30) -> httpx.Respons
         try:
             resp = httpx.get(url, headers=headers, timeout=timeout, follow_redirects=True)
             if resp.status_code in _RETRY_STATUSES and attempt < _MAX_RETRIES:
-                delay = _RETRY_DELAYS[attempt]
+                delay = _RETRY_DELAY
                 retry_after = resp.headers.get("Retry-After")
                 if retry_after:
                     try:
-                        delay = max(delay, int(retry_after))
+                        if int(retry_after) > _MAX_HONORED_RETRY_AFTER:
+                            resp.raise_for_status()  # not worth waiting out — fail fast
+                        delay = int(retry_after)
                     except ValueError:
                         pass
                 logger.warning(
@@ -61,7 +67,7 @@ def _get_with_retry(url: str, headers: dict, timeout: int = 30) -> httpx.Respons
         except httpx.HTTPError as e:
             last_exc = e
             if attempt < _MAX_RETRIES:
-                time.sleep(_RETRY_DELAYS[attempt])
+                time.sleep(_RETRY_DELAY)
                 continue
             break
     raise last_exc
