@@ -137,7 +137,9 @@
 
       * { box-sizing: border-box; }
 
-      html, body { overflow-x: hidden; max-width: 100%; }
+      /* overflow-x: clip (not hidden) — hidden creates a scroll container
+         that breaks position: sticky on .site-header further down. */
+      html, body { overflow-x: clip; max-width: 100%; }
 
       body {
         background: var(--bg);
