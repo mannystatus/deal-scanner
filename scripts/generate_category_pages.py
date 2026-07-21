@@ -141,15 +141,25 @@ def main() -> None:
     redirect_lines = []
     for slug, copy in CATEGORIES.items():
         page = build_page(template, slug, copy["h1"], copy["description"])
-        # Flat <slug>.html, not <slug>/index.html. Cloudflare Pages does NOT
-        # auto-resolve extensionless URLs to a matching .html file (verified
-        # empirically: /drones.html served the right page, /drones fell
-        # through to the generic index.html SPA fallback) — the _redirects
-        # rewrite rules below are what actually make /drones serve this file
-        # while keeping the URL clean.
-        out_path = ROOT / "frontend" / f"{slug}.html"
-        out_path.write_text(page, encoding="utf-8")
-        print(f"wrote {out_path.relative_to(ROOT)}")
+
+        # Primary: <slug>/index.html — verified empirically that Cloudflare
+        # Pages' _redirects rewrite rules do NOT reliably take effect on this
+        # project (a request to /drones kept falling through to the generic
+        # index.html SPA fallback even on a fresh, successfully-deployed
+        # build), so this relies instead on the same directory-index
+        # resolution that already makes / -> /index.html work, which is a
+        # more fundamental static-asset match than a custom rule file.
+        dir_path = ROOT / "frontend" / slug
+        dir_path.mkdir(parents=True, exist_ok=True)
+        (dir_path / "index.html").write_text(page, encoding="utf-8")
+        print(f"wrote {(dir_path / 'index.html').relative_to(ROOT)}")
+
+        # Also keep the flat <slug>.html around — harmless, and a direct
+        # /drones.html link (if one exists anywhere) still resolves.
+        flat_path = ROOT / "frontend" / f"{slug}.html"
+        flat_path.write_text(page, encoding="utf-8")
+        print(f"wrote {flat_path.relative_to(ROOT)}")
+
         redirect_lines.append(f"/{slug}  /{slug}.html  200")
 
     redirects_path = ROOT / "frontend" / "_redirects"
@@ -157,6 +167,10 @@ def main() -> None:
         "# Cloudflare Pages rewrite rules (see scripts/generate_category_pages.py).\n"
         "# Status 200 = serve this file's content while keeping the requested URL,\n"
         "# as opposed to a 301/302 which would change the browser's address bar.\n"
+        "# NOTE: as of 2026-07-21 these rules did not appear to take effect in\n"
+        "# production (see git history) — the <slug>/index.html files are the\n"
+        "# fix that's actually relied on. Left in place in case it starts\n"
+        "# working after a future platform change; harmless either way.\n"
     )
     redirects_path.write_text(header + "\n".join(redirect_lines) + "\n", encoding="utf-8")
     print(f"wrote {redirects_path.relative_to(ROOT)}")

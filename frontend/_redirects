@@ -1,6 +1,10 @@
 # Cloudflare Pages rewrite rules (see scripts/generate_category_pages.py).
 # Status 200 = serve this file's content while keeping the requested URL,
 # as opposed to a 301/302 which would change the browser's address bar.
+# NOTE: as of 2026-07-21 these rules did not appear to take effect in
+# production (see git history) — the <slug>/index.html files are the
+# fix that's actually relied on. Left in place in case it starts
+# working after a future platform change; harmless either way.
 /computers  /computers.html  200
 /gaming  /gaming.html  200
 /apple  /apple.html  200
