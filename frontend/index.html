@@ -1188,11 +1188,74 @@
         return groups;
       }
 
+      function Sparkline({ history }) {
+        const prices = history.map((h) => Number(h.price)).filter((v) => !Number.isNaN(v));
+        if (prices.length < 2) return null;
+        const min = Math.min(...prices);
+        const max = Math.max(...prices);
+        const range = max - min || 1;
+        const w = 200, h = 36, pad = 4;
+        const step = (w - pad * 2) / (prices.length - 1);
+        const points = prices
+          .map((p, i) => `${pad + i * step},${h - pad - ((p - min) / range) * (h - pad * 2)}`)
+          .join(" ");
+        return e(
+          "svg",
+          { viewBox: `0 0 ${w} ${h}`, style: { width: "100%", height: h, display: "block" } },
+          e("polyline", { points, fill: "none", stroke: "var(--accent-text)", strokeWidth: 2 })
+        );
+      }
+
+      function PriceHistoryPanel({ dealId }) {
+        const [history, setHistory] = useState(null);
+
+        useEffect(() => {
+          let cancelled = false;
+          fetch(`${API_BASE}/deals/${dealId}/price-history`)
+            .then((r) => r.json())
+            .then((data) => { if (!cancelled) setHistory(data); })
+            .catch(() => { if (!cancelled) setHistory([]); });
+          return () => { cancelled = true; };
+        }, [dealId]);
+
+        if (history === null) {
+          return e("p", { style: { fontSize: 11, color: "var(--muted)", margin: "8px 0 0" } }, "Loading price history…");
+        }
+        if (history.length < 2) {
+          return e("p", { style: { fontSize: 11, color: "var(--muted)", margin: "8px 0 0" } }, "Tracking started — check back after the next price update.");
+        }
+
+        const prices = history.map((h) => Number(h.price)).filter((v) => !Number.isNaN(v));
+        const low = Math.min(...prices);
+        const high = Math.max(...prices);
+
+        return e(
+          "div",
+          { style: { marginTop: 8, paddingTop: 8, borderTop: "1px solid var(--border)" } },
+          e(Sparkline, { history }),
+          e(
+            "div",
+            { style: { display: "flex", justifyContent: "space-between", fontSize: 11, color: "var(--muted)", marginTop: 4 } },
+            e("span", null, `Lowest: ${formatPrice(low)}`),
+            e("span", null, `Highest: ${formatPrice(high)}`)
+          )
+        );
+      }
+
       function DealCard({ deal }) {
         const target = deal.affiliate_url || deal.url;
-        return e(
+        const isTracked = deal.category === "filament";
+        const [showHistory, setShowHistory] = useState(false);
+
+        const link = e(
           "a",
-          { href: target, target: "_blank", rel: "noopener noreferrer", className: "deal-card" },
+          {
+            href: target,
+            target: "_blank",
+            rel: "noopener noreferrer",
+            className: isTracked ? undefined : "deal-card",
+            style: isTracked ? { display: "flex", flexDirection: "column", flex: "1 1 auto", textDecoration: "none", color: "inherit" } : undefined,
+          },
           deal.thumbnail_url
             ? e("img", {
                 src: deal.thumbnail_url,
@@ -1229,6 +1292,28 @@
               e("span", null, deal.merchant || deal.source),
               e("span", null, timeAgo(deal.posted_at))
             )
+          )
+        );
+
+        if (!isTracked) return link;
+
+        return e(
+          "div",
+          { className: "deal-card" },
+          link,
+          e(
+            "div",
+            { style: { padding: "0 14px 14px" } },
+            e(
+              "button",
+              {
+                type: "button",
+                onClick: () => setShowHistory((v) => !v),
+                style: { fontSize: 11, fontWeight: 700, color: "var(--accent-text)", background: "none", border: "none", padding: 0, cursor: "pointer" },
+              },
+              showHistory ? "Hide price history ▲" : "Price history ▼"
+            ),
+            showHistory ? e(PriceHistoryPanel, { dealId: deal.id }) : null
           )
         );
       }
@@ -1491,7 +1576,7 @@
             e(
               "div",
               { className: "section-title-bar" },
-              e("span", { className: "section-label" }, "Latest Deals")
+              e("span", { className: "section-label" }, activeCat === "filament" ? "Price Tracker" : "Latest Deals")
             ),
             loading
               ? e(

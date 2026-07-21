@@ -13,7 +13,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from db import init_db, get_session, upsert_deal, deal_exists
+from db import init_db, get_session, upsert_deal, deal_exists, get_deal_by_url, update_deal_price
+from db import PRICE_TRACKED_CATEGORIES
 from parsers import parse_title
 from reddit_source import iter_all_subreddits
 from rss_source import iter_all_feeds
@@ -148,6 +149,13 @@ def main() -> int:
             if post["posted_at"] < cutoff:
                 continue
             parsed = parse_title(post["title"], post["url"], post["source"])
+
+            if parsed.category in PRICE_TRACKED_CATEGORIES:
+                existing = get_deal_by_url(session, parsed.url)
+                if existing is not None:
+                    update_deal_price(session, existing, parsed, recorded_at=datetime.now(timezone.utc))
+                    continue
+
             thumbnail_url = None
             if not deal_exists(session, parsed.url):
                 thumbnail_url, affiliate_url = fetch_page_extras(parsed.url, post["source"])

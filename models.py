@@ -37,6 +37,21 @@ class Deal(Base):
     )
 
 
+class PriceHistory(Base):
+    """A price snapshot for a deal over time. Only populated for categories
+    that track a persistent catalog (e.g. filament), where the same product
+    URL is re-checked on every ingest run rather than posted once."""
+
+    __tablename__ = "price_history"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    deal_id: Mapped[int] = mapped_column(ForeignKey("deals.id"), index=True)
+    price: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True)
+    original_price: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2), nullable=True)
+    discount_pct: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    recorded_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
 class SocialPost(Base):
     """Records a deal having been posted to a social platform, so the poster
     script never posts the same deal to the same platform twice."""

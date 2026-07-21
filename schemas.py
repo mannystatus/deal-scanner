@@ -40,3 +40,12 @@ class HealthOut(BaseModel):
     status: str
     deal_count: int
     latest_ingest: Optional[datetime] = None
+
+
+class PriceHistoryOut(BaseModel):
+    price: Optional[Decimal] = None
+    original_price: Optional[Decimal] = None
+    discount_pct: Optional[float] = None
+    recorded_at: datetime
+
+    model_config = {"from_attributes": True}

@@ -21,9 +21,9 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import desc, func, or_, select
 
-from db import SessionLocal, engine, init_db
-from models import Deal
-from schemas import CategoryCount, DealListOut, DealOut, HealthOut
+from db import SessionLocal, engine, init_db, PRICE_TRACKED_CATEGORIES
+from models import Deal, PriceHistory
+from schemas import CategoryCount, DealListOut, DealOut, HealthOut, PriceHistoryOut
 
 # Deals older than this never show, even if they're still sitting in the DB
 # (e.g. stale evergreen listings, or old rows from a past ingestion source).
@@ -73,7 +73,10 @@ def categories():
         cutoff = datetime.now(timezone.utc) - timedelta(days=MAX_DEAL_AGE_DAYS)
         rows = session.execute(
             select(Deal.category, func.count(Deal.id).label("count"))
-            .where(Deal.posted_at >= cutoff, Deal.source.notin_(BLOCKED_SOURCES))
+            .where(
+                or_(Deal.posted_at >= cutoff, Deal.category.in_(PRICE_TRACKED_CATEGORIES)),
+                Deal.source.notin_(BLOCKED_SOURCES),
+            )
             .group_by(Deal.category)
             .order_by(desc("count"))
         ).all()
@@ -95,11 +98,16 @@ def list_deals(
         cutoff = datetime.now(timezone.utc) - timedelta(days=MAX_DEAL_AGE_DAYS)
         q = select(Deal).where(
             Deal.confidence >= min_confidence,
-            Deal.posted_at >= cutoff,
+            or_(Deal.posted_at >= cutoff, Deal.category.in_(PRICE_TRACKED_CATEGORIES)),
             Deal.source.notin_(BLOCKED_SOURCES),
         )
         if category:
             q = q.where(Deal.category == category)
+        else:
+            # Price-tracked catalogs (e.g. filament) don't rotate day to day
+            # like normal deal posts — keep them out of the default feed and
+            # surface them only when their own tab is selected.
+            q = q.where(Deal.category.notin_(PRICE_TRACKED_CATEGORIES))
         if source:
             q = q.where(Deal.source == source)
         if min_discount is not None:
@@ -132,3 +140,14 @@ def get_deal(deal_id: int):
     if deal is None:
         raise HTTPException(status_code=404, detail="Deal not found")
     return DealOut.model_validate(deal)
+
+
+@app.get("/deals/{deal_id}/price-history", response_model=list[PriceHistoryOut])
+def get_price_history(deal_id: int):
+    with SessionLocal() as session:
+        rows = session.execute(
+            select(PriceHistory)
+            .where(PriceHistory.deal_id == deal_id)
+            .order_by(PriceHistory.recorded_at.asc())
+        ).scalars().all()
+    return [PriceHistoryOut.model_validate(r) for r in rows]
