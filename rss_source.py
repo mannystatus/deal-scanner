@@ -91,6 +91,14 @@ DEFAULT_FEEDS: list[tuple[str, str]] = [
     ("slickdeals-levis",      "https://slickdeals.net/newsearch.php?q=levi&rss=1"),
     ("slickdeals-rei",        "https://slickdeals.net/newsearch.php?q=rei&rss=1"),
     ("slickdeals-northface",  "https://slickdeals.net/newsearch.php?q=the+north+face&rss=1"),
+    # Trading card searches — Slickdeals posts already name which retailer
+    # (Amazon, Target, Walmart, Best Buy, etc.) is running each deal.
+    ("slickdeals-pokemon",       "https://slickdeals.net/newsearch.php?q=pokemon+tcg&rss=1"),
+    ("slickdeals-mtg",           "https://slickdeals.net/newsearch.php?q=magic+the+gathering&rss=1"),
+    ("slickdeals-yugioh",        "https://slickdeals.net/newsearch.php?q=yugioh&rss=1"),
+    ("slickdeals-panini",        "https://slickdeals.net/newsearch.php?q=panini+trading+cards&rss=1"),
+    ("slickdeals-topps",         "https://slickdeals.net/newsearch.php?q=topps+baseball&rss=1"),
+    ("slickdeals-tradingcards",  "https://slickdeals.net/newsearch.php?q=trading+cards&rss=1"),
     # Direct-from-vendor Shopify "sale" collection feeds — real deals
     # straight from the retailer, not a third-party aggregator.
     ("pyrodrone",     "https://pyrodrone.com/collections/sale.atom"),

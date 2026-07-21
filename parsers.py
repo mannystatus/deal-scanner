@@ -10,6 +10,13 @@ WAS_RE = re.compile(
 )
 # Matches "after $70 off", "$30 off" etc — these are savings amounts, not prices
 DOLLAR_OFF_RE = re.compile(r'\$\s*(\d{1,5}(?:\.\d{1,2})?)\s*off', re.IGNORECASE)
+# Matches "orders $35+" free-shipping/order-minimum thresholds — the digits
+# sit flush against the "+" with no space, unlike a real price written as
+# "$21.49 + Free Shipping", so this doesn't catch legitimate deal prices.
+THRESHOLD_RE = re.compile(r'\$\s*(\d{1,5}(?:\.\d{1,2})?)\+')
+# Matches "orders over $35" / "on orders over $49" — same free-shipping
+# threshold, phrased without a trailing "+".
+ORDERS_OVER_RE = re.compile(r'orders?\s+over\s+\$\s*(\d{1,5}(?:\.\d{1,2})?)', re.IGNORECASE)
 AT_MERCHANT_RE = re.compile(r'[@]\s*([A-Za-z][A-Za-z0-9\s&.]{1,40}?)(?:\s*[\(\)\|,]|\s*$)')
 AT_WORD_MERCHANT_RE = re.compile(r'\bat\s+([A-Z][A-Za-z0-9\s&.]{1,40}?)(?:\s*[\(\)\|,]|\s*$)')
 
@@ -40,6 +47,12 @@ SUBREDDIT_CATEGORIES = {
     "slickdeals-levis": "fashion",
     "slickdeals-rei": "fashion",
     "slickdeals-northface": "fashion",
+    "slickdeals-pokemon": "trading_cards",
+    "slickdeals-mtg": "trading_cards",
+    "slickdeals-yugioh": "trading_cards",
+    "slickdeals-panini": "trading_cards",
+    "slickdeals-topps": "trading_cards",
+    "slickdeals-tradingcards": "trading_cards",
     "pyrodrone": "drones",
     "racedayquads": "drones",
     "dronenerds": "drones",
@@ -103,7 +116,9 @@ class ParsedDeal:
 
 def _parse_prices(text: str) -> tuple[list[float], Optional[float], Optional[float]]:
     off_amounts = {float(m) for m in DOLLAR_OFF_RE.findall(text)}
-    prices = [float(m) for m in PRICE_RE.findall(text) if float(m) not in off_amounts]
+    threshold_amounts = {float(m) for m in THRESHOLD_RE.findall(text)} | {float(m) for m in ORDERS_OVER_RE.findall(text)}
+    excluded = off_amounts | threshold_amounts
+    prices = [float(m) for m in PRICE_RE.findall(text) if float(m) not in excluded]
 
     discount = None
     m = DISCOUNT_RE.search(text)
