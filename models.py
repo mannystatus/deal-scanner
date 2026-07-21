@@ -52,6 +52,20 @@ class PriceHistory(Base):
     recorded_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 
 
+class PushSubscription(Base):
+    """A browser's Web Push subscription, plus which deal categories it
+    wants notifications for (empty string = every category)."""
+
+    __tablename__ = "push_subscriptions"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    endpoint: Mapped[str] = mapped_column(Text, unique=True, index=True)
+    p256dh: Mapped[str] = mapped_column(Text)
+    auth: Mapped[str] = mapped_column(Text)
+    categories: Mapped[str] = mapped_column(Text, default="")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
 class SocialPost(Base):
     """Records a deal having been posted to a social platform, so the poster
     script never posts the same deal to the same platform twice."""

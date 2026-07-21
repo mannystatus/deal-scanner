@@ -2,8 +2,13 @@
 #
 # Deploy: Render dashboard → New → Blueprint → connect this repo.
 # Set env vars in the dashboard after the first deploy:
-#   deal-scanner-api    → DATABASE_URL, CORS_ORIGINS
-#   deal-scanner-worker → DATABASE_URL
+#   deal-scanner-api    → DATABASE_URL, CORS_ORIGINS, VAPID_PUBLIC_KEY
+#   deal-scanner-worker → DATABASE_URL, VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY, VAPID_CLAIM_EMAIL
+#
+# VAPID_PUBLIC_KEY/VAPID_PRIVATE_KEY are the Web Push notification keypair
+# (see notifications.py) — generate once and reuse everywhere. The worker
+# is the only thing that ever sends a push, so it's the only place that
+# needs the private key; the API only ever hands the public key to browsers.
 #
 # CORS_ORIGINS should be the URL of the deal-scanner-frontend service,
 # e.g. https://deal-scanner-frontend.onrender.com
@@ -25,6 +30,8 @@ services:
         sync: false       # Paste your Neon connection string in the dashboard
       - key: CORS_ORIGINS
         sync: false       # Your frontend URL, e.g. https://deal-scanner-frontend.onrender.com
+      - key: VAPID_PUBLIC_KEY
+        sync: false       # Same key as the worker's VAPID_PUBLIC_KEY — only the public half
       - key: PYTHON_VERSION
         value: "3.12"
 
@@ -44,6 +51,12 @@ services:
         value: "INFO"
       - key: PYTHON_VERSION
         value: "3.12"
+      - key: VAPID_PUBLIC_KEY
+        sync: false
+      - key: VAPID_PRIVATE_KEY
+        sync: false
+      - key: VAPID_CLAIM_EMAIL
+        sync: false
 
   # ── Frontend (static site) ─────────────────────────────────────────────
   - type: web

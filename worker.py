@@ -15,6 +15,7 @@ load_dotenv()
 
 from db import init_db, get_session, upsert_deal, deal_exists, get_deal_by_url, update_deal_price
 from db import PRICE_TRACKED_CATEGORIES
+from notifications import notify_new_deal
 from parsers import parse_title
 from reddit_source import iter_all_subreddits
 from rss_source import iter_all_feeds
@@ -172,6 +173,7 @@ def main() -> int:
                 thumbnail_url=thumbnail_url,
             ):
                 total_new += 1
+                notify_new_deal(session, parsed, thumbnail_url)
 
     logger.info("Done. %d total new deals ingested.", total_new)
     return total_new

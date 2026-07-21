@@ -8,6 +8,9 @@ name: Reddit ingest
 # Required repo secrets (Settings → Secrets and variables → Actions):
 #   - DATABASE_URL        Neon Postgres connection string with ?sslmode=require
 #   - REDDIT_USER_AGENT   e.g. "deal-scanner/0.1 (contact: you@example.com)"
+#   - VAPID_PUBLIC_KEY    Web Push keypair for browser notifications (notifications.py)
+#   - VAPID_PRIVATE_KEY   Same keypair — private half, only the worker needs it
+#   - VAPID_CLAIM_EMAIL   Contact email for the VAPID JWT claim
 
 on:
   schedule:
@@ -45,4 +48,7 @@ jobs:
           SUBREDDITS: "buildapcsales,GameDeals,AppleDeals,PS5Deals,SwitchDeals,tradingcards,photomarket"
           FETCH_LIMIT: "100"
           LOG_LEVEL: INFO
+          VAPID_PUBLIC_KEY: ${{ secrets.VAPID_PUBLIC_KEY }}
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
+          VAPID_CLAIM_EMAIL: ${{ secrets.VAPID_CLAIM_EMAIL }}
         run: python worker.py

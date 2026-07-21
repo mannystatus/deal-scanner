@@ -19,11 +19,21 @@ load_dotenv()
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy import desc, func, or_, select
+from sqlalchemy import delete, desc, func, or_, select
 
 from db import SessionLocal, engine, init_db, PRICE_TRACKED_CATEGORIES
-from models import Deal, PriceHistory
-from schemas import CategoryCount, DealListOut, DealOut, HealthOut, PriceHistoryOut
+from models import Deal, PriceHistory, PushSubscription
+from notifications import VAPID_PUBLIC_KEY
+from schemas import (
+    CategoryCount,
+    DealListOut,
+    DealOut,
+    HealthOut,
+    PriceHistoryOut,
+    PublicKeyOut,
+    PushSubscribeIn,
+    PushUnsubscribeIn,
+)
 
 # Deals older than this never show, even if they're still sitting in the DB
 # (e.g. stale evergreen listings, or old rows from a past ingestion source).
@@ -52,7 +62,7 @@ _origins = [o.strip() for o in os.getenv("CORS_ORIGINS", "*").split(",") if o.st
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_origins or ["*"],
-    allow_methods=["GET"],
+    allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
 
@@ -151,3 +161,46 @@ def get_price_history(deal_id: int):
             .order_by(PriceHistory.recorded_at.asc())
         ).scalars().all()
     return [PriceHistoryOut.model_validate(r) for r in rows]
+
+
+@app.get("/push/public-key", response_model=PublicKeyOut)
+def push_public_key():
+    if not VAPID_PUBLIC_KEY:
+        raise HTTPException(status_code=503, detail="Push notifications are not configured")
+    return PublicKeyOut(publicKey=VAPID_PUBLIC_KEY)
+
+
+@app.post("/push/subscribe", status_code=204)
+def push_subscribe(body: PushSubscribeIn):
+    p256dh = body.keys.get("p256dh")
+    auth = body.keys.get("auth")
+    if not p256dh or not auth:
+        raise HTTPException(status_code=422, detail="Missing subscription keys")
+
+    categories = ",".join(c.strip() for c in body.categories if c.strip())
+    with SessionLocal() as session:
+        existing = session.execute(
+            select(PushSubscription).where(PushSubscription.endpoint == body.endpoint)
+        ).scalar_one_or_none()
+        if existing:
+            existing.p256dh = p256dh
+            existing.auth = auth
+            existing.categories = categories
+        else:
+            session.add(
+                PushSubscription(
+                    endpoint=body.endpoint,
+                    p256dh=p256dh,
+                    auth=auth,
+                    categories=categories,
+                    created_at=datetime.now(timezone.utc),
+                )
+            )
+        session.commit()
+
+
+@app.post("/push/unsubscribe", status_code=204)
+def push_unsubscribe(body: PushUnsubscribeIn):
+    with SessionLocal() as session:
+        session.execute(delete(PushSubscription).where(PushSubscription.endpoint == body.endpoint))
+        session.commit()

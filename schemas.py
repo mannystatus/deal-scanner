@@ -1,6 +1,6 @@
 from datetime import datetime
 from decimal import Decimal
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from pydantic import BaseModel
 
@@ -49,3 +49,17 @@ class PriceHistoryOut(BaseModel):
     recorded_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class PushSubscribeIn(BaseModel):
+    endpoint: str
+    keys: Dict[str, str]
+    categories: List[str] = []
+
+
+class PushUnsubscribeIn(BaseModel):
+    endpoint: str
+
+
+class PublicKeyOut(BaseModel):
+    publicKey: str
