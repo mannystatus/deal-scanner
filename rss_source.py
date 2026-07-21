@@ -11,13 +11,60 @@ import html
 import logging
 import os
 import re
+import time
 from datetime import datetime, timezone
-from typing import Iterator
+from typing import Iterator, Optional
 
 import feedparser
 import httpx
 
 logger = logging.getLogger(__name__)
+
+# Retry budget for transient 429/5xx responses — CI runners (shared IP
+# pools) trip vendor rate limits more often than a normal residential IP
+# would, so a short backoff-and-retry clears most of them without the
+# fetch failing outright.
+_RETRY_STATUSES = {429, 500, 502, 503, 504}
+_MAX_RETRIES = 3
+_RETRY_DELAYS = [5, 15, 30]  # seconds, one per retry attempt
+
+# Pause between feeds so requests to different vendor sites don't all land
+# in the same second — that burst pattern is exactly what trips shared
+# rate limiters in the first place.
+_INTER_FEED_DELAY = 2
+
+
+def _get_with_retry(url: str, headers: dict, timeout: int = 30) -> httpx.Response:
+    last_exc: Optional[Exception] = None
+    for attempt in range(_MAX_RETRIES + 1):
+        try:
+            resp = httpx.get(url, headers=headers, timeout=timeout, follow_redirects=True)
+            if resp.status_code in _RETRY_STATUSES and attempt < _MAX_RETRIES:
+                delay = _RETRY_DELAYS[attempt]
+                retry_after = resp.headers.get("Retry-After")
+                if retry_after:
+                    try:
+                        delay = max(delay, int(retry_after))
+                    except ValueError:
+                        pass
+                logger.warning(
+                    "  %s returned %d, retrying in %ds (attempt %d/%d)",
+                    url, resp.status_code, delay, attempt + 1, _MAX_RETRIES,
+                )
+                time.sleep(delay)
+                continue
+            resp.raise_for_status()
+            return resp
+        except httpx.HTTPStatusError as e:
+            last_exc = e
+            break
+        except httpx.HTTPError as e:
+            last_exc = e
+            if attempt < _MAX_RETRIES:
+                time.sleep(_RETRY_DELAYS[attempt])
+                continue
+            break
+    raise last_exc
 
 # (source_name, rss_url)
 DEFAULT_FEEDS: list[tuple[str, str]] = [
@@ -100,8 +147,7 @@ def iter_feed(source: str, url: str) -> Iterator[dict]:
     """Fetch one RSS/Atom feed and yield normalized post dicts."""
     ua = os.getenv("RSS_USER_AGENT", "deal-scanner/0.1 (contact: mannydotco@gmail.com)")
     try:
-        resp = httpx.get(url, headers={"User-Agent": ua}, timeout=30, follow_redirects=True)
-        resp.raise_for_status()
+        resp = _get_with_retry(url, headers={"User-Agent": ua})
         raw = resp.text
     except httpx.HTTPError as e:
         logger.error("Failed to fetch feed %s (%s): %s", source, url, e)
@@ -189,9 +235,12 @@ def iter_woocommerce_store(source: str, base_url: str, max_pages: int = 3) -> It
 
 def iter_all_feeds() -> Iterator[dict]:
     """Iterate over all configured feeds and yield post dicts."""
-    for source, url in _load_feeds():
+    for i, (source, url) in enumerate(_load_feeds()):
+        if i > 0:
+            time.sleep(_INTER_FEED_DELAY)
         logger.info("Fetching %s — %s", source, url)
         yield from iter_feed(source, url)
     for source, base_url in WOOCOMMERCE_STORES:
+        time.sleep(_INTER_FEED_DELAY)
         logger.info("Fetching %s (WooCommerce store) — %s", source, base_url)
         yield from iter_woocommerce_store(source, base_url)
