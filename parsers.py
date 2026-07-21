@@ -42,6 +42,7 @@ SUBREDDIT_CATEGORIES = {
     "dealnews-shoes": "shoes",
     "dealnews-beauty": "beauty",
     "dealnews-travel": "travel",
+    "dealnews-software": "software",
     "slickdeals-nike": "fashion",
     "slickdeals-adidas": "fashion",
     "slickdeals-levis": "fashion",
