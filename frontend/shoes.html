@@ -245,6 +245,7 @@
         top: 0;
         z-index: 50;
         box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        transition: transform 0.25s ease;
       }
 
       /* Logo — plain monospace terminal-style wordmark */
@@ -322,6 +323,10 @@
         .logo-row { flex-wrap: wrap; }
         .logo-row .logo-controls { flex-basis: 100%; }
         .search-input { flex-basis: 100%; }
+        /* Hide the sticky header on scroll-down, reveal on scroll-up —
+           frees up screen space on small viewports where the header
+           can grow to several stacked rows. */
+        .site-header--hidden { transform: translateY(-100%); }
       }
       .search-input:focus { border-color: var(--accent); }
       .search-input::placeholder { color: var(--muted); }
@@ -1785,6 +1790,7 @@
         const [theme, setTheme] = useState(
           () => document.documentElement.getAttribute("data-theme") || "light"
         );
+        const [headerHidden, setHeaderHidden] = useState(false);
 
         function toggleTheme() {
           const next = theme === "dark" ? "light" : "dark";
@@ -1909,6 +1915,24 @@
           });
         }, [deals]);
 
+        useEffect(() => {
+          let lastY = window.scrollY;
+          let ticking = false;
+          function onScroll() {
+            if (ticking) return;
+            ticking = true;
+            requestAnimationFrame(() => {
+              const y = window.scrollY;
+              if (y > lastY && y > 80) setHeaderHidden(true);
+              else if (y < lastY) setHeaderHidden(false);
+              lastY = y;
+              ticking = false;
+            });
+          }
+          window.addEventListener("scroll", onScroll, { passive: true });
+          return () => window.removeEventListener("scroll", onScroll);
+        }, []);
+
         return e(
           "div",
           { style: { minHeight: "100vh", display: "flex", flexDirection: "column" } },
@@ -1928,7 +1952,7 @@
           /* ── Site header ── */
           e(
             "header",
-            { className: "site-header" },
+            { className: `site-header${headerHidden ? " site-header--hidden" : ""}` },
             e(
               "div",
               { style: { maxWidth: 1152, margin: "0 auto", padding: "12px 16px" } },
