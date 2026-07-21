@@ -119,6 +119,135 @@
       a:hover { opacity: 0.8; }
       strong { color: var(--text); }
 
+      /* Promo hero */
+      .promo-hero {
+        max-width: 900px;
+        margin: 32px auto 0;
+        padding: 0 16px;
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 40px;
+        align-items: center;
+      }
+      @media (max-width: 760px) {
+        .promo-hero { grid-template-columns: 1fr; }
+      }
+      .promo-eyebrow {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--accent-text);
+        margin: 0 0 10px;
+      }
+      .promo-hero h1 {
+        font-size: 34px;
+        line-height: 1.15;
+        margin: 0 0 14px;
+      }
+      .promo-hero p.lead {
+        font-size: 15px;
+        line-height: 1.6;
+        color: #444;
+        max-width: 480px;
+      }
+      .promo-cta {
+        display: inline-block;
+        margin-top: 8px;
+        background: var(--text);
+        color: #fff;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 700;
+        padding: 12px 26px;
+        border-radius: 999px;
+      }
+      .promo-cta:hover { opacity: 0.85; }
+
+      /* Mock sponsored deal card — an honest, to-scale preview of the real
+         site's card component, not a fabricated traffic/sales screenshot. */
+      .mock-frame {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 20px;
+      }
+      .mock-card {
+        background: var(--surface);
+        border: 1.5px solid var(--accent);
+        border-radius: 10px;
+        padding: 14px;
+        box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+      }
+      .mock-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 10px; }
+      .mock-chip {
+        font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em;
+        padding: 2px 8px; border-radius: 4px; background: rgba(0,255,213,0.15); color: var(--accent-text);
+      }
+      .mock-sponsored {
+        font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em;
+        padding: 2px 8px; border-radius: 4px; background: #fff3e0; color: #b45309;
+      }
+      .mock-title { font-size: 14px; font-weight: 700; margin: 0 0 8px; }
+      .mock-price { font-size: 19px; font-weight: 800; }
+      .mock-price span { font-size: 12px; font-weight: 500; color: var(--muted); text-decoration: line-through; margin-left: 6px; }
+
+      /* How it works */
+      .how-steps {
+        max-width: 900px;
+        margin: 56px auto 0;
+        padding: 0 16px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+      @media (max-width: 700px) {
+        .how-steps { grid-template-columns: 1fr; }
+      }
+      .how-step {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 20px;
+      }
+      .how-step .num {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 26px; height: 26px; border-radius: 999px;
+        background: var(--accent); color: #000; font-weight: 800; font-size: 13px;
+        margin-bottom: 10px;
+      }
+      .how-step h3 { font-size: 15px; font-weight: 800; margin: 0 0 6px; color: var(--text); }
+      .how-step p { font-size: 13px; margin: 0; }
+
+      /* Partner options */
+      .partner-grid {
+        max-width: 900px;
+        margin: 40px auto 0;
+        padding: 0 16px;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+      @media (max-width: 700px) {
+        .partner-grid { grid-template-columns: 1fr; }
+      }
+      .partner-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 20px 22px;
+      }
+      .partner-card h3 { font-size: 15px; font-weight: 800; margin: 0 0 6px; color: var(--text); }
+      .partner-card p { font-size: 13px; margin: 0; }
+      .partner-note {
+        max-width: 900px;
+        margin: 20px auto 0;
+        padding: 0 16px;
+        font-size: 12.5px;
+        color: var(--muted);
+        text-align: center;
+      }
+
       .contact-form { margin-top: 28px; display: flex; flex-direction: column; gap: 16px; max-width: 480px; }
       .form-field { display: flex; flex-direction: column; gap: 6px; }
       .form-field label { font-size: 13px; font-weight: 700; color: var(--text); }
@@ -167,8 +296,8 @@
   <body>
     <!-- Privacy / cookie consent notice — static markup so it's visible even
          before any script runs. Dismissing it loads Google Tag Manager. -->
-    <div id="consent-overlay" class="consent-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 999; align-items: flex-end; justify-content: center; padding: 16px;">
-      <div style="max-width:560px; width:100%; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; box-shadow:0 8px 30px rgba(0,0,0,0.25); display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+    <div id="consent-overlay" class="consent-overlay" style="display: none; position: fixed; inset: 0; z-index: 999; align-items: flex-end; justify-content: center; padding: 16px; pointer-events: none;">
+      <div style="pointer-events: auto; max-width:560px; width:100%; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; box-shadow:0 8px 30px rgba(0,0,0,0.25); display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
         <div style="flex:1 1 320px;">
           <p style="margin:0 0 4px; font-size:14px; font-weight:800;">🍪 We use cookies</p>
           <p style="margin:0; font-size:13px; line-height:1.5; color:var(--text);">
@@ -203,15 +332,73 @@
       </div>
     </header>
 
-    <main style="max-width:900px;margin:32px auto;padding:0 16px 48px;">
-      <div class="content-card">
-        <h1>Contact &amp; Partnerships</h1>
-        <p style="font-size:12px;color:var(--muted);margin-bottom:24px;">Brands, retailers, and partners — reach out below.</p>
+    <main>
+      <!-- Promo hero -->
+      <section class="promo-hero">
+        <div>
+          <p class="promo-eyebrow">Partner With Us</p>
+          <h1>Get your deals in front of shoppers who are already looking for one</h1>
+          <p class="lead">
+            Whether it's one deal worth spotlighting or a whole storefront running a sale, we'll get it
+            into the right category feed on Hack the Deal — no ad platform to set up, no code to write.
+          </p>
+          <a href="#partner-form" class="promo-cta">See how it works ↓</a>
+        </div>
+        <div class="mock-frame">
+          <div class="mock-card">
+            <div class="mock-row">
+              <span class="mock-chip">drones</span>
+              <span class="mock-sponsored">Sponsored</span>
+            </div>
+            <p class="mock-title">YourBrand FPV Motor 4-Pack — 30% off this week</p>
+            <p class="mock-price">$34.99<span>$49.99</span></p>
+          </div>
+        </div>
+      </section>
 
-        <p>
-          Interested in a partnership, affiliate deal feed, or sponsored placement on Hack the Deal?
-          Fill out the form and we'll get back to you.
-        </p>
+      <!-- How it works -->
+      <section class="how-steps">
+        <div class="how-step">
+          <span class="num">1</span>
+          <h3>Tell us about it</h3>
+          <p>A single deal link, or a storefront with a public sale/clearance collection — fill out the form below.</p>
+        </div>
+        <div class="how-step">
+          <span class="num">2</span>
+          <h3>We match it to a category</h3>
+          <p>Drones, gaming, trading cards, 3D printing &amp; filament, and more — it shows up where shoppers are already browsing.</p>
+        </div>
+        <div class="how-step">
+          <span class="num">3</span>
+          <h3>It goes live</h3>
+          <p>For an ongoing storefront, we track your feed the same way we already do for our current retail partners — new deals and price drops keep appearing with no extra work on your end.</p>
+        </div>
+      </section>
+
+      <!-- Partner options -->
+      <section class="partner-grid">
+        <div class="partner-card">
+          <h3>Featured deal placement</h3>
+          <p>Spotlight a specific deal at the top of its category (or the homepage) for a limited run, clearly marked as sponsored.</p>
+        </div>
+        <div class="partner-card">
+          <h3>Ongoing feed inclusion</h3>
+          <p>Have a public sale or clearance collection? We'll track it continuously, so it's always current without you sending us updates.</p>
+        </div>
+        <div class="partner-card">
+          <h3>Social cross-posting</h3>
+          <p>Deals we feature can also go out on our Instagram and Threads, extending reach beyond the site itself.</p>
+        </div>
+        <div class="partner-card">
+          <h3>Something else</h3>
+          <p>Affiliate partnership, co-marketing, or a custom arrangement — tell us what you have in mind below.</p>
+        </div>
+      </section>
+      <p class="partner-note">Rates depend on category, placement, and duration — tell us what you're looking for and we'll follow up with options.</p>
+
+      <div id="partner-form" class="content-card" style="max-width:900px;margin:40px auto 48px;">
+        <h1>Get in touch</h1>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:24px;">Brands, retailers, and partners — reach out below.</p>
 
         <form id="contact-form" class="contact-form" action="https://formspree.io/f/meeyawde" method="POST">
           <div class="form-field">
