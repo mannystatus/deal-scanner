@@ -47,8 +47,8 @@ SUBREDDIT_CATEGORIES = {
     "elegoo": "3d_printing",
     "anycubic": "3d_printing",
     "sovol": "3d_printing",
-    "polymaker": "3d_printing",
-    "overture": "3d_printing",
+    "polymaker": "filament",
+    "overture": "filament",
 }
 
 # Bracket tags like [Camera] or [Software] at the start of titles override the

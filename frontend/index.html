@@ -625,6 +625,7 @@
         { id: "travel", label: "Travel" },
         { id: "drones", label: "Drones" },
         { id: "3d_printing", label: "3D Printing" },
+        { id: "filament", label: "3D Filament" },
       ];
 
       const CATEGORY_IDS = new Set(CATEGORIES.filter((c) => c.id).map((c) => c.id));
@@ -679,8 +680,12 @@
           description: "Live price drops on drones, FPV parts, batteries, motors, and accessories straight from vendors like Pyrodrone and RaceDayQuads. DealScanner tracks drone deals continuously.",
         },
         "3d_printing": {
-          h1: "Best 3D Printer & Filament Deals Today",
-          description: "Live price drops on 3D printers, filament, and supplies straight from vendors like Elegoo, Anycubic, Sovol, Polymaker, and Overture. DealScanner tracks 3D printing deals continuously.",
+          h1: "Best 3D Printer Deals Today",
+          description: "Live price drops on 3D printers and supplies straight from vendors like Elegoo, Anycubic, and Sovol. DealScanner tracks 3D printing deals continuously.",
+        },
+        filament: {
+          h1: "Best 3D Printer Filament Deals Today",
+          description: "Live price drops on PLA, PETG, ABS, and specialty filament straight from vendors like Overture and Polymaker. DealScanner tracks filament deals continuously.",
         },
       };
 
