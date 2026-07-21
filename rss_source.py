@@ -239,6 +239,79 @@ def iter_woocommerce_store(source: str, base_url: str, max_pages: int = 3) -> It
     logger.info("  %s: %d on-sale entries", source, total)
 
 
+# Bambu Lab's store (bambulab.com's own custom Next.js storefront, not
+# Shopify/WooCommerce) has no feed or public API — but the product grid
+# IS server-rendered into the page, embedded as a JSON string inside
+# Next.js's React Server Components payload (a series of
+# `self.__next_f.push([1, "..."])` script calls that, concatenated and
+# JSON-unescaped, reconstruct into one big JSON-ish text blob containing
+# a "productList" array). No browser/JS execution needed — just a plain
+# GET and some text surgery. (source_name, collection_url)
+BAMBULAB_COLLECTIONS: list[tuple[str, str]] = [
+    ("bambulab", "https://us.store.bambulab.com/collections/bambu-lab-3d-printer-filament"),
+]
+
+_NEXT_F_PUSH_RE = re.compile(r'self\.__next_f\.push\(\[1,(".*?")\]\)(?=\s*</script>)', re.S)
+
+
+def iter_bambulab_collection(source: str, collection_url: str) -> Iterator[dict]:
+    """Scrape a Bambu Lab store collection page for its product list."""
+    import json as _json
+    from urllib.parse import urlparse
+
+    ua = os.getenv("RSS_USER_AGENT", "deal-scanner/0.1 (contact: mannydotco@gmail.com)")
+    headers = {"User-Agent": ua, "Accept": "text/html"}
+    try:
+        resp = _get_with_retry(collection_url, headers=headers)
+        raw = resp.text
+    except httpx.HTTPError as e:
+        logger.error("Failed to fetch Bambu Lab collection %s (%s): %s", source, collection_url, e)
+        return
+
+    chunks = _NEXT_F_PUSH_RE.findall(raw)
+    full_text = ""
+    for chunk in chunks:
+        try:
+            full_text += _json.loads(chunk)
+        except _json.JSONDecodeError:
+            continue
+
+    idx = full_text.find('"productList":[')
+    if idx == -1:
+        logger.error("Bambu Lab collection %s: productList not found (page structure may have changed)", source)
+        return
+    try:
+        products, _ = _json.JSONDecoder().raw_decode(full_text, idx + len('"productList":'))
+    except _json.JSONDecodeError as e:
+        logger.error("Bambu Lab collection %s: failed to parse productList: %s", source, e)
+        return
+
+    base = f"{urlparse(collection_url).scheme}://{urlparse(collection_url).netloc}"
+    total = 0
+    for p in products:
+        name = (p.get("name") or "").strip()
+        seo_code = p.get("seo_code") or p.get("seoCode") or ""
+        sale = p.get("lowerPrice")
+        original = p.get("price")
+        if not name or not seo_code or sale is None:
+            continue
+
+        title = f"{name} - ${sale:.2f}"
+        if original is not None and original > sale:
+            title = f"{name} - ${sale:.2f} (was ${original:.2f})"
+
+        link = f"{base}/products/{seo_code}"
+        yield {
+            "reddit_id": _make_id(link),
+            "title":     title,
+            "url":       link,
+            "posted_at": datetime.now(timezone.utc),
+            "source":    source,
+        }
+        total += 1
+    logger.info("  %s: %d products", source, total)
+
+
 def iter_all_feeds() -> Iterator[dict]:
     """Iterate over all configured feeds and yield post dicts."""
     for i, (source, url) in enumerate(_load_feeds()):
@@ -250,3 +323,7 @@ def iter_all_feeds() -> Iterator[dict]:
         time.sleep(_INTER_FEED_DELAY)
         logger.info("Fetching %s (WooCommerce store) — %s", source, base_url)
         yield from iter_woocommerce_store(source, base_url)
+    for source, collection_url in BAMBULAB_COLLECTIONS:
+        time.sleep(_INTER_FEED_DELAY)
+        logger.info("Fetching %s (Bambu Lab collection) — %s", source, collection_url)
+        yield from iter_bambulab_collection(source, collection_url)

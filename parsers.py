@@ -49,6 +49,7 @@ SUBREDDIT_CATEGORIES = {
     "sovol": "3d_printing",
     "polymaker": "filament",
     "overture": "filament",
+    "bambulab": "filament",
 }
 
 # Bracket tags like [Camera] or [Software] at the start of titles override the
