@@ -2,91 +2,97 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.hackthedeal.com/</loc>
-    <lastmod>2026-07-12</lastmod>
-    <changefreq>hourly</changefreq>
+    <lastmod>2026-07-21</lastmod>
+    <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://www.hackthedeal.com/computers</loc>
-    <lastmod>2026-07-12</lastmod>
-    <changefreq>hourly</changefreq>
+    <lastmod>2026-07-21</lastmod>
+    <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.hackthedeal.com/gaming</loc>
-    <lastmod>2026-07-12</lastmod>
-    <changefreq>hourly</changefreq>
+    <lastmod>2026-07-21</lastmod>
+    <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.hackthedeal.com/apple</loc>
-    <lastmod>2026-07-12</lastmod>
-    <changefreq>hourly</changefreq>
+    <lastmod>2026-07-21</lastmod>
+    <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.hackthedeal.com/cameras</loc>
-    <lastmod>2026-07-12</lastmod>
-    <changefreq>hourly</changefreq>
+    <lastmod>2026-07-21</lastmod>
+    <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.hackthedeal.com/software</loc>
-    <lastmod>2026-07-12</lastmod>
-    <changefreq>hourly</changefreq>
+    <lastmod>2026-07-21</lastmod>
+    <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.hackthedeal.com/trading_cards</loc>
-    <lastmod>2026-07-12</lastmod>
-    <changefreq>hourly</changefreq>
+    <lastmod>2026-07-21</lastmod>
+    <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.hackthedeal.com/fashion</loc>
-    <lastmod>2026-07-16</lastmod>
-    <changefreq>hourly</changefreq>
+    <lastmod>2026-07-21</lastmod>
+    <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.hackthedeal.com/beauty</loc>
-    <lastmod>2026-07-16</lastmod>
-    <changefreq>hourly</changefreq>
+    <lastmod>2026-07-21</lastmod>
+    <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.hackthedeal.com/shoes</loc>
-    <lastmod>2026-07-16</lastmod>
-    <changefreq>hourly</changefreq>
+    <lastmod>2026-07-21</lastmod>
+    <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.hackthedeal.com/travel</loc>
-    <lastmod>2026-07-16</lastmod>
-    <changefreq>hourly</changefreq>
+    <lastmod>2026-07-21</lastmod>
+    <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.hackthedeal.com/drones</loc>
-    <lastmod>2026-07-17</lastmod>
-    <changefreq>hourly</changefreq>
+    <lastmod>2026-07-21</lastmod>
+    <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.hackthedeal.com/3d_printing</loc>
-    <lastmod>2026-07-17</lastmod>
-    <changefreq>hourly</changefreq>
+    <lastmod>2026-07-21</lastmod>
+    <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.hackthedeal.com/filament</loc>
     <lastmod>2026-07-21</lastmod>
-    <changefreq>hourly</changefreq>
+    <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.hackthedeal.com/contact.html</loc>
+    <lastmod>2026-07-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
     <loc>https://www.hackthedeal.com/privacy.html</loc>
-    <lastmod>2026-07-12</lastmod>
+    <lastmod>2026-07-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>
