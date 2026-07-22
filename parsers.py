@@ -66,6 +66,7 @@ SUBREDDIT_CATEGORIES = {
     "polymaker": "filament",
     "overture": "filament",
     "bambulab": "filament",
+    "homage": "fashion",
 }
 
 # Distinctive digital-media/streaming service names — unambiguous wherever

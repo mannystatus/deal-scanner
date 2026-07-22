@@ -144,6 +144,7 @@ DEFAULT_FEEDS: list[tuple[str, str]] = [
     ("sovol",         "https://www.sovol3d.com/collections/sale.atom"),
     ("polymaker",     "https://shop.polymaker.com/collections/sale.atom"),
     ("overture",      "https://overture3d.com/collections/sale.atom"),
+    ("homage",        "https://www.homage.com/collections/sale.atom"),
 ]
 
 # WooCommerce stores queried via their public Store API for on-sale products
