@@ -44,6 +44,7 @@ SUBREDDIT_CATEGORIES = {
     "dealnews-travel": "travel",
     "dealnews-software": "software",
     "dealnews-cameras": "cameras",
+    "slickdeals-itunes": "streaming",
     "slickdeals-nike": "fashion",
     "slickdeals-adidas": "fashion",
     "slickdeals-levis": "fashion",
@@ -66,6 +67,16 @@ SUBREDDIT_CATEGORIES = {
     "overture": "filament",
     "bambulab": "filament",
 }
+
+# Distinctive digital-media/streaming service names — unambiguous wherever
+# they appear in a title, so this check runs before (and overrides) both the
+# bracket-tag and subreddit/feed-based category below.
+_STREAMING_KEYWORDS_RE = re.compile(
+    r'itunes|ibooks|apple\s?tv|google\s?play|movies\s?anywhere|'
+    r'\bhulu\b|youtube\s?tv|disney\+|disney\s?plus|paramount\+|paramount\s?plus|'
+    r'hbo\s?max|peacock\s?(?:tv|premium)|prime\s?video|\bnetflix\b',
+    re.IGNORECASE,
+)
 
 # Bracket tags like [Camera] or [Software] at the start of titles override the
 # subreddit-level category when more specific.
@@ -94,6 +105,8 @@ _TAG_CATEGORY_MAP = {
 
 
 def _category_from_title(title: str, fallback: str) -> str:
+    if _STREAMING_KEYWORDS_RE.search(title):
+        return "streaming"
     m = _BRACKET_TAG_RE.match(title)
     if m:
         for word in re.split(r'[\s/\-]+', m.group(1).lower()):

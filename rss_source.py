@@ -86,6 +86,12 @@ DEFAULT_FEEDS: list[tuple[str, str]] = [
     ("dealnews-travel",  "https://www.dealnews.com/c206/Travel-Entertainment/?rss=1"),
     ("dealnews-software", "https://www.dealnews.com/c124/Computers/Software/?rss=1"),
     ("dealnews-cameras", "https://www.dealnews.com/c168/Electronics/Cameras/?rss=1"),
+    # iTunes/Apple TV digital movie & show price drops — the only reliable
+    # feed of real streaming/digital-media deals found; Google Play and
+    # live-TV subscription promos (Hulu, YouTube TV, etc.) aren't covered by
+    # any aggregator with a usable feed, so those rely on the streaming
+    # keyword match in parsers.py picking them up if they surface elsewhere.
+    ("slickdeals-itunes", "https://slickdeals.net/newsearch.php?q=itunes+movies&rss=1"),
     # Brand-direct searches, so deals surface from the brands themselves
     # instead of general deal-blog aggregators.
     ("slickdeals-nike",       "https://slickdeals.net/newsearch.php?q=nike&rss=1"),

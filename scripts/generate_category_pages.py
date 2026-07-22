@@ -43,6 +43,10 @@ CATEGORIES = {
         "h1": "Best Software Deals Today",
         "description": "Live price drops on software licenses, subscriptions, and digital tools. Hack the Deal tracks software deals from top retailers continuously.",
     },
+    "streaming": {
+        "h1": "Best Streaming & Digital Media Deals Today",
+        "description": "Live price drops on iTunes and Google Play movies, TV shows, and eBooks, plus streaming service offers like Hulu and YouTube TV. Hack the Deal tracks streaming deals from top retailers continuously.",
+    },
     "trading_cards": {
         "h1": "Best Trading Card Deals Today",
         "description": "Live price drops on trading card boxes, packs, and singles across Pokémon, sports, and TCGs. Hack the Deal tracks trading card deals continuously.",

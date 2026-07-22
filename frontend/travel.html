@@ -749,6 +749,7 @@
         { id: "apple", label: "Apple" },
         { id: "cameras", label: "Cameras" },
         { id: "software", label: "Software" },
+        { id: "streaming", label: "Streaming" },
         { id: "trading_cards", label: "Trading Cards" },
         { id: "fashion", label: "Fashion" },
         { id: "beauty", label: "Beauty" },
@@ -785,6 +786,10 @@
         software: {
           h1: "Best Software Deals Today",
           description: "Live price drops on software licenses, subscriptions, and digital tools. Hack the Deal tracks software deals from top retailers continuously.",
+        },
+        streaming: {
+          h1: "Best Streaming & Digital Media Deals Today",
+          description: "Live price drops on iTunes and Google Play movies, TV shows, and eBooks, plus streaming service offers like Hulu and YouTube TV. Hack the Deal tracks streaming deals from top retailers continuously.",
         },
         trading_cards: {
           h1: "Best Trading Card Deals Today",
@@ -1143,6 +1148,10 @@
         software: iconCircle(
           e("rect", { x: 7, y: 10, width: 22, height: 16, rx: 3, fill: "#414868" }),
           e("text", { x: 18, y: 21, fontFamily: "monospace", fontSize: 9, fill: "#93e6a6", textAnchor: "middle" }, ">_")
+        ),
+        streaming: iconCircle(
+          e("rect", { x: 7, y: 10, width: 22, height: 16, rx: 3, fill: "#414868" }),
+          e("polygon", { points: "15,14 15,22 23,18", fill: "#93e6a6" })
         ),
         trading_cards: iconCircle(
           e("rect", { x: 8, y: 10, width: 14, height: 18, rx: 2.5, fill: "#7dcfff", transform: "rotate(-8 15 19)" }),
