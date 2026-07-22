@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 260" role="img" aria-labelledby="title">
-  <title id="title">Hack the Deal — hackthedeal_ (dark theme)</title>
-  <rect width="900" height="260" rx="24" fill="#14151c"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="120 85 570 90" role="img" aria-labelledby="title">
+  <title id="title">hackthedeal_</title>
   <rect x="130" y="98" width="22" height="64" fill="#93e6a6"/>
   <text x="170" y="152" font-family="'Courier New', 'DejaVu Sans Mono', monospace" font-size="70" font-weight="700" fill="#93e6a6">hackthedeal_</text>
 </svg>

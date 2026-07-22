@@ -23,8 +23,8 @@
     <meta name="robots" content="index, follow" />
     <meta name="theme-color" content="#ffffff" />
     <link rel="canonical" href="https://www.hackthedeal.com/contact.html" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" href="/favicon-v2.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-v2.ico" sizes="any" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
@@ -54,8 +54,8 @@
         --border: #e1e3ee;
         --text: #1a1b26;
         --muted: #5a5f7a;
-        --accent: #16a34a;
-        --accent-text: #15803d;
+        --accent: #93e6a6;
+        --accent-text: #1d7c33;
       }
       * { box-sizing: border-box; }
       body {
@@ -84,14 +84,12 @@
         box-shadow: 0 2px 12px rgba(0,0,0,0.06);
       }
       .logo {
-        font-family: "SF Mono", "Courier New", monospace;
-        font-size: 20px;
-        font-weight: 700;
-        letter-spacing: -0.3px;
+        display: flex;
+        align-items: center;
+        line-height: 1;
         color: var(--accent-text);
-        text-decoration: none;
       }
-      .logo span { color: #0369a1; }
+      .logo svg { height: 20px; width: auto; display: block; }
       .back-link {
         font-size: 13px;
         color: var(--muted);
@@ -179,7 +177,7 @@
       .mock-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 10px; }
       .mock-chip {
         font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em;
-        padding: 2px 8px; border-radius: 4px; background: rgba(22,163,74,0.12); color: var(--accent-text);
+        padding: 2px 8px; border-radius: 4px; background: rgba(147,230,166,0.12); color: var(--accent-text);
       }
       .mock-sponsored {
         font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em;
@@ -276,7 +274,7 @@
       .submit-btn:hover { opacity: 0.85; }
       .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
       .form-status { font-size: 13px; font-weight: 600; }
-      .form-status.success { color: #16a34a; }
+      .form-status.success { color: #1d7c33; }
       .form-status.error { color: #dc2626; }
 
       .site-footer {
@@ -324,7 +322,7 @@
 
     <header class="site-header">
       <div style="max-width:900px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
-        <a href="/" class="logo">hackthedeal<span>_</span></a>
+        <a href="/" class="logo"><svg viewBox="120 85 570 90" role="img" aria-label="hackthedeal_"><rect x="130" y="98" width="22" height="64" fill="currentColor"/><text x="170" y="152" font-family="&apos;Courier New&apos;, &apos;DejaVu Sans Mono&apos;, monospace" font-size="70" font-weight="700" fill="currentColor">hackthedeal_</text></svg></a>
         <a href="/" class="back-link">← Back to deals</a>
       </div>
     </header>

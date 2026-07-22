@@ -35,8 +35,8 @@
     <meta name="robots" content="index, follow" />
     <meta name="theme-color" content="#ffffff" />
     <link rel="canonical" href="https://www.hackthedeal.com/trading_cards" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" href="/favicon-v2.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-v2.ico" sizes="any" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
@@ -107,9 +107,9 @@
         --border: #e1e3ee;
         --text: #1a1b26;
         --muted: #5a5f7a;
-        --accent: #16a34a;
-        --accent-text: #15803d;
-        --accent-dim: rgba(22, 163, 74, 0.12);
+        --accent: #93e6a6;
+        --accent-text: #1d7c33;
+        --accent-dim: rgba(147, 230, 166, 0.12);
         --accent2: #0284c7;
         --accent2-text: #0369a1;
         --danger-bg: #fde2e7;
@@ -122,9 +122,9 @@
         --border: #2a2d3f;
         --text: #c0caf5;
         --muted: #a9b1d6;
-        --accent: #9ece6a;
-        --accent-text: #9ece6a;
-        --accent-dim: rgba(158, 206, 106, 0.14);
+        --accent: #93e6a6;
+        --accent-text: #93e6a6;
+        --accent-dim: rgba(147, 230, 166, 0.14);
         --accent2: #7dcfff;
         --accent2-text: #7dcfff;
         --danger-bg: #2a1519;
@@ -250,15 +250,12 @@
 
       /* Logo — plain monospace terminal-style wordmark */
       .logo {
-        font-family: "SF Mono", "Courier New", monospace;
-        font-size: 22px;
-        font-weight: 700;
-        letter-spacing: -0.3px;
-        color: var(--accent-text);
-        text-decoration: none;
+        display: flex;
+        align-items: center;
         line-height: 1;
+        color: var(--accent-text);
       }
-      .logo span { color: var(--accent2-text); }
+      .logo svg { height: 22px; width: auto; display: block; }
 
       /* Category nav pills */
       .cat-pill {
@@ -543,7 +540,7 @@
       .aff-thumb.icon-shirt  { background: rgba(219, 39, 119, 0.12); color: #db2777; }
       .aff-thumb.icon-lipstick { background: rgba(234, 88, 12, 0.12); color: #ea580c; }
       .aff-thumb.icon-shoe   { background: rgba(8, 145, 178, 0.12); color: #0891b2; }
-      .aff-thumb.icon-suitcase { background: rgba(22, 163, 74, 0.12); color: #16a34a; }
+      .aff-thumb.icon-suitcase { background: rgba(147, 230, 166, 0.12); color: #1d7c33; }
       .aff-thumb.icon-bag    { background: rgba(180, 83, 9, 0.12); color: #b45309; }
 
       .aff-badge {
@@ -1135,7 +1132,7 @@
         ),
         apple: iconCircle(
           e("path", { d: "M18 13c-4 0-8 4-8 10 0 4 2.5 7 4.5 7 1.3 0 1.8-.8 3.5-.8s2.1.8 3.6.8c1.8 0 3-2.6 4-5-3-1.3-3.2-6.5.5-7.8-1.3-2-3.4-2.2-4-2.2-1.4 0-2.6.9-3.4.9s-2-1-4-1.9Z", fill: "#e6ddfa" }),
-          e("path", { d: "M19 9c0 1.8-1.2 3-3 3 0-1.8 1.2-3 3-3Z", fill: "#9ece6a" })
+          e("path", { d: "M19 9c0 1.8-1.2 3-3 3 0-1.8 1.2-3 3-3Z", fill: "#93e6a6" })
         ),
         cameras: iconCircle(
           e("rect", { x: 7, y: 13, width: 22, height: 14, rx: 3, fill: "#414868" }),
@@ -1145,7 +1142,7 @@
         ),
         software: iconCircle(
           e("rect", { x: 7, y: 10, width: 22, height: 16, rx: 3, fill: "#414868" }),
-          e("text", { x: 18, y: 21, fontFamily: "monospace", fontSize: 9, fill: "#9ece6a", textAnchor: "middle" }, ">_")
+          e("text", { x: 18, y: 21, fontFamily: "monospace", fontSize: 9, fill: "#93e6a6", textAnchor: "middle" }, ">_")
         ),
         trading_cards: iconCircle(
           e("rect", { x: 8, y: 10, width: 14, height: 18, rx: 2.5, fill: "#7dcfff", transform: "rotate(-8 15 19)" }),
@@ -1179,7 +1176,7 @@
         ),
         "3d_printing": iconCircle(
           e("rect", { x: 9, y: 8, width: 18, height: 20, rx: 2, fill: "none", stroke: "#414868", strokeWidth: 2 }),
-          e("rect", { x: 14, y: 14, width: 8, height: 3, rx: 1, fill: "#9ece6a" }),
+          e("rect", { x: 14, y: 14, width: 8, height: 3, rx: 1, fill: "#93e6a6" }),
           e("line", { x1: 12, y1: 24, x2: 24, y2: 24, stroke: "#0a0c12", strokeWidth: 1.6, strokeLinecap: "round" })
         ),
         filament: iconCircle(
@@ -1205,7 +1202,7 @@
           desc: "Drones, gaming, filament, cards & more",
           icon: iconCircle(
             e("rect", { x: 10, y: 10, width: 6, height: 6, rx: 1.5, fill: "#7dcfff" }),
-            e("rect", { x: 20, y: 10, width: 6, height: 6, rx: 1.5, fill: "#9ece6a" }),
+            e("rect", { x: 20, y: 10, width: 6, height: 6, rx: 1.5, fill: "#93e6a6" }),
             e("rect", { x: 10, y: 20, width: 6, height: 6, rx: 1.5, fill: "#f7768e" }),
             e("rect", { x: 20, y: 20, width: 6, height: 6, rx: 1.5, fill: "#bb9af7" })
           ),
@@ -1214,7 +1211,7 @@
           label: "Price tracking",
           desc: "Filament prices, tracked over time",
           icon: iconCircle(
-            e("polyline", { points: "9,23 15,17 20,21 27,11", fill: "none", stroke: "#9ece6a", strokeWidth: 2.2, strokeLinecap: "round", strokeLinejoin: "round" })
+            e("polyline", { points: "9,23 15,17 20,21 27,11", fill: "none", stroke: "#93e6a6", strokeWidth: 2.2, strokeLinecap: "round", strokeLinejoin: "round" })
           ),
         },
         {
@@ -1966,7 +1963,12 @@
                 e(
                   "a",
                   { href: "/", className: "logo" },
-                  "hackthedeal", e("span", null, "_")
+                  e(
+                    "svg",
+                    { viewBox: "120 85 570 90", role: "img", "aria-label": "hackthedeal_" },
+                    e("rect", { x: 130, y: 98, width: 22, height: 64, fill: "currentColor" }),
+                    e("text", { x: 170, y: 152, fontFamily: "'Courier New', 'DejaVu Sans Mono', monospace", fontSize: 70, fontWeight: 700, fill: "currentColor" }, "hackthedeal_")
+                  )
                 ),
                 e(
                   "div",
