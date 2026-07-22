@@ -800,6 +800,13 @@
         CATEGORIES.filter((c) => c.id && c.id !== "amazon_finds" && !SEASONAL_KEYWORDS[c.id]).map((c) => c.id)
       );
 
+      // Categories that track a persistent catalog (same product re-checked
+      // every ingest run) rather than one-off deal posts, so a real price
+      // history exists to show. Keep in sync with PRICE_TRACKED_CATEGORIES
+      // in db.py — adding a category there and here is all it takes for its
+      // deal cards to pick up the price-history chart automatically.
+      const PRICE_TRACKED_CATEGORIES = new Set(["filament"]);
+
       const CATEGORY_COPY = {
         "": {
           h1: "Live Deals on Tech, Gaming, Apple & Daily Essentials",
@@ -1829,7 +1836,7 @@
 
       function DealCard({ deal }) {
         const target = deal.affiliate_url || deal.url;
-        const isTracked = deal.category === "filament";
+        const isTracked = PRICE_TRACKED_CATEGORIES.has(deal.category);
         const [showHistory, setShowHistory] = useState(false);
         const [imgError, setImgError] = useState(false);
         const showImage = deal.thumbnail_url && !imgError;

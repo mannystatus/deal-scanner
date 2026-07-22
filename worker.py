@@ -19,6 +19,8 @@ from notifications import notify_new_deal
 from parsers import parse_title
 from reddit_source import iter_all_subreddits
 from rss_source import iter_all_feeds
+from affiliate_engine.link_builder import build_affiliate_link
+from affiliate_engine.merchants import get_merchant_by_domain
 
 logging.basicConfig(
     level=os.getenv("LOG_LEVEL", "INFO"),
@@ -73,36 +75,45 @@ def _retag_amazon_url(url: str, tag: str) -> str:
     return urlunparse(parts._replace(query=urlencode(params)))
 
 
-def _resolve_dealnews_amazon_link(page_html: str) -> Optional[str]:
+def _resolve_dealnews_click(page_html: str) -> Optional[str]:
+    """Resolve DealNews' click-tracking redirect to the real retailer URL, if present."""
     click_match = _DEALNEWS_CLICK_RE.search(page_html)
     if not click_match:
         return None
     try:
         resp = httpx.get(click_match.group(1), headers={"User-Agent": _UA}, timeout=10, follow_redirects=True)
         redirect_match = _JS_REDIRECT_RE.search(resp.text)
-        if not redirect_match:
-            return None
-        dest = redirect_match.group(1)
-        if not _is_amazon_host(dest):
-            return None
-        return _retag_amazon_url(dest, _AMAZON_TAG)
+        return redirect_match.group(1) if redirect_match else None
     except Exception:
         return None
 
 
-def _resolve_slickdeals_amazon_link(page_html: str) -> Optional[str]:
+def _resolve_slickdeals_click(page_html: str) -> Optional[str]:
+    """Resolve Slickdeals' outclick redirect to the real retailer URL, if present."""
     click_match = _SLICKDEALS_OUTCLICK_RE.search(page_html)
     if not click_match:
         return None
     click_url = html.unescape(click_match.group(1))
     try:
         resp = httpx.get(click_url, headers={"User-Agent": _UA}, timeout=10, follow_redirects=True)
-        dest = str(resp.url)
-        if not _is_amazon_host(dest):
-            return None
-        return _retag_amazon_url(dest, _AMAZON_TAG)
+        return str(resp.url)
     except Exception:
         return None
+
+
+def _resolve_partner_affiliate_link(dest_url: Optional[str]) -> Optional[str]:
+    """Non-Amazon merchants with an affiliate_engine registry entry (Best Buy,
+    Nike, Nordstrom, etc). Returns None while that merchant's network
+    application is still pending/not approved, so this is a no-op today and
+    starts tagging automatically the moment a status flips to approved in
+    affiliate_engine/merchants.py — no worker.py changes needed at that point."""
+    if not dest_url:
+        return None
+    merchant = get_merchant_by_domain(urlparse(dest_url).hostname or "")
+    if merchant is None:
+        return None
+    tagged = build_affiliate_link(merchant.name, dest_url)
+    return tagged if tagged != dest_url else None
 
 
 def fetch_page_extras(url: str, source: str) -> tuple[Optional[str], Optional[str]]:
@@ -114,6 +125,8 @@ def fetch_page_extras(url: str, source: str) -> tuple[Optional[str], Optional[st
     affiliate_url = None
     if _is_amazon_host(url):
         affiliate_url = _retag_amazon_url(url, _AMAZON_TAG)
+    else:
+        affiliate_url = _resolve_partner_affiliate_link(url)
 
     try:
         resp = httpx.get(url, headers={"User-Agent": _UA}, timeout=10, follow_redirects=True)
@@ -122,10 +135,16 @@ def fetch_page_extras(url: str, source: str) -> tuple[Optional[str], Optional[st
 
     thumbnail_url = _extract_og_image(resp.text)
     if affiliate_url is None:
+        dest = None
         if source.startswith("dealnews"):
-            affiliate_url = _resolve_dealnews_amazon_link(resp.text)
+            dest = _resolve_dealnews_click(resp.text)
         elif source.startswith("slickdeals"):
-            affiliate_url = _resolve_slickdeals_amazon_link(resp.text)
+            dest = _resolve_slickdeals_click(resp.text)
+
+        if dest and _is_amazon_host(dest):
+            affiliate_url = _retag_amazon_url(dest, _AMAZON_TAG)
+        elif dest:
+            affiliate_url = _resolve_partner_affiliate_link(dest)
     return thumbnail_url, affiliate_url
 
 
