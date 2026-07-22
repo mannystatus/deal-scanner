@@ -85,6 +85,7 @@ DEFAULT_FEEDS: list[tuple[str, str]] = [
     ("dealnews-beauty",  "https://www.dealnews.com/c756/Health-Beauty/?rss=1"),
     ("dealnews-travel",  "https://www.dealnews.com/c206/Travel-Entertainment/?rss=1"),
     ("dealnews-software", "https://www.dealnews.com/c124/Computers/Software/?rss=1"),
+    ("dealnews-cameras", "https://www.dealnews.com/c168/Electronics/Cameras/?rss=1"),
     # Brand-direct searches, so deals surface from the brands themselves
     # instead of general deal-blog aggregators.
     ("slickdeals-nike",       "https://slickdeals.net/newsearch.php?q=nike&rss=1"),
