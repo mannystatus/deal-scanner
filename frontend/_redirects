@@ -5,6 +5,7 @@
 # production (see git history) — the <slug>/index.html files are the
 # fix that's actually relied on. Left in place in case it starts
 # working after a future platform change; harmless either way.
+/amazon_finds  /amazon_finds.html  200
 /computers  /computers.html  200
 /gaming  /gaming.html  200
 /apple  /apple.html  200

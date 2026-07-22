@@ -23,6 +23,10 @@ BASE_URL = "https://www.hackthedeal.com"
 
 # Keep in sync with CATEGORY_COPY in frontend/index.html.
 CATEGORIES = {
+    "amazon_finds": {
+        "h1": "Amazon Finds We Love",
+        "description": "Curated Amazon picks across tech, home, trading cards, fashion, and more — hand-picked finds from top-rated products and customer favorites.",
+    },
     "computers": {
         "h1": "Best Computer & Laptop Deals Today",
         "description": "Live price drops on laptops, desktops, monitors, and PC components. Hack the Deal tracks computer deals from top retailers continuously.",
