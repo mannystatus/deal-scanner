@@ -9,8 +9,8 @@ self.addEventListener("push", (event) => {
   const title = data.title || "New deal on Hack the Deal";
   const options = {
     body: data.body || "",
-    icon: data.icon || "/favicon-v2.svg",
-    badge: "/favicon-v2.svg",
+    icon: data.icon || "/favicon-v3.svg",
+    badge: "/favicon-v3.svg",
     data: { url: data.url || "/" },
   };
 
