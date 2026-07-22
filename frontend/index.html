@@ -743,7 +743,7 @@
     </script>
 
     <script type="module">
-      import React, { useEffect, useState } from "react";
+      import React, { useEffect, useRef, useState } from "react";
       import { createRoot } from "react-dom/client";
 
       const isLocal =
@@ -2117,9 +2117,38 @@
 
       const DEALS_PAGE_SIZE = 60;
 
+      // navigateToCategory() switches routes with history.pushState — no
+      // full reload — so GTM/GA's own pageview trigger (which only fires
+      // once, on the initial gtm.js/gtag.js load) never sees these as
+      // separate pages. This pushes a virtual pageview on every SPA route
+      // change so category browsing shows up in GA at all. Pushing to
+      // dataLayer is always safe (no request goes out until GTM itself
+      // loads, which is still gated on cookie consent); the direct gtag()
+      // call is skipped until __loadGA() has actually run.
+      function trackPageview(path) {
+        const pageData = {
+          event: "page_view",
+          page_path: path,
+          page_location: location.origin + path,
+          page_title: document.title,
+        };
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push(pageData);
+        if (typeof window.gtag === "function") {
+          window.gtag("event", "page_view", {
+            page_path: path,
+            page_location: location.origin + path,
+            page_title: document.title,
+          });
+        }
+      }
+
       function App() {
         const [deals, setDeals] = useState([]);
         const [activeCat, setActiveCat] = useState(() => categoryFromPath(location.pathname));
+        // The very first pageview is already captured by GTM/gtag's own
+        // load-time trigger — this ref just skips firing a duplicate for it.
+        const isFirstPageview = useRef(true);
         const [minDiscount, setMinDiscount] = useState(0);
         const [search, setSearch] = useState("");
         const [loading, setLoading] = useState(true);
@@ -2222,6 +2251,18 @@
           setAttr('meta[property="og:url"]', "content", url);
           setAttr('link[rel="canonical"]', "href", url);
         }, [activeCat, total]);
+
+        // Runs after the effect above (same commit, later in source order),
+        // so document.title already reflects the new category by the time
+        // this fires. Keyed only on activeCat — unlike the effect above,
+        // this must NOT re-fire just because `total` ticks up as deals load.
+        useEffect(() => {
+          if (isFirstPageview.current) {
+            isFirstPageview.current = false;
+            return;
+          }
+          trackPageview(activeCat ? `/${activeCat}` : "/");
+        }, [activeCat]);
 
         useEffect(() => {
           const el = document.querySelector('meta[name="theme-color"]');
