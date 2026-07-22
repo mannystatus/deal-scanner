@@ -1145,6 +1145,67 @@
         },
       ];
 
+      // Curated K-12 back to school essentials — shown on the /back_to_school
+      // page in addition to the live keyword-matched deals, since a shopping
+      // list of supplies + uniform basics is useful even in weeks with no
+      // live discount on any single item.
+      const BACK_TO_SCHOOL_PICKS = [
+        {
+          label: "School Supplies",
+          icon: "box",
+          items: [
+            { title: "Five Star Spiral Notebooks, 5 Subject, College Ruled (3-Pack)", url: "https://www.amazon.com/s?k=five+star+spiral+notebook+5+subject&tag=wisedealsxyz-20" },
+            { title: "Mead Composition Notebooks, Wide Ruled (3-Pack)", url: "https://www.amazon.com/s?k=mead+composition+notebook+wide+ruled+3+pack&tag=wisedealsxyz-20" },
+            { title: "Ticonderoga #2 Pencils, Pre-Sharpened (30-Pack)", url: "https://www.amazon.com/s?k=ticonderoga+pencils+pre+sharpened+30+pack&tag=wisedealsxyz-20" },
+            { title: "BIC Round Stic Xtra Life Ballpoint Pens (60-Pack)", url: "https://www.amazon.com/s?k=bic+round+stic+ballpoint+pens+60+pack&tag=wisedealsxyz-20" },
+            { title: "Crayola Crayons, 24 Count", url: "https://www.amazon.com/s?k=crayola+crayons+24+count&tag=wisedealsxyz-20" },
+            { title: "Crayola Colored Pencils, 50 Count", url: "https://www.amazon.com/s?k=crayola+colored+pencils+50+count&tag=wisedealsxyz-20" },
+            { title: "Elmer's Washable School Glue Sticks (30-Pack)", url: "https://www.amazon.com/s?k=elmers+washable+school+glue+sticks+30+pack&tag=wisedealsxyz-20" },
+            { title: "Fiskars Kids Scissors, Pointed-Tip", url: "https://www.amazon.com/s?k=fiskars+kids+scissors+pointed&tag=wisedealsxyz-20" },
+            { title: "Expo Low-Odor Dry Erase Markers (12-Pack)", url: "https://www.amazon.com/s?k=expo+dry+erase+markers+12+pack&tag=wisedealsxyz-20" },
+            { title: "Sharpie Highlighters, Chisel Tip (12-Pack)", url: "https://www.amazon.com/s?k=sharpie+highlighters+chisel+tip+12+pack&tag=wisedealsxyz-20" },
+            { title: "Five Star Trapper Keeper 2-Inch Zip Binder", url: "https://www.amazon.com/s?k=five+star+trapper+keeper+2+inch+binder&tag=wisedealsxyz-20" },
+            { title: "Texas Instruments TI-84 Plus CE Graphing Calculator", url: "https://www.amazon.com/s?k=ti-84+plus+ce+graphing+calculator&tag=wisedealsxyz-20" },
+            { title: "Casio fx-300ES Plus Scientific Calculator", url: "https://www.amazon.com/s?k=casio+fx-300es+plus+scientific+calculator&tag=wisedealsxyz-20" },
+            { title: "JanSport Big Student Backpack", url: "https://www.amazon.com/s?k=jansport+big+student+backpack&tag=wisedealsxyz-20" },
+            { title: "Bentgo Kids Prep Lunch Box", url: "https://www.amazon.com/s?k=bentgo+kids+prep+lunch+box&tag=wisedealsxyz-20" },
+            { title: "Post-it Notes, Super Sticky (12-Pack)", url: "https://www.amazon.com/s?k=post-it+notes+super+sticky+12+pack&tag=wisedealsxyz-20" },
+            { title: "Five Star Pocket Folders (6-Pack)", url: "https://www.amazon.com/s?k=five+star+pocket+folders+6+pack&tag=wisedealsxyz-20" },
+            { title: "Pencil Case Pouch with Zipper", url: "https://www.amazon.com/s?k=pencil+case+pouch+zipper&tag=wisedealsxyz-20" },
+          ],
+        },
+        {
+          label: "Boys' Clothing",
+          icon: "shirt",
+          items: [
+            { title: "Amazon Essentials Boys' School Uniform Short-Sleeve Polo Shirts (2-Pack)", url: "https://www.amazon.com/s?k=amazon+essentials+boys+school+uniform+polo+2+pack&tag=wisedealsxyz-20" },
+            { title: "Amazon Essentials Boys' Straight-Fit Uniform Chino Pants", url: "https://www.amazon.com/s?k=amazon+essentials+boys+uniform+chino+pants&tag=wisedealsxyz-20" },
+            { title: "Boys' Graphic T-Shirt Multipack (5-Pack)", url: "https://www.amazon.com/s?k=boys+graphic+t-shirt+5+pack&tag=wisedealsxyz-20" },
+            { title: "Boys' Jogger Sweatpants", url: "https://www.amazon.com/s?k=boys+jogger+sweatpants&tag=wisedealsxyz-20" },
+            { title: "Boys' Zip-Up Fleece Hoodie", url: "https://www.amazon.com/s?k=boys+zip+up+fleece+hoodie&tag=wisedealsxyz-20" },
+            { title: "Boys' Athletic Running Sneakers", url: "https://www.amazon.com/s?k=boys+athletic+running+sneakers&tag=wisedealsxyz-20" },
+            { title: "Boys' Crew Socks (12-Pack)", url: "https://www.amazon.com/s?k=boys+crew+socks+12+pack&tag=wisedealsxyz-20" },
+            { title: "Boys' Cotton Briefs Underwear (7-Pack)", url: "https://www.amazon.com/s?k=boys+cotton+briefs+underwear+7+pack&tag=wisedealsxyz-20" },
+            { title: "Boys' Water-Resistant Puffer Jacket", url: "https://www.amazon.com/s?k=boys+water+resistant+puffer+jacket&tag=wisedealsxyz-20" },
+          ],
+        },
+        {
+          label: "Girls' Clothing",
+          icon: "shirt",
+          items: [
+            { title: "Amazon Essentials Girls' School Uniform Short-Sleeve Polo Shirts (2-Pack)", url: "https://www.amazon.com/s?k=amazon+essentials+girls+school+uniform+polo+2+pack&tag=wisedealsxyz-20" },
+            { title: "Amazon Essentials Girls' Uniform Pleated Skort", url: "https://www.amazon.com/s?k=amazon+essentials+girls+uniform+pleated+skort&tag=wisedealsxyz-20" },
+            { title: "Girls' Leggings Multipack (4-Pack)", url: "https://www.amazon.com/s?k=girls+leggings+4+pack&tag=wisedealsxyz-20" },
+            { title: "Girls' Graphic T-Shirt Multipack (5-Pack)", url: "https://www.amazon.com/s?k=girls+graphic+t-shirt+5+pack&tag=wisedealsxyz-20" },
+            { title: "Girls' Zip-Up Fleece Hoodie", url: "https://www.amazon.com/s?k=girls+zip+up+fleece+hoodie&tag=wisedealsxyz-20" },
+            { title: "Girls' Athletic Running Sneakers", url: "https://www.amazon.com/s?k=girls+athletic+running+sneakers&tag=wisedealsxyz-20" },
+            { title: "Girls' Ankle Socks (12-Pack)", url: "https://www.amazon.com/s?k=girls+ankle+socks+12+pack&tag=wisedealsxyz-20" },
+            { title: "Girls' Cotton Underwear (7-Pack)", url: "https://www.amazon.com/s?k=girls+cotton+underwear+7+pack&tag=wisedealsxyz-20" },
+            { title: "Girls' Water-Resistant Puffer Jacket", url: "https://www.amazon.com/s?k=girls+water+resistant+puffer+jacket&tag=wisedealsxyz-20" },
+          ],
+        },
+      ];
+
       function e(tag, props, ...children) {
         return React.createElement(tag, props, ...children);
       }
@@ -1441,7 +1502,7 @@
 
       const AFF_DEFAULT_VISIBLE = 6;
 
-      function AffiliateSection() {
+      function AffiliateSection({ groups = AFFILIATE_PICKS, title = "Amazon Finds" }) {
         const [expanded, setExpanded] = useState({});
 
         return e(
@@ -1453,10 +1514,10 @@
             e(
               "div",
               { style: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 } },
-              e("h2", { className: "section-label", style: { margin: 0 } }, "Amazon Finds"),
+              e("h2", { className: "section-label", style: { margin: 0 } }, title),
               e("span", { style: { fontSize: 12.5, fontWeight: 700, color: "var(--text)" } }, "As an Amazon Associate partner we earn from qualifying purchases")
             ),
-            AFFILIATE_PICKS.map((group) => {
+            groups.map((group) => {
               const isExpanded = !!expanded[group.label];
               const hasMore = group.items.length > AFF_DEFAULT_VISIBLE;
               const visibleItems = isExpanded ? group.items : group.items.slice(0, AFF_DEFAULT_VISIBLE);
@@ -2190,9 +2251,14 @@
               )
             : null,
 
+          /* ── Back to School essentials (supplements the live deals below, doesn't replace them) ── */
+          activeCat === "back_to_school"
+            ? e(AffiliateSection, { groups: BACK_TO_SCHOOL_PICKS, title: "Back to School Essentials" })
+            : null,
+
           /* ── Deals grid (or Amazon Finds, which replaces it entirely) ── */
           activeCat === "amazon_finds"
-          ? e(AffiliateSection, null)
+          ? e(AffiliateSection, {})
           : e(
             "main",
             { style: { maxWidth: 1152, margin: "0 auto", padding: "8px 16px 40px", flex: 1, width: "100%" } },
