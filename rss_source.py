@@ -14,6 +14,7 @@ import re
 import time
 from datetime import datetime, timezone
 from typing import Iterator, Optional
+from urllib.parse import urlparse
 
 import feedparser
 import httpx
@@ -36,6 +37,32 @@ _MAX_HONORED_RETRY_AFTER = 5  # ignore server-requested waits longer than this
 # in the same second — that burst pattern is exactly what trips shared
 # rate limiters in the first place.
 _INTER_FEED_DELAY = 1
+
+# DealNews rate-limits by shared IP across *all* dealnews.com requests within
+# a short window, not per-URL — confirmed via the ingest cron's dealnews-cameras
+# fetch tripping a 429 after six earlier dealnews.com hits in the same run,
+# each only _INTER_FEED_DELAY apart (2026-07-22 run, GH Actions runner IP).
+# That's what was leaving the Cameras category empty every day: the feed
+# itself works fine, it just never got a successful response. Give
+# dealnews.com extra breathing room between requests; every other host keeps
+# the default pacing above.
+_MIN_HOST_DELAY = {
+    "www.dealnews.com": 6,
+}
+_last_request_at: dict[str, float] = {}
+
+
+def _pace_for_host(url: str) -> None:
+    host = urlparse(url).hostname or ""
+    min_delay = _MIN_HOST_DELAY.get(host)
+    if not min_delay:
+        return
+    last = _last_request_at.get(host)
+    if last is not None:
+        wait = min_delay - (time.monotonic() - last)
+        if wait > 0:
+            time.sleep(wait)
+    _last_request_at[host] = time.monotonic()
 
 
 def _get_with_retry(url: str, headers: dict, timeout: int = 30) -> httpx.Response:
@@ -169,6 +196,7 @@ def iter_feed(source: str, url: str) -> Iterator[dict]:
     """Fetch one RSS/Atom feed and yield normalized post dicts."""
     ua = os.getenv("RSS_USER_AGENT", "deal-scanner/0.1 (contact: tech@hackthedeal.com)")
     try:
+        _pace_for_host(url)
         resp = _get_with_retry(url, headers={"User-Agent": ua})
         raw = resp.text
     except httpx.HTTPError as e:
