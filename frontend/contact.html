@@ -1,39 +1,47 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <!-- Google Tag Manager — only loads after the user accepts the privacy
-         notice below, so no analytics cookies are set before consent. -->
+    <!-- Consent Mode v2 — sets default (denied) consent state before any tag
+         below loads, so GTM/gtag still fire on every visit but only send
+         cookieless, anonymized signals until the user accepts the cookie
+         notice further down the page. If they already accepted on a past
+         visit, immediately upgrade to granted from the stored preference.
+         https://developers.google.com/tag-platform/security/guides/consent -->
     <script>
-      window.__loadGTM = function () {
-        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','GTM-T7MD3LW5');
-      };
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      window.gtag = gtag;
+      gtag('consent', 'default', {
+        'ad_storage': 'denied',
+        'ad_user_data': 'denied',
+        'ad_personalization': 'denied',
+        'analytics_storage': 'denied',
+        'wait_for_update': 500
+      });
       if (localStorage.getItem('htd_consent_v1') === 'granted') {
-        window.__loadGTM();
+        gtag('consent', 'update', {
+          'ad_storage': 'granted',
+          'ad_user_data': 'granted',
+          'ad_personalization': 'granted',
+          'analytics_storage': 'granted'
+        });
       }
     </script>
+    <!-- End Consent Mode -->
+
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-T7MD3LW5');</script>
     <!-- End Google Tag Manager -->
 
-    <!-- Google Analytics (gtag.js) — same consent gate as GTM above, so no
-         analytics cookies are set before the user accepts the notice below. -->
+    <!-- Google Analytics (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LFR5HP4FDC"></script>
     <script>
-      window.__loadGA = function () {
-        var s = document.createElement('script');
-        s.async = true;
-        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-LFR5HP4FDC';
-        document.head.appendChild(s);
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        window.gtag = gtag;
-        gtag('js', new Date());
-        gtag('config', 'G-LFR5HP4FDC');
-      };
-      if (localStorage.getItem('htd_consent_v1') === 'granted') {
-        window.__loadGA();
-      }
+      gtag('js', new Date());
+      gtag('config', 'G-LFR5HP4FDC');
     </script>
     <!-- End Google Analytics -->
     <meta charset="utf-8" />
@@ -309,8 +317,14 @@
     </style>
   </head>
   <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T7MD3LW5"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager -->
+
     <!-- Privacy / cookie consent notice — static markup so it's visible even
-         before any script runs. Dismissing it loads Google Tag Manager. -->
+         before any script runs. GTM/GA already loaded in Consent Mode's
+         default "denied" state (see <head>); clicking OK just upgrades it. -->
     <div id="consent-overlay" class="consent-overlay" style="display: none; position: fixed; inset: 0; z-index: 999; align-items: flex-end; justify-content: center; padding: 16px; pointer-events: none;">
       <div style="pointer-events: auto; max-width:560px; width:100%; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; box-shadow:0 8px 30px rgba(0,0,0,0.25); display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
         <div style="flex:1 1 320px;">
@@ -332,8 +346,12 @@
         document.getElementById('consent-ok').addEventListener('click', function () {
           localStorage.setItem('htd_consent_v1', 'granted');
           document.getElementById('consent-overlay').style.display = 'none';
-          window.__loadGTM();
-          window.__loadGA();
+          gtag('consent', 'update', {
+            'ad_storage': 'granted',
+            'ad_user_data': 'granted',
+            'ad_personalization': 'granted',
+            'analytics_storage': 'granted'
+          });
         });
       })();
     </script>

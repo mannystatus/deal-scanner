@@ -1,39 +1,47 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <!-- Google Tag Manager — only loads after the user accepts the privacy
-         notice below, so no analytics cookies are set before consent. -->
+    <!-- Consent Mode v2 — sets default (denied) consent state before any tag
+         below loads, so GTM/gtag still fire on every visit but only send
+         cookieless, anonymized signals until the user accepts the cookie
+         notice further down the page. If they already accepted on a past
+         visit, immediately upgrade to granted from the stored preference.
+         https://developers.google.com/tag-platform/security/guides/consent -->
     <script>
-      window.__loadGTM = function () {
-        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','GTM-T7MD3LW5');
-      };
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      window.gtag = gtag;
+      gtag('consent', 'default', {
+        'ad_storage': 'denied',
+        'ad_user_data': 'denied',
+        'ad_personalization': 'denied',
+        'analytics_storage': 'denied',
+        'wait_for_update': 500
+      });
       if (localStorage.getItem('htd_consent_v1') === 'granted') {
-        window.__loadGTM();
+        gtag('consent', 'update', {
+          'ad_storage': 'granted',
+          'ad_user_data': 'granted',
+          'ad_personalization': 'granted',
+          'analytics_storage': 'granted'
+        });
       }
     </script>
+    <!-- End Consent Mode -->
+
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-T7MD3LW5');</script>
     <!-- End Google Tag Manager -->
 
-    <!-- Google Analytics (gtag.js) — same consent gate as GTM above, so no
-         analytics cookies are set before the user accepts the notice below. -->
+    <!-- Google Analytics (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LFR5HP4FDC"></script>
     <script>
-      window.__loadGA = function () {
-        var s = document.createElement('script');
-        s.async = true;
-        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-LFR5HP4FDC';
-        document.head.appendChild(s);
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        window.gtag = gtag;
-        gtag('js', new Date());
-        gtag('config', 'G-LFR5HP4FDC');
-      };
-      if (localStorage.getItem('htd_consent_v1') === 'granted') {
-        window.__loadGA();
-      }
+      gtag('js', new Date());
+      gtag('config', 'G-LFR5HP4FDC');
     </script>
     <!-- End Google Analytics -->
     <meta charset="utf-8" />
@@ -672,6 +680,11 @@
     </style>
   </head>
   <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T7MD3LW5"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager -->
+
     <!-- Amazon Associates disclosure — kept as static markup (not JS-rendered) so it's
          guaranteed visible immediately, before React mounts, and to non-JS crawlers. -->
     <div class="disclosure-bar">
@@ -679,7 +692,8 @@
     </div>
 
     <!-- Privacy / cookie consent notice — static markup so it's visible even
-         before React mounts. Dismissing it loads Google Tag Manager. -->
+         before React mounts. GTM/GA already loaded in Consent Mode's default
+         "denied" state (see <head>); clicking OK just upgrades the signal. -->
     <div id="consent-overlay" class="consent-overlay" style="display: none;">
       <div class="consent-box">
         <div class="consent-text">
@@ -701,8 +715,12 @@
         document.getElementById('consent-ok').addEventListener('click', function () {
           localStorage.setItem('htd_consent_v1', 'granted');
           document.getElementById('consent-overlay').style.display = 'none';
-          window.__loadGTM();
-          window.__loadGA();
+          gtag('consent', 'update', {
+            'ad_storage': 'granted',
+            'ad_user_data': 'granted',
+            'ad_personalization': 'granted',
+            'analytics_storage': 'granted'
+          });
         });
       })();
     </script>
@@ -2121,10 +2139,10 @@
       // full reload — so GTM/GA's own pageview trigger (which only fires
       // once, on the initial gtm.js/gtag.js load) never sees these as
       // separate pages. This pushes a virtual pageview on every SPA route
-      // change so category browsing shows up in GA at all. Pushing to
-      // dataLayer is always safe (no request goes out until GTM itself
-      // loads, which is still gated on cookie consent); the direct gtag()
-      // call is skipped until __loadGA() has actually run.
+      // change so category browsing shows up in GA at all. gtag() is
+      // defined unconditionally in <head> (Consent Mode's shim), so this
+      // always reaches it — actual data collection is still gated by
+      // whatever consent state gtag('consent', ...) currently holds.
       function trackPageview(path) {
         const pageData = {
           event: "page_view",
