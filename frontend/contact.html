@@ -16,6 +16,26 @@
       }
     </script>
     <!-- End Google Tag Manager -->
+
+    <!-- Google Analytics (gtag.js) — same consent gate as GTM above, so no
+         analytics cookies are set before the user accepts the notice below. -->
+    <script>
+      window.__loadGA = function () {
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-LFR5HP4FDC';
+        document.head.appendChild(s);
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        window.gtag = gtag;
+        gtag('js', new Date());
+        gtag('config', 'G-LFR5HP4FDC');
+      };
+      if (localStorage.getItem('htd_consent_v1') === 'granted') {
+        window.__loadGA();
+      }
+    </script>
+    <!-- End Google Analytics -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Contact & Partnerships – Hack the Deal</title>
@@ -313,6 +333,7 @@
           localStorage.setItem('htd_consent_v1', 'granted');
           document.getElementById('consent-overlay').style.display = 'none';
           window.__loadGTM();
+          window.__loadGA();
         });
       })();
     </script>

@@ -16,6 +16,26 @@
       }
     </script>
     <!-- End Google Tag Manager -->
+
+    <!-- Google Analytics (gtag.js) — same consent gate as GTM above, so no
+         analytics cookies are set before the user accepts the notice below. -->
+    <script>
+      window.__loadGA = function () {
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-LFR5HP4FDC';
+        document.head.appendChild(s);
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        window.gtag = gtag;
+        gtag('js', new Date());
+        gtag('config', 'G-LFR5HP4FDC');
+      };
+      if (localStorage.getItem('htd_consent_v1') === 'granted') {
+        window.__loadGA();
+      }
+    </script>
+    <!-- End Google Analytics -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -693,6 +713,7 @@
           localStorage.setItem('htd_consent_v1', 'granted');
           document.getElementById('consent-overlay').style.display = 'none';
           window.__loadGTM();
+          window.__loadGA();
         });
       })();
     </script>
@@ -1570,6 +1591,15 @@
       }
 
       const PUSH_CATEGORIES_KEY = "htd_push_categories";
+      // How long to hold off re-showing the soft prompt after someone dismisses
+      // it without deciding — unlike a real permission denial, a dismiss isn't
+      // final, so it's worth asking again on a later visit.
+      const PUSH_SOFT_DISMISS_KEY = "htd_push_soft_dismissed_at";
+      const PUSH_SOFT_DISMISS_COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000;
+      // Fired on window after a successful subscribe so any mounted component
+      // (bell icon, soft prompt) can sync its "am I subscribed" state without
+      // each having to poll pushManager.getSubscription() independently.
+      const PUSH_SUBSCRIBED_EVENT = "htd:push-subscribed";
 
       function urlBase64ToUint8Array(base64String) {
         const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
@@ -1580,6 +1610,31 @@
         return output;
       }
 
+      // Shared by the bell-icon panel and the first-visit soft prompt so both
+      // paths do the exact same register → get-key → subscribe → save dance.
+      async function subscribeToPush(categories) {
+        const reg = await navigator.serviceWorker.register("/sw.js");
+        await navigator.serviceWorker.ready;
+        const keyRes = await fetch(`${API_BASE}/push/public-key`);
+        if (!keyRes.ok) throw new Error("Notifications aren't set up on the server yet.");
+        const { publicKey } = await keyRes.json();
+        let sub = await reg.pushManager.getSubscription();
+        if (!sub) {
+          sub = await reg.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(publicKey),
+          });
+        }
+        await fetch(`${API_BASE}/push/subscribe`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ endpoint: sub.endpoint, keys: sub.toJSON().keys, categories }),
+        });
+        localStorage.setItem(PUSH_CATEGORIES_KEY, JSON.stringify(categories));
+        window.dispatchEvent(new CustomEvent(PUSH_SUBSCRIBED_EVENT));
+        return sub;
+      }
+
       function NotifyPanel() {
         const supported = "serviceWorker" in navigator && "PushManager" in window;
         const [open, setOpen] = useState(false);
@@ -1588,7 +1643,14 @@
         const [error, setError] = useState(null);
         const [selected, setSelected] = useState(() => {
           try {
-            return new Set(JSON.parse(localStorage.getItem(PUSH_CATEGORIES_KEY) || "[]"));
+            const stored = JSON.parse(localStorage.getItem(PUSH_CATEGORIES_KEY) || "null");
+            if (stored === null) return new Set();
+            // An empty array means "subscribed to all" (see notifications.py's
+            // `not sub.categories` check) — show every box checked to match.
+            if (stored.length === 0) {
+              return new Set(CATEGORIES.filter((c) => NOTIFIABLE_CATEGORIES.has(c.id)).map((c) => c.id));
+            }
+            return new Set(stored);
           } catch {
             return new Set();
           }
@@ -1601,6 +1663,15 @@
             .then((reg) => reg.pushManager.getSubscription())
             .then((sub) => setSubscribed(!!sub))
             .catch(() => {});
+        }, []);
+
+        // The soft prompt (PushSoftPrompt) is what actually subscribes people
+        // on first visit — this just keeps the bell icon in sync when that
+        // happens elsewhere on the page.
+        useEffect(() => {
+          const onSubscribed = () => setSubscribed(true);
+          window.addEventListener(PUSH_SUBSCRIBED_EVENT, onSubscribed);
+          return () => window.removeEventListener(PUSH_SUBSCRIBED_EVENT, onSubscribed);
         }, []);
 
         if (!supported) return null;
@@ -1617,24 +1688,7 @@
           setBusy(true);
           setError(null);
           try {
-            const reg = await navigator.serviceWorker.ready;
-            const keyRes = await fetch(`${API_BASE}/push/public-key`);
-            if (!keyRes.ok) throw new Error("Notifications aren't set up on the server yet.");
-            const { publicKey } = await keyRes.json();
-            let sub = await reg.pushManager.getSubscription();
-            if (!sub) {
-              sub = await reg.pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey: urlBase64ToUint8Array(publicKey),
-              });
-            }
-            const categories = Array.from(selected);
-            await fetch(`${API_BASE}/push/subscribe`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ endpoint: sub.endpoint, keys: sub.toJSON().keys, categories }),
-            });
-            localStorage.setItem(PUSH_CATEGORIES_KEY, JSON.stringify(categories));
+            await subscribeToPush(Array.from(selected));
             setSubscribed(true);
           } catch (err) {
             setError(err.message || "Couldn't enable notifications.");
@@ -1712,7 +1766,7 @@
                     {
                       type: "button",
                       disabled: busy || selected.size === 0,
-                      onClick: subscribe,
+                      onClick: () => subscribe(),
                       style: {
                         flex: 1, fontSize: 12, fontWeight: 700, padding: "8px 10px", borderRadius: 8,
                         border: "none", background: "var(--accent)", color: "#000",
@@ -1740,6 +1794,139 @@
                 )
               )
             : null
+        );
+      }
+
+      // A soft, branded ask that shows before the real browser permission
+      // dialog — the pattern most deal sites (9to5toys included, via
+      // OneSignal) use so a "not right now" doesn't burn the one native
+      // prompt Chrome allows per origin. Only "Allow" here calls
+      // subscribeToPush(), which is what actually triggers Chrome's dialog.
+      function PushSoftPrompt() {
+        const supported = "serviceWorker" in navigator && "PushManager" in window;
+        const [visible, setVisible] = useState(false);
+        const [entered, setEntered] = useState(false);
+        const [busy, setBusy] = useState(false);
+        const [error, setError] = useState(null);
+
+        useEffect(() => {
+          if (!supported) return;
+          if (typeof Notification === "undefined" || Notification.permission !== "default") return;
+
+          const dismissedAt = Number(localStorage.getItem(PUSH_SOFT_DISMISS_KEY) || 0);
+          if (dismissedAt && Date.now() - dismissedAt < PUSH_SOFT_DISMISS_COOLDOWN_MS) return;
+
+          const timer = setTimeout(() => setVisible(true), 4000);
+          return () => clearTimeout(timer);
+        }, []);
+
+        useEffect(() => {
+          if (!visible) return;
+          const raf = requestAnimationFrame(() => setEntered(true));
+          return () => cancelAnimationFrame(raf);
+        }, [visible]);
+
+        if (!supported || !visible) return null;
+
+        function dismiss() {
+          localStorage.setItem(PUSH_SOFT_DISMISS_KEY, String(Date.now()));
+          setEntered(false);
+          setTimeout(() => setVisible(false), 200);
+        }
+
+        async function allow() {
+          setBusy(true);
+          setError(null);
+          try {
+            await subscribeToPush([]);
+            dismiss();
+          } catch (err) {
+            setBusy(false);
+            setError(err.message || "Couldn't enable notifications.");
+          }
+        }
+
+        return e(
+          "div",
+          {
+            style: {
+              position: "fixed", right: 20, top: 20, width: 340, maxWidth: "calc(100vw - 40px)",
+              background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 14,
+              boxShadow: "0 16px 48px rgba(0,0,0,0.28)", padding: 18, zIndex: 9999,
+              opacity: entered ? 1 : 0, transform: entered ? "translateY(0)" : "translateY(16px)",
+              transition: "opacity 220ms ease, transform 220ms ease",
+            },
+          },
+          e(
+            "div",
+            { style: { display: "flex", alignItems: "flex-start", gap: 12 } },
+            e(
+              "div",
+              {
+                style: {
+                  flexShrink: 0, width: 40, height: 40, borderRadius: "50%", background: "var(--accent)",
+                  display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18,
+                },
+              },
+              "🔔"
+            ),
+            e(
+              "div",
+              { style: { flex: 1, minWidth: 0 } },
+              e(
+                "p",
+                { style: { margin: 0, fontSize: 11, fontWeight: 700, letterSpacing: 0.3, color: "var(--muted)", textTransform: "uppercase" } },
+                "hackthedeal.com"
+              ),
+              e(
+                "p",
+                { style: { margin: "4px 0 2px", fontSize: 14, fontWeight: 700, color: "var(--text)" } },
+                "Want deal alerts the second they drop?"
+              ),
+              e(
+                "p",
+                { style: { margin: 0, fontSize: 12.5, color: "var(--muted)", lineHeight: 1.4 } },
+                "Turn on browser notifications and we'll ping you when a deal hits 30%+ off."
+              )
+            ),
+            e(
+              "button",
+              {
+                type: "button", "aria-label": "Dismiss", onClick: dismiss,
+                style: { background: "none", border: "none", color: "var(--muted)", fontSize: 18, cursor: "pointer", padding: 0, lineHeight: 1 },
+              },
+              "×"
+            )
+          ),
+          error ? e("p", { style: { margin: "10px 0 0", fontSize: 12, color: "#dc2626" } }, error) : null,
+          e(
+            "div",
+            { style: { display: "flex", gap: 8, marginTop: 14 } },
+            e(
+              "button",
+              {
+                type: "button", disabled: busy, onClick: dismiss,
+                style: {
+                  flex: 1, fontSize: 12.5, fontWeight: 700, padding: "9px 10px", borderRadius: 8,
+                  border: "1.5px solid var(--border)", background: "none", color: "var(--text)",
+                  cursor: busy ? "default" : "pointer",
+                },
+              },
+              "No Thanks"
+            ),
+            e(
+              "button",
+              {
+                type: "button", disabled: busy, onClick: allow,
+                style: {
+                  flex: 1, fontSize: 12.5, fontWeight: 700, padding: "9px 10px", borderRadius: 8,
+                  border: "none", background: "var(--accent)", color: "#000",
+                  cursor: busy ? "default" : "pointer", opacity: busy ? 0.7 : 1,
+                },
+              },
+              busy ? "Allowing…" : "Allow"
+            )
+          )
         );
       }
 
@@ -2391,7 +2578,9 @@
                 e("a", { href: "/terms.html" }, "Terms of Use")
               )
             )
-          )
+          ),
+
+          e(PushSoftPrompt, null)
         );
       }
 
