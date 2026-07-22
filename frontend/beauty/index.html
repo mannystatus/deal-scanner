@@ -745,6 +745,9 @@
       const CATEGORIES = [
         { id: "", label: "All Deals" },
         { id: "amazon_finds", label: "Amazon Finds" },
+        { id: "black_friday", label: "Black Friday" },
+        { id: "christmas", label: "Christmas" },
+        { id: "back_to_school", label: "Back to School" },
         { id: "computers", label: "Computers" },
         { id: "gaming", label: "Gaming" },
         { id: "apple", label: "Apple" },
@@ -763,6 +766,51 @@
 
       const CATEGORY_IDS = new Set(CATEGORIES.filter((c) => c.id).map((c) => c.id));
 
+      // Seasonal tabs are a cross-cutting keyword filter on top of the deals
+      // feed, not a real backend category — a Black Friday laptop deal should
+      // still show under Computers too, so this searches titles via the API's
+      // `keywords` param instead of setting `category`.
+      const SEASONAL_KEYWORDS = {
+        black_friday: ["black friday", "cyber monday", "doorbuster"],
+        christmas: ["christmas", "xmas", "holiday gift", "holiday deal", "holiday sale"],
+        back_to_school: ["back to school", "back-to-school", "school supplies"],
+      };
+
+      // [startMonth, startDay, endMonth, endDay], 1-indexed months, inclusive.
+      // Checked against month/day only so it recurs every year unchanged.
+      const SEASONAL_WINDOWS = {
+        black_friday: [11, 1, 12, 2],
+        christmas: [11, 15, 12, 26],
+        back_to_school: [7, 15, 9, 15],
+      };
+
+      function isSeasonalWindowOpen(id) {
+        const window_ = SEASONAL_WINDOWS[id];
+        if (!window_) return true;
+        const [startMonth, startDay, endMonth, endDay] = window_;
+        const now = new Date();
+        const month = now.getMonth() + 1;
+        const day = now.getDate();
+        const start = startMonth * 100 + startDay;
+        const end = endMonth * 100 + endDay;
+        const today = month * 100 + day;
+        return today >= start && today <= end;
+      }
+
+      function isVisibleCategory(c) {
+        return !SEASONAL_KEYWORDS[c.id] || isSeasonalWindowOpen(c.id);
+      }
+
+      // Categories that don't correspond to a real Deal.category value in the
+      // database — amazon_finds is static curated content, and the seasonal
+      // tabs are a keyword filter layered on top of a deal's real category
+      // rather than a category of their own. Push subscriptions are matched
+      // against the literal category column, so offering these as
+      // notification preferences would silently never fire.
+      const NOTIFIABLE_CATEGORIES = new Set(
+        CATEGORIES.filter((c) => c.id && c.id !== "amazon_finds" && !SEASONAL_KEYWORDS[c.id]).map((c) => c.id)
+      );
+
       const CATEGORY_COPY = {
         "": {
           h1: "Live Deals on Tech, Gaming, Apple & Daily Essentials",
@@ -771,6 +819,18 @@
         amazon_finds: {
           h1: "Amazon Finds We Love",
           description: "Curated Amazon picks across tech, home, trading cards, fashion, and more — hand-picked finds from top-rated products and customer favorites.",
+        },
+        black_friday: {
+          h1: "Best Black Friday & Cyber Monday Deals",
+          description: "Live Black Friday and Cyber Monday price drops across every category — tech, gaming, fashion, and more. Hack the Deal tracks Black Friday deals from top retailers continuously.",
+        },
+        christmas: {
+          h1: "Best Christmas & Holiday Deals",
+          description: "Live holiday price drops and gift deals across every category. Hack the Deal tracks Christmas deals from top retailers continuously.",
+        },
+        back_to_school: {
+          h1: "Best Back to School Deals",
+          description: "Live price drops on laptops, school supplies, and dorm essentials. Hack the Deal tracks back to school deals from top retailers continuously.",
         },
         computers: {
           h1: "Best Computer & Laptop Deals Today",
@@ -1133,6 +1193,22 @@
           e("rect", { x: 8, y: 14, width: 20, height: 14, rx: 2, fill: "#131a22" }),
           e("path", { d: "M8 14 L18 8 L28 14", fill: "none", stroke: "#131a22", strokeWidth: 2, strokeLinejoin: "round" }),
           e("path", { d: "M11 24 Q18 29 25 24", fill: "none", stroke: "#ff9900", strokeWidth: 2.2, strokeLinecap: "round" })
+        ),
+        black_friday: iconCircle(
+          e("path", { d: "M9 9h11l9 9-11 11-9-9z", fill: "#0a0c12" }),
+          e("circle", { cx: 15, cy: 15, r: 2.4, fill: "#f7768e" })
+        ),
+        christmas: iconCircle(
+          e("path", { d: "M18 8 L23 17 H13Z", fill: "#9ece6a" }),
+          e("path", { d: "M18 14 L25 24 H11Z", fill: "#9ece6a" }),
+          e("rect", { x: 16, y: 24, width: 4, height: 4, fill: "#e0af68" }),
+          e("circle", { cx: 18, cy: 8, r: 1.8, fill: "#f7768e" })
+        ),
+        back_to_school: iconCircle(
+          e("rect", { x: 9, y: 9, width: 18, height: 18, rx: 2, fill: "#7dcfff" }),
+          e("rect", { x: 9, y: 9, width: 18, height: 5, rx: 2, fill: "#414868" }),
+          e("line", { x1: 13, y1: 19, x2: 23, y2: 19, stroke: "#0a0c12", strokeWidth: 1.4, opacity: 0.4 }),
+          e("line", { x1: 13, y1: 23, x2: 20, y2: 23, stroke: "#0a0c12", strokeWidth: 1.4, opacity: 0.4 })
         ),
         computers: iconCircle(
           e("rect", { x: 9, y: 11, width: 18, height: 12, rx: 1.5, fill: "#7dcfff" }),
@@ -1550,7 +1626,7 @@
                 e(
                   "div",
                   { style: { display: "flex", flexDirection: "column", gap: 6, maxHeight: 180, overflowY: "auto", marginBottom: 10 } },
-                  CATEGORIES.filter((c) => c.id).map((c) =>
+                  CATEGORIES.filter((c) => NOTIFIABLE_CATEGORIES.has(c.id)).map((c) =>
                     e(
                       "label",
                       { key: c.id, style: { display: "flex", alignItems: "center", gap: 8, cursor: "pointer", color: "var(--text)" } },
@@ -1819,7 +1895,11 @@
 
         function dealsQuery(extra) {
           const params = new URLSearchParams({ limit: String(DEALS_PAGE_SIZE), ...extra });
-          if (activeCat) params.set("category", activeCat);
+          if (SEASONAL_KEYWORDS[activeCat]) {
+            params.set("keywords", SEASONAL_KEYWORDS[activeCat].join(","));
+          } else if (activeCat) {
+            params.set("category", activeCat);
+          }
           if (minDiscount > 0) params.set("min_discount", String(minDiscount));
           if (search) params.set("search", search);
           return params;
@@ -2024,7 +2104,7 @@
               e(
                 "div",
                 { style: { display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6 } },
-                CATEGORIES.flatMap((c, i) => {
+                CATEGORIES.filter(isVisibleCategory).flatMap((c, i) => {
                   const pill = e(
                     "a",
                     {
@@ -2080,7 +2160,7 @@
             ? e(
                 "div",
                 { className: "cat-showcase" },
-                CATEGORIES.filter((c) => c.id).map((c) =>
+                CATEGORIES.filter((c) => c.id && isVisibleCategory(c)).map((c) =>
                   e(
                     "div",
                     { key: c.id, className: "cat-showcase-item", onClick: () => navigateToCategory(c.id) },
@@ -2189,7 +2269,7 @@
             e(
               "div",
               { style: { maxWidth: 1152, margin: "0 auto", padding: "16px 16px 0", display: "flex", flexWrap: "wrap", gap: 14, fontSize: 12 } },
-              CATEGORIES.filter((c) => c.id).map((c) =>
+              CATEGORIES.filter((c) => c.id && isVisibleCategory(c)).map((c) =>
                 e(
                   "a",
                   {

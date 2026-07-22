@@ -100,6 +100,7 @@ def list_deals(
     min_discount: Optional[float] = Query(None),
     max_price: Optional[float] = Query(None),
     search: Optional[str] = Query(None),
+    keywords: Optional[str] = Query(None),
     min_confidence: float = Query(0.5),
     limit: int = Query(30, le=100),
     offset: int = Query(0),
@@ -127,6 +128,14 @@ def list_deals(
         if search:
             term = f"%{search}%"
             q = q.where(or_(Deal.title.ilike(term), Deal.merchant.ilike(term)))
+        if keywords:
+            # Cross-cutting seasonal filters (Black Friday, Christmas, etc.) —
+            # OR'd substring match against the title, layered on top of any
+            # category filter above rather than replacing it, since a
+            # seasonal promo doesn't change what product category a deal is.
+            terms = [k.strip() for k in keywords.split(",") if k.strip()]
+            if terms:
+                q = q.where(or_(*[Deal.title.ilike(f"%{t}%") for t in terms]))
 
         total = session.execute(
             select(func.count()).select_from(q.subquery())

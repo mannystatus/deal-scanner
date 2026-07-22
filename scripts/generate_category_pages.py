@@ -27,6 +27,18 @@ CATEGORIES = {
         "h1": "Amazon Finds We Love",
         "description": "Curated Amazon picks across tech, home, trading cards, fashion, and more — hand-picked finds from top-rated products and customer favorites.",
     },
+    "black_friday": {
+        "h1": "Best Black Friday & Cyber Monday Deals",
+        "description": "Live Black Friday and Cyber Monday price drops across every category — tech, gaming, fashion, and more. Hack the Deal tracks Black Friday deals from top retailers continuously.",
+    },
+    "christmas": {
+        "h1": "Best Christmas & Holiday Deals",
+        "description": "Live holiday price drops and gift deals across every category. Hack the Deal tracks Christmas deals from top retailers continuously.",
+    },
+    "back_to_school": {
+        "h1": "Best Back to School Deals",
+        "description": "Live price drops on laptops, school supplies, and dorm essentials. Hack the Deal tracks back to school deals from top retailers continuously.",
+    },
     "computers": {
         "h1": "Best Computer & Laptop Deals Today",
         "description": "Live price drops on laptops, desktops, monitors, and PC components. Hack the Deal tracks computer deals from top retailers continuously.",

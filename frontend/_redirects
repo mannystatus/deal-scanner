@@ -6,6 +6,9 @@
 # fix that's actually relied on. Left in place in case it starts
 # working after a future platform change; harmless either way.
 /amazon_finds  /amazon_finds.html  200
+/black_friday  /black_friday.html  200
+/christmas  /christmas.html  200
+/back_to_school  /back_to_school.html  200
 /computers  /computers.html  200
 /gaming  /gaming.html  200
 /apple  /apple.html  200
