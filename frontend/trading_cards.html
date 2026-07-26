@@ -678,17 +678,22 @@
         animation: pulse 1.5s ease-in-out infinite;
       }
     </style>
-  
+    <!-- Per-page structured data (BreadcrumbList/ItemList/Product) is
+         regenerated between these markers on every run of
+         scripts/generate_category_pages.py — replaced wholesale each time,
+         never appended, so reruns can't accumulate stale duplicate blocks. -->
+    <!-- SEO:START -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
       "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.hackthedeal.com/" },
-        { "@type": "ListItem", "position": 2, "name": "Best Trading Card Deals Today", "item": "https://www.hackthedeal.com/trading_cards" }
+{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.hackthedeal.com/" },
+{ "@type": "ListItem", "position": 2, "name": "Best Trading Card Deals Today", "item": "https://www.hackthedeal.com/trading_cards" }
       ]
     }
     </script>
+<!-- SEO:END -->
   </head>
   <body>
     <!-- Google Tag Manager (noscript) -->
@@ -758,7 +763,39 @@
         </ul>
       </div>
     </noscript>
-    <div id="root"></div>
+    <!-- Server-generated deal content lives between these markers (see
+         scripts/generate_category_pages.py). It's replaced wholesale by
+         React the instant the app mounts below — this is purely so
+         crawlers and no-JS visitors see real deal titles/prices/links
+         without executing JS first. Markers make regeneration idempotent
+         regardless of what's currently between them. -->
+    <div id="root"><!-- PRERENDER:START -->
+      <section class="hero">
+        <div class="hero-icon"><svg viewBox="0 0 88 88"><circle cx="44" cy="44" r="44" fill="var(--icon-bg)"></circle><path d="M14 78 Q44 30 74 78 Z" fill="#2a2d3f"></path><circle cx="44" cy="50" r="20" fill="#414868"></circle><rect x="32" y="45" width="24" height="10" rx="2" fill="#0a0c12"></rect><path d="M74 58 L90 42 L98 58 L90 74 L74 58Z" fill="#f7768e"></path><text x="90" y="62" font-family="sans-serif" font-size="9" fill="#3b0f18" text-anchor="middle">%</text></svg></div>
+        <div>
+          <p class="hero-eyebrow">$ curl hackthedeal.com --live</p>
+          <h1 class="hero-title">Best Trading Card Deals Today</h1>
+          <p class="hero-sub">Live price drops on trading card boxes, packs, and singles across Pokémon, sports, and TCGs. Hack the Deal tracks trading card deals continuously.</p>
+        </div>
+      </section>
+      <main style="max-width:1152px;margin:0 auto;padding:8px 16px 40px">
+        <div class="section-title-bar"><span class="section-label">Latest Deals</span></div>
+        <p style="text-align:center;padding:60px 0;color:var(--muted)">No deals match right now — check back soon.</p>
+      </main>
+      <footer class="site-footer">
+      <div style="max-width:1152px;margin:0 auto;padding:16px 16px 0;display:flex;flex-wrap:wrap;gap:14px;font-size:12px">
+        <a href="/amazon_finds">Amazon Finds</a><a href="/black_friday">Black Friday Deals</a><a href="/christmas">Christmas Deals</a><a href="/back_to_school">Back to School Deals</a><a href="/computers">Computers Deals</a><a href="/gaming">Gaming Deals</a><a href="/apple">Apple Deals</a><a href="/cameras">Cameras Deals</a><a href="/software">Software Deals</a><a href="/streaming">Streaming Deals</a><a href="/trading_cards">Trading Cards Deals</a><a href="/fashion">Fashion Deals</a><a href="/beauty">Beauty Deals</a><a href="/shoes">Shoes Deals</a><a href="/travel">Travel Deals</a><a href="/drones">Drones Deals</a><a href="/3d_printing">3D Printing Deals</a><a href="/filament">3D Filament Deals</a>
+      </div>
+      <div style="max-width:1152px;margin:0 auto;padding:12px 16px 20px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;font-size:12px">
+        <span>© Hack the Deal 2026. <strong>This site contains affiliate links, including as an Amazon Associate — we earn from qualifying purchases.</strong></span>
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <a href="/contact.html" class="footer-contact-link">Partner With Us</a>
+          <a href="/privacy.html">Privacy Policy</a>
+          <a href="/terms.html">Terms of Use</a>
+        </div>
+      </div>
+    </footer>
+    <!-- PRERENDER:END --></div>
 
     <script src="./config.js"></script>
 
@@ -2057,12 +2094,17 @@
         const [imgError, setImgError] = useState(false);
         const showImage = deal.thumbnail_url && !imgError;
 
+        // "sponsored" tells Google this is a paid/affiliate link and not an
+        // editorial endorsement passing PageRank — required by their
+        // affiliate-link guidelines whenever affiliate_url is in play.
+        const linkRel = deal.affiliate_url ? "sponsored noopener noreferrer" : "noopener noreferrer";
+
         const link = e(
           "a",
           {
             href: target,
             target: "_blank",
-            rel: "noopener noreferrer",
+            rel: linkRel,
             className: isTracked ? undefined : "deal-card",
             style: isTracked ? { display: "flex", flexDirection: "column", flex: "1 1 auto", textDecoration: "none", color: "inherit" } : undefined,
           },

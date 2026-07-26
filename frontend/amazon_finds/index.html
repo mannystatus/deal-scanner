@@ -678,17 +678,22 @@
         animation: pulse 1.5s ease-in-out infinite;
       }
     </style>
-  
+    <!-- Per-page structured data (BreadcrumbList/ItemList/Product) is
+         regenerated between these markers on every run of
+         scripts/generate_category_pages.py — replaced wholesale each time,
+         never appended, so reruns can't accumulate stale duplicate blocks. -->
+    <!-- SEO:START -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
       "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.hackthedeal.com/" },
-        { "@type": "ListItem", "position": 2, "name": "Amazon Finds We Love", "item": "https://www.hackthedeal.com/amazon_finds" }
+{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.hackthedeal.com/" },
+{ "@type": "ListItem", "position": 2, "name": "Amazon Finds We Love", "item": "https://www.hackthedeal.com/amazon_finds" }
       ]
     }
     </script>
+<!-- SEO:END -->
   </head>
   <body>
     <!-- Google Tag Manager (noscript) -->
@@ -758,7 +763,13 @@
         </ul>
       </div>
     </noscript>
-    <div id="root"></div>
+    <!-- Server-generated deal content lives between these markers (see
+         scripts/generate_category_pages.py). It's replaced wholesale by
+         React the instant the app mounts below — this is purely so
+         crawlers and no-JS visitors see real deal titles/prices/links
+         without executing JS first. Markers make regeneration idempotent
+         regardless of what's currently between them. -->
+    <div id="root"><!-- PRERENDER:START --><!-- PRERENDER:END --></div>
 
     <script src="./config.js"></script>
 
@@ -2057,12 +2068,17 @@
         const [imgError, setImgError] = useState(false);
         const showImage = deal.thumbnail_url && !imgError;
 
+        // "sponsored" tells Google this is a paid/affiliate link and not an
+        // editorial endorsement passing PageRank — required by their
+        // affiliate-link guidelines whenever affiliate_url is in play.
+        const linkRel = deal.affiliate_url ? "sponsored noopener noreferrer" : "noopener noreferrer";
+
         const link = e(
           "a",
           {
             href: target,
             target: "_blank",
-            rel: "noopener noreferrer",
+            rel: linkRel,
             className: isTracked ? undefined : "deal-card",
             style: isTracked ? { display: "flex", flexDirection: "column", flex: "1 1 auto", textDecoration: "none", color: "inherit" } : undefined,
           },

@@ -22,7 +22,7 @@ concurrency:
   cancel-in-progress: false   # If a run is slow, let it finish before the next
 
 permissions:
-  contents: read
+  contents: write   # needed to push the regenerated static pages back to main
 
 jobs:
   ingest:
@@ -52,3 +52,26 @@ jobs:
           VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
           VAPID_CLAIM_EMAIL: ${{ secrets.VAPID_CLAIM_EMAIL }}
         run: python worker.py
+
+      # Regenerates frontend/<category>/index.html, frontend/index.html,
+      # frontend/deal/<id>-<slug>/index.html, and frontend/sitemap.xml from
+      # the deals the worker run above just ingested — see
+      # scripts/generate_category_pages.py for why (crawlability: category
+      # and deal content needs to exist in the static HTML, not just be
+      # fetched client-side by React).
+      - name: Regenerate static SEO pages
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python scripts/generate_category_pages.py
+
+      - name: Commit & push regenerated static pages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add frontend/
+          if git diff --cached --quiet; then
+            echo "No frontend changes to commit"
+          else
+            git commit -m "Regenerate static deal pages from latest ingest"
+            git push
+          fi
