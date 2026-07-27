@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Consent Mode v2 — sets default (denied) consent state before any tag
+         below loads, so GTM/gtag still fire on every visit but only send
+         cookieless, anonymized signals until the user accepts the cookie
+         notice further down the page. If they already accepted on a past
+         visit, immediately upgrade to granted from the stored preference.
+         https://developers.google.com/tag-platform/security/guides/consent -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      window.gtag = gtag;
+      gtag('consent', 'default', {
+        'ad_storage': 'denied',
+        'ad_user_data': 'denied',
+        'ad_personalization': 'denied',
+        'analytics_storage': 'denied',
+        'wait_for_update': 500
+      });
+      if (localStorage.getItem('htd_consent_v1') === 'granted') {
+        gtag('consent', 'update', {
+          'ad_storage': 'granted',
+          'ad_user_data': 'granted',
+          'ad_personalization': 'granted',
+          'analytics_storage': 'granted'
+        });
+      }
+    </script>
+    <!-- End Consent Mode -->
+
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-T7MD3LW5');</script>
+    <!-- End Google Tag Manager -->
+
+    <!-- Google Analytics (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LFR5HP4FDC"></script>
+    <script>
+      gtag('js', new Date());
+      gtag('config', 'G-LFR5HP4FDC');
+    </script>
+    <!-- End Google Analytics -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>How We Find & Verify Deals – Hack the Deal</title>
+    <meta name="description" content="How Hack the Deal sources, parses, and scores every listing — Reddit communities, retailer RSS feeds, and direct vendor sale feeds, filtered by a confidence score and expired automatically after 30 days." />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="canonical" href="https://www.hackthedeal.com/about.html" />
+    <link rel="icon" href="/favicon-v3.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-v3.ico" sizes="any" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.hackthedeal.com/about.html" />
+    <meta property="og:title" content="How We Find & Verify Deals – Hack the Deal" />
+    <meta property="og:description" content="How Hack the Deal sources, parses, and scores every listing — Reddit communities, retailer RSS feeds, and direct vendor sale feeds, filtered by a confidence score and expired automatically after 30 days." />
+    <meta property="og:site_name" content="Hack the Deal" />
+    <meta property="og:image" content="https://www.hackthedeal.com/assets/og-image.png" />
+    <meta property="og:image:width" content="2400" />
+    <meta property="og:image:height" content="1260" />
+    <meta property="og:image:type" content="image/png" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="How We Find & Verify Deals – Hack the Deal" />
+    <meta name="twitter:description" content="How Hack the Deal sources, parses, and scores every listing — Reddit communities, retailer RSS feeds, and direct vendor sale feeds, filtered by a confidence score and expired automatically after 30 days." />
+    <meta name="twitter:image" content="https://www.hackthedeal.com/assets/og-image.png" />
+    <!-- Google AdSense -->
+    <meta name="google-adsense-account" content="ca-pub-6138840929831792">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6138840929831792"
+     crossorigin="anonymous"></script>
+
+    <style>
+      :root {
+        --bg: #f4f5fa;
+        --surface: #ffffff;
+        --border: #e1e3ee;
+        --text: #1a1b26;
+        --muted: #5a5f7a;
+        --accent: #93e6a6;
+        --accent-text: #1d7c33;
+      }
+      * { box-sizing: border-box; }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      }
+      .network-bar {
+        background: #1a1b26;
+        color: #aaa;
+        font-size: 11px;
+        letter-spacing: 0.04em;
+        padding: 6px 16px;
+        text-align: center;
+      }
+      .disclosure-bar {
+        background: #fff8e6;
+        color: #6b5a1e;
+        font-size: 11px;
+        text-align: center;
+        padding: 4px 16px;
+      }
+      .site-header {
+        background: var(--surface);
+        border-bottom: 3px solid var(--accent);
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        line-height: 1;
+        color: var(--accent-text);
+      }
+      .logo svg { height: 20px; width: auto; display: block; }
+      .back-link {
+        font-size: 13px;
+        color: var(--muted);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.15s;
+      }
+      .back-link:hover { color: var(--accent-text); }
+      .content-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 40px 48px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+      }
+      @media (max-width: 640px) {
+        .content-card { padding: 24px 20px; }
+      }
+      h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; color: var(--text); margin: 0 0 4px; }
+      h2 {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text);
+        margin: 0 0 10px;
+        padding-left: 10px;
+        border-left: 3px solid var(--accent);
+      }
+      p { color: #444; line-height: 1.75; margin: 0 0 12px; font-size: 14px; }
+      ul { padding-left: 20px; margin: 8px 0 0; }
+      li { color: #444; line-height: 1.75; font-size: 14px; margin-bottom: 6px; }
+      a { color: var(--accent-text); text-decoration: underline; }
+      a:hover { opacity: 0.8; }
+      strong { color: var(--text); }
+      section { margin-bottom: 32px; }
+      .site-footer {
+        background: #1a1b26;
+        color: #888;
+        border-top: 3px solid var(--accent);
+        font-size: 12px;
+        padding: 20px 16px;
+        text-align: center;
+      }
+      .site-footer a { color: var(--accent); text-decoration: none; }
+    </style>
+  </head>
+  <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T7MD3LW5"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager -->
+
+    <!-- Privacy / cookie consent notice — static markup so it's visible even
+         before any script runs. GTM/GA already loaded in Consent Mode's
+         default "denied" state (see <head>); clicking OK just upgrades it. -->
+    <div id="consent-overlay" class="consent-overlay" style="display: none; position: fixed; inset: 0; z-index: 999; align-items: flex-end; justify-content: center; padding: 16px; pointer-events: none;">
+      <div style="pointer-events: auto; max-width:560px; width:100%; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; box-shadow:0 8px 30px rgba(0,0,0,0.25); display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+        <div style="flex:1 1 320px;">
+          <p style="margin:0 0 4px; font-size:14px; font-weight:800;">🍪 We use cookies</p>
+          <p style="margin:0; font-size:13px; line-height:1.5; color:var(--text);">
+            This site uses cookies to measure site performance and improve your experience.
+            By clicking OK, you accept our use of cookies as described in our
+            <a href="/privacy.html">Privacy Policy</a>.
+          </p>
+        </div>
+        <button id="consent-ok" type="button" style="flex:0 0 auto; background:var(--text); color:#fff; border:none; border-radius:8px; padding:10px 24px; font-size:13px; font-weight:700; cursor:pointer;">OK</button>
+      </div>
+    </div>
+    <script>
+      (function () {
+        if (localStorage.getItem('htd_consent_v1') !== 'granted') {
+          document.getElementById('consent-overlay').style.display = 'flex';
+        }
+        document.getElementById('consent-ok').addEventListener('click', function () {
+          localStorage.setItem('htd_consent_v1', 'granted');
+          document.getElementById('consent-overlay').style.display = 'none';
+          gtag('consent', 'update', {
+            'ad_storage': 'granted',
+            'ad_user_data': 'granted',
+            'ad_personalization': 'granted',
+            'analytics_storage': 'granted'
+          });
+        });
+      })();
+    </script>
+
+    <div class="disclosure-bar">This site contains affiliate links, including as an Amazon Associate — we earn from qualifying purchases at no extra cost to you.</div>
+    <div class="network-bar">Your source for the best deals on the web</div>
+
+    <header class="site-header">
+      <div style="max-width:900px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
+        <a href="/" class="logo"><svg viewBox="120 85 570 90" role="img" aria-label="hackthedeal_"><rect x="130" y="98" width="22" height="64" fill="currentColor"/><text x="170" y="152" font-family="&apos;Courier New&apos;, &apos;DejaVu Sans Mono&apos;, monospace" font-size="70" font-weight="700" fill="currentColor">hackthedeal_</text></svg></a>
+        <a href="/" class="back-link">← Back to deals</a>
+      </div>
+    </header>
+
+    <main style="max-width:900px;margin:32px auto;padding:0 16px 48px;">
+      <div class="content-card">
+        <h1>How We Find &amp; Verify Deals</h1>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:32px;">What's on this page is a real description of how the site works — not boilerplate.</p>
+
+        <section>
+          <h2>1. Where listings come from</h2>
+          <p>Hack the Deal pulls from three kinds of sources, all fetched automatically on a recurring schedule:</p>
+          <ul>
+            <li><strong>Reddit deal communities</strong> — r/buildapcsales, r/GameDeals, r/AppleDeals, r/PS5Deals, r/SwitchDeals, r/tradingcards, and r/photomarket. These are the same communities deal-hunters already use; we're reading the same public posts you could browse there yourself.</li>
+            <li><strong>Deal-aggregator RSS feeds</strong> — Slickdeals, DealNews, 9to5Toys, and 9to5Mac's deals feed, covering categories those Reddit communities don't (fashion, beauty, travel, software, cameras).</li>
+            <li><strong>Direct-from-vendor sale feeds</strong> — retailers like Pyrodrone, RaceDayQuads, Elegoo, Anycubic, Sovol, Polymaker, and Overture publish their own "on sale" collections, which we read straight from the source rather than through a middleman aggregator.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>2. How a listing gets a category and a price</h2>
+          <p>Each post's title is parsed for a price, an original ("was") price, a discount percentage, and a merchant name — the same information a human skimming the title would pick out. A listing is scored on how much of that it actually contains: a title with a clear price, a clear discount, and a named merchant scores higher than one with just a product name and a link.</p>
+          <p>Listings below that confidence threshold don't get published. This is a filter for how clearly a deal was described, not a live price-verification service — we don't independently re-check every retailer's price in real time, so always confirm the price on the retailer's own page before buying, which every deal card and permalink page on this site links straight to.</p>
+        </section>
+
+        <section>
+          <h2>3. Why deals disappear</h2>
+          <p>Every listing is dropped automatically 30 days after it was posted, and pages that were live for expired deals are deleted rather than left up as stale, dead-looking content. A small number of sources that consistently produced low-quality or misleading listings have been removed from the source list entirely rather than filtered after the fact.</p>
+        </section>
+
+        <section>
+          <h2>4. What "Sponsored" means here</h2>
+          <p>Everything described above is unpaid — a listing shows up because it matched a source and cleared the confidence threshold, not because anyone paid for placement. Sponsored placements are a separate, clearly labeled category (see our <a href="/contact.html">partnerships page</a>), and every affiliate link on the site — sponsored or not — carries a <code>rel="sponsored"</code> attribute and the disclosure banner shown at the top of every page.</p>
+        </section>
+
+        <section style="margin-bottom:0;">
+          <p style="font-size:12px;color:var(--muted);">See also our <a href="/privacy.html">Privacy Policy</a> for the full data/cookies breakdown, and our <a href="/terms.html">Terms of Use</a> for deal-accuracy and liability terms. Questions or a correction on something we got wrong? <a href="/contact.html">Get in touch</a>.</p>
+        </section>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      &copy; Hack the Deal 2026. As an Amazon Associate I earn from qualifying purchases.
+    </footer>
+  </body>
+</html>

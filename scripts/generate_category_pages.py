@@ -56,84 +56,108 @@ BLOCKED_SOURCES = {"bensbargains"}
 DEALS_PER_PAGE = 60
 
 # Keep in sync with CATEGORY_COPY in frontend/index.html.
+# Real, category-specific buying-guide copy — not generated from deal data,
+# not filler. Rendered as a second paragraph below the hero description on
+# every category page (see render_prerender_block) and mirrored in
+# frontend/index.html's client-side CATEGORY_COPY so real browser users see
+# the same thing, not just crawlers hitting the prerendered snapshot.
 CATEGORIES = {
     "amazon_finds": {
         "h1": "Amazon Finds We Love",
         "description": "Curated Amazon picks across tech, home, trading cards, fashion, and more — hand-picked finds from top-rated products and customer favorites.",
+        "guide": "These aren't pulled from a deal feed — we hand-pick them from Amazon's own bestseller and highly-rated listings in categories we already cover, so what's here is stuff we'd actually recommend, not just whatever happens to be discounted this week.",
     },
     "black_friday": {
         "h1": "Best Black Friday & Cyber Monday Deals",
         "description": "Live Black Friday and Cyber Monday price drops across every category — tech, gaming, fashion, and more. Hack the Deal tracks Black Friday deals from top retailers continuously.",
+        "guide": "Retailers start \"Black Friday\" pricing weeks before the actual date and often re-run the same discount at Christmas, so we track this page by what's actually cheaper right now, not by the calendar. Compare the \"was\" price against what you've seen the item sell for over the past month before assuming it's a real drop.",
     },
     "christmas": {
         "h1": "Best Christmas & Holiday Deals",
         "description": "Live holiday price drops and gift deals across every category. Hack the Deal tracks Christmas deals from top retailers continuously.",
+        "guide": "Holiday listings lean toward gifts and bundles worth buying ahead rather than waiting for a lower price closer to the date — shipping cutoffs matter more here than squeezing out another few dollars of discount. Check the posted date on each card; holiday inventory moves fast and older listings can sell out.",
     },
     "back_to_school": {
         "h1": "Best Back to School Deals",
         "description": "Live price drops on laptops, school supplies, and dorm essentials. Hack the Deal tracks back to school deals from top retailers continuously.",
+        "guide": "Laptop and school-supply deals cluster in late summer, but the biggest cuts on prior-generation laptops usually show up right after a manufacturer's new model launches, not during the official back-to-school sales window — worth checking current-gen specs before assuming older is worse.",
     },
     "computers": {
         "h1": "Best Computer & Laptop Deals Today",
         "description": "Live price drops on laptops, desktops, monitors, and PC components. Hack the Deal tracks computer deals from top retailers continuously.",
+        "guide": "A discounted laptop or desktop is only a good deal if the specs still hold up — check RAM, storage type (SSD vs. eMMC), and GPU generation before the price. We track drops on full builds and individual components like monitors and storage, since a $40 monitor deal is easy to miss buried in a laptop-heavy feed.",
     },
     "gaming": {
         "h1": "Best Gaming Deals Today",
         "description": "Live price drops on gaming consoles, PC games, accessories, and peripherals. Hack the Deal tracks gaming deals from top retailers continuously.",
+        "guide": "Console bundle \"deals\" sometimes cost more than buying the console and games separately at their own sale prices — the discount shown is off the bundle's own list price, so it's worth doing that comparison yourself. Digital game sales move fast and can end same-day, so the posted date matters more here than almost anywhere else.",
     },
     "apple": {
         "h1": "Best Apple & iPhone Deals Today",
         "description": "Live price drops on iPhone, iPad, Mac, AirPods, and Apple Watch. Hack the Deal tracks Apple deals from top retailers continuously.",
+        "guide": "Apple rarely discounts directly, so real price drops come from authorized resellers clearing older or refurbished stock — check whether a listing is new, renewed, or open-box before assuming it's the same as buying from Apple. The best AirPods and Watch discounts tend to land around a new product launch, when retailers clear the outgoing model.",
     },
     "cameras": {
         "h1": "Best Camera & Photography Deals Today",
         "description": "Live price drops on cameras, lenses, drones, and photography gear. Hack the Deal tracks camera deals from top retailers continuously.",
+        "guide": "Camera body prices swing hard around a manufacturer's next release announcement — a body that's been out 18+ months is where the real discounts show up, not brand-new releases. Watch lens deals separately from bodies; a slower but well-reviewed lens on sale can outperform a kit lens at full price.",
     },
     "software": {
         "h1": "Best Software Deals Today",
         "description": "Live price drops on software licenses, subscriptions, and digital tools. Hack the Deal tracks software deals from top retailers continuously.",
+        "guide": "A perpetual license (buy once, own it) is usually a better long-term deal than a discounted first-year subscription that renews at full price — read the fine print on whether a \"deal\" price is one-time or an intro rate. We track individual licenses and bundle sites separately, since bundles can hide a couple of genuinely useful tools among filler.",
     },
     "streaming": {
         "h1": "Best Streaming & Digital Media Deals Today",
         "description": "Live price drops on iTunes and Google Play movies, TV shows, and eBooks, plus streaming service offers like Hulu and YouTube TV. Hack the Deal tracks streaming deals from top retailers continuously.",
+        "guide": "Digital movie and show sales tend to track physical media release windows — a title usually gets its steepest digital discount 3-6 months after release, then again around its one-year mark. Streaming service promo pricing almost always locks you into an annual plan; check the cancellation terms before committing for the discount alone.",
     },
     "trading_cards": {
         "h1": "Best Trading Card Deals Today",
         "description": "Live price drops on trading card boxes, packs, and singles across Pokémon, sports, and TCGs. Hack the Deal tracks trading card deals continuously.",
+        "guide": "Sealed product (boxes, packs) pricing is volatile and tied to secondary-market demand for what's inside, not retail MSRP — a \"deal\" on a box can still be above what it sold for a year ago if the set's grown popular. We track boxes and singles separately, since a single-card deal lives or dies on the exact card, not the set.",
     },
     "fashion": {
         "h1": "Best Fashion & Clothing Deals Today",
         "description": "Live price drops on clothing, shoes, and accessories for men and women. Hack the Deal tracks fashion deals from top retailers continuously.",
+        "guide": "End-of-season clearance (winter coats in February, sandals in September) is consistently where the deepest cuts show up versus mid-season \"sale\" pricing — worth buying a size ahead if you can. Sizing runs inconsistently across brands even at the same retailer, so check the specific brand's size chart rather than assuming your usual size.",
     },
     "beauty": {
         "h1": "Best Beauty & Health Deals Today",
         "description": "Live price drops on makeup, skincare, haircare, and health essentials. Hack the Deal tracks beauty deals from top retailers continuously.",
+        "guide": "Worth checking expiration/batch dates on steep skincare or haircare discounts, especially for niche or discontinued shades — a deep cut sometimes means a brand is clearing a line that's being replaced. Bundle sets can genuinely save money or just pad the price around one desirable item; check what the core product costs alone first.",
     },
     "shoes": {
         "h1": "Best Shoe Deals Today",
         "description": "Live price drops on sneakers, boots, and shoes for men, women, and kids. Hack the Deal tracks shoe deals from top retailers continuously.",
+        "guide": "Sneaker resale and collab drops behave differently from ordinary clearance — a \"deal\" on a hyped release can still be inflated over retail if it's coming from a reseller rather than the brand directly. For everyday shoes, checking whether a discontinued colorway is the only reason for the discount tells you whether it'll still be around next week.",
     },
     "travel": {
         "h1": "Best Travel Deals Today",
         "description": "Live price drops on flights, hotels, cruises, and travel gear. Hack the Deal tracks travel deals from top retailers continuously.",
+        "guide": "Flight and hotel deals expire fast and are seat/room-count limited, so the posted date matters more here than in almost any other category — a fare from three days ago is very likely gone already. Always re-check the total price (bags, resort fees) before booking, since the headline number rarely includes everything.",
     },
     "drones": {
         "h1": "Best Drone & FPV Parts Deals Today",
         "description": "Live price drops on drones, FPV parts, batteries, motors, and accessories straight from vendors like Pyrodrone and RaceDayQuads. Hack the Deal tracks drone deals continuously.",
+        "guide": "FPV parts pricing is tightly tied to a handful of vendors clearing older frame/motor generations ahead of a new release — checking a part's release date against current-gen specs tells you whether a discount is a real bargain or just outdated stock. Batteries and props are consumables worth stocking up on during a sale; frames and flight controllers are worth comparing specs on first.",
     },
     "3d_printing": {
         "h1": "Best 3D Printer Deals Today",
         "description": "Live price drops on 3D printers and supplies straight from vendors like Elegoo, Anycubic, and Sovol. Hack the Deal tracks 3D printing deals continuously.",
+        "guide": "Printer deals cluster around a brand clearing a model right before — or right after — its successor launches; check whether a discounted printer is still receiving firmware updates before assuming last-gen is a bargain. Bundled filament or resin is a nice-to-have, not the reason to buy — price the printer on its own first.",
     },
     "filament": {
         "h1": "Best 3D Printer Filament Deals Today",
         "description": "Live price drops on PLA, PETG, ABS, and specialty filament straight from vendors like Bambu Lab, Overture, and Polymaker. Hack the Deal tracks filament deals continuously.",
+        "guide": "Filament pricing per kilogram varies a lot by material — PLA is cheapest, specialty resins and carbon-fiber blends cost more — so compare a \"deal\" against that material's typical price, not filament in general. Buying multiple spools during a sale only pays off if you're actually printing enough to use them before they degrade; PLA and PETG store better long-term than ABS.",
     },
 }
 
 HOME_COPY = {
     "h1": "Live Deals on Tech, Gaming, Apple & Daily Essentials",
     "description": "Find the best online deals, discounts, and price drops on tech, gaming, Apple, cameras, trading cards, and daily essentials. Hack the Deal scans live deals from top retailers so you never miss a sale.",
+    "guide": "New listings come from Reddit deal communities, retailer RSS feeds, and vendors' own sale pages, then get scored on how clearly the post states a price, discount, and merchant before anything is published — not on how big the \"was\" price looks. Every card links to a permalink with the price we saw and when we saw it, so you can judge a deal yourself before clicking through.",
 }
 
 # Short nav-style labels — keep in sync with the CATEGORIES array in
@@ -350,6 +374,7 @@ def render_static_footer() -> str:
       <div style="max-width:1152px;margin:0 auto;padding:12px 16px 20px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;font-size:12px">
         <span>© Hack the Deal {date.today().year}. <strong>This site contains affiliate links, including as an Amazon Associate — we earn from qualifying purchases.</strong></span>
         <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <a href="/about.html">How We Find Deals</a>
           <a href="/contact.html" class="footer-contact-link">Partner With Us</a>
           <a href="/privacy.html">Privacy Policy</a>
           <a href="/terms.html">Terms of Use</a>
@@ -358,7 +383,7 @@ def render_static_footer() -> str:
     </footer>"""
 
 
-def render_prerender_block(h1: str, description: str, deals: list[Deal]) -> str:
+def render_prerender_block(h1: str, description: str, guide: str, deals: list[Deal]) -> str:
     if deals:
         cards = "".join(render_deal_card(d) for d in deals)
         grid = (
@@ -368,6 +393,18 @@ def render_prerender_block(h1: str, description: str, deals: list[Deal]) -> str:
     else:
         grid = '<p style="text-align:center;padding:60px 0;color:var(--muted)">No deals match right now — check back soon.</p>'
 
+    # A second, longer paragraph of real buying-guide copy (see CATEGORIES/
+    # HOME_COPY above) — not another restatement of "we track deals", actual
+    # category-specific advice — plus a link to /about.html so both crawlers
+    # and readers can find the full sourcing/verification writeup from every
+    # single page, not just the footer.
+    guide_html = (
+        f'<p class="hero-guide" style="max-width:640px;margin-top:10px;font-size:13px;line-height:1.6;color:var(--muted)">'
+        f'{esc(guide)} <a href="/about.html">How we find and verify deals →</a></p>'
+        if guide
+        else ""
+    )
+
     return f"""
       <section class="hero">
         <div class="hero-icon">{HERO_ICON_SVG}</div>
@@ -375,6 +412,7 @@ def render_prerender_block(h1: str, description: str, deals: list[Deal]) -> str:
           <p class="hero-eyebrow">$ curl hackthedeal.com --live</p>
           <h1 class="hero-title">{esc(h1)}</h1>
           <p class="hero-sub">{esc(description)}</p>
+          {guide_html}
         </div>
       </section>
       <main style="max-width:1152px;margin:0 auto;padding:8px 16px 40px">
@@ -534,7 +572,7 @@ def inject_seo_block(template: str, snippet: str) -> str:
     )
 
 
-def build_page(template: str, slug: str, h1: str, description: str, deals: list[Deal]) -> str:
+def build_page(template: str, slug: str, h1: str, description: str, guide: str, deals: list[Deal]) -> str:
     url = f"{BASE_URL}/{slug}" if slug else f"{BASE_URL}/"
     title = f"{h1} – Live Price Drops | Hack the Deal" if slug else f"{h1} | Hack the Deal"
 
@@ -553,7 +591,7 @@ def build_page(template: str, slug: str, h1: str, description: str, deals: list[
     # target, so skipping this would leave whatever was between the
     # markers from a *previous* run's output in place instead of resetting
     # it, silently leaking that run's content into this page.
-    prerender_html = "" if slug in NO_PRERENDER_CATEGORIES else render_prerender_block(h1, description, deals)
+    prerender_html = "" if slug in NO_PRERENDER_CATEGORIES else render_prerender_block(h1, description, guide, deals)
     page = inject_prerender(page, prerender_html)
 
     return page
@@ -574,6 +612,16 @@ def build_deal_page(head_template: str, deal: Deal) -> str:
     )
 
     head = swap_head_meta(head_template, title, description[:300], url)
+    # Individual deal permalinks are thin by nature — a scraped title, a
+    # price, and one outbound link — so they're excluded from indexing and
+    # from the sitemap (see build_sitemap). They stay live and linked (the
+    # deal cards on category pages still point here, and "follow" keeps
+    # crawl equity flowing to the category pages), just not asked to rank
+    # or count toward the site's indexed-content quality on their own.
+    head = head.replace(
+        '<meta name="robots" content="index, follow" />',
+        '<meta name="robots" content="noindex, follow" />',
+    )
     breadcrumb_items = [("Home", f"{BASE_URL}/")]
     if label:
         breadcrumb_items.append((label, f"{BASE_URL}/{deal.category}"))
@@ -649,6 +697,7 @@ def build_deal_page(head_template: str, deal: Deal) -> str:
 
 STATIC_PAGES = [
     ("/", date.today().isoformat(), "daily", "1.0"),
+    ("/about.html", "2026-07-27", "monthly", "0.5"),
     ("/contact.html", "2026-07-21", "monthly", "0.4"),
     ("/privacy.html", "2026-07-21", "monthly", "0.3"),
     ("/terms.html", "2026-07-22", "monthly", "0.3"),
@@ -656,12 +705,16 @@ STATIC_PAGES = [
 
 
 def build_sitemap(all_deals: list[Deal]) -> str:
+    # Deal permalinks are deliberately left out — they're noindex (see
+    # build_deal_page) precisely because they're too thin to be worth a
+    # search engine's attention individually, so listing 500+ of them here
+    # would be asking Google to evaluate the same thing twice, just in two
+    # different places. `all_deals` is still a param so callers don't need
+    # to change — kept for the deal-count log line in main(), not used here.
     urls = list(STATIC_PAGES)
     today = date.today().isoformat()
     for slug in CATEGORIES:
         urls.append((f"/{slug}", today, "daily", "0.8"))
-    for deal in all_deals:
-        urls.append((deal_permalink(deal), deal.posted_at.date().isoformat(), "weekly", "0.6"))
 
     entries = "\n".join(
         f"  <url>\n    <loc>{BASE_URL}{loc}</loc>\n    <lastmod>{lastmod}</lastmod>\n"
@@ -681,7 +734,7 @@ def main() -> None:
         redirect_lines = []
         for slug, copy in CATEGORIES.items():
             deals = [] if slug in NO_PRERENDER_CATEGORIES else fetch_category_deals(session, slug)
-            page = build_page(template, slug, copy["h1"], copy["description"], deals)
+            page = build_page(template, slug, copy["h1"], copy["description"], copy.get("guide", ""), deals)
 
             dir_path = ROOT / "frontend" / slug
             dir_path.mkdir(parents=True, exist_ok=True)
@@ -695,7 +748,7 @@ def main() -> None:
 
         # Homepage.
         home_deals = fetch_home_deals(session)
-        home_page = build_page(template, "", HOME_COPY["h1"], HOME_COPY["description"], home_deals)
+        home_page = build_page(template, "", HOME_COPY["h1"], HOME_COPY["description"], HOME_COPY["guide"], home_deals)
         TEMPLATE_PATH.write_text(home_page, encoding="utf-8")
         print(f"wrote {TEMPLATE_PATH.relative_to(ROOT)} ({len(home_deals)} deals)")
 
@@ -727,7 +780,10 @@ def main() -> None:
 
     sitemap_path = ROOT / "frontend" / "sitemap.xml"
     sitemap_path.write_text(build_sitemap(all_deals), encoding="utf-8")
-    print(f"wrote {sitemap_path.relative_to(ROOT)} ({len(all_deals) + len(CATEGORIES) + len(STATIC_PAGES)} urls)")
+    print(
+        f"wrote {sitemap_path.relative_to(ROOT)} "
+        f"({len(CATEGORIES) + len(STATIC_PAGES)} urls — {len(all_deals)} deal permalinks intentionally excluded, see build_sitemap)"
+    )
 
 
 if __name__ == "__main__":

@@ -776,6 +776,7 @@
           <p class="hero-eyebrow">$ curl hackthedeal.com --live</p>
           <h1 class="hero-title">Best 3D Printer Filament Deals Today</h1>
           <p class="hero-sub">Live price drops on PLA, PETG, ABS, and specialty filament straight from vendors like Bambu Lab, Overture, and Polymaker. Hack the Deal tracks filament deals continuously.</p>
+          <p class="hero-guide" style="max-width:640px;margin-top:10px;font-size:13px;line-height:1.6;color:var(--muted)">Filament pricing per kilogram varies a lot by material — PLA is cheapest, specialty resins and carbon-fiber blends cost more — so compare a &quot;deal&quot; against that material&#x27;s typical price, not filament in general. Buying multiple spools during a sale only pays off if you&#x27;re actually printing enough to use them before they degrade; PLA and PETG store better long-term than ABS. <a href="/about.html">How we find and verify deals →</a></p>
         </div>
       </section>
       <main style="max-width:1152px;margin:0 auto;padding:8px 16px 40px">
@@ -789,6 +790,7 @@
       <div style="max-width:1152px;margin:0 auto;padding:12px 16px 20px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;font-size:12px">
         <span>© Hack the Deal 2026. <strong>This site contains affiliate links, including as an Amazon Associate — we earn from qualifying purchases.</strong></span>
         <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <a href="/about.html">How We Find Deals</a>
           <a href="/contact.html" class="footer-contact-link">Partner With Us</a>
           <a href="/privacy.html">Privacy Policy</a>
           <a href="/terms.html">Terms of Use</a>
@@ -894,82 +896,107 @@
       // deal cards to pick up the price-history chart automatically.
       const PRICE_TRACKED_CATEGORIES = new Set(["filament"]);
 
+      // guide: real category-specific buying-guide copy, kept in sync with
+      // the same-named field in scripts/generate_category_pages.py — that
+      // script renders it into the crawler-visible prerendered snapshot,
+      // this renders it for real browser users once React mounts (see the
+      // hero section below), so both crawlers and people see the same
+      // thing rather than a richer page flashing then reverting to thin.
       const CATEGORY_COPY = {
         "": {
           h1: "Live Deals on Tech, Gaming, Apple & Daily Essentials",
           description: "Find the best online deals, discounts, and price drops on tech, gaming, Apple, cameras, trading cards, and daily essentials. Hack the Deal scans live deals from top retailers so you never miss a sale.",
+          guide: "New listings come from Reddit deal communities, retailer RSS feeds, and vendors' own sale pages, then get scored on how clearly the post states a price, discount, and merchant before anything is published — not on how big the \"was\" price looks. Every card links to a permalink with the price we saw and when we saw it, so you can judge a deal yourself before clicking through.",
         },
         amazon_finds: {
           h1: "Amazon Finds We Love",
           description: "Curated Amazon picks across tech, home, trading cards, fashion, and more — hand-picked finds from top-rated products and customer favorites.",
+          guide: "These aren't pulled from a deal feed — we hand-pick them from Amazon's own bestseller and highly-rated listings in categories we already cover, so what's here is stuff we'd actually recommend, not just whatever happens to be discounted this week.",
         },
         black_friday: {
           h1: "Best Black Friday & Cyber Monday Deals",
           description: "Live Black Friday and Cyber Monday price drops across every category — tech, gaming, fashion, and more. Hack the Deal tracks Black Friday deals from top retailers continuously.",
+          guide: "Retailers start \"Black Friday\" pricing weeks before the actual date and often re-run the same discount at Christmas, so we track this page by what's actually cheaper right now, not by the calendar. Compare the \"was\" price against what you've seen the item sell for over the past month before assuming it's a real drop.",
         },
         christmas: {
           h1: "Best Christmas & Holiday Deals",
           description: "Live holiday price drops and gift deals across every category. Hack the Deal tracks Christmas deals from top retailers continuously.",
+          guide: "Holiday listings lean toward gifts and bundles worth buying ahead rather than waiting for a lower price closer to the date — shipping cutoffs matter more here than squeezing out another few dollars of discount. Check the posted date on each card; holiday inventory moves fast and older listings can sell out.",
         },
         back_to_school: {
           h1: "Best Back to School Deals",
           description: "Live price drops on laptops, school supplies, and dorm essentials. Hack the Deal tracks back to school deals from top retailers continuously.",
+          guide: "Laptop and school-supply deals cluster in late summer, but the biggest cuts on prior-generation laptops usually show up right after a manufacturer's new model launches, not during the official back-to-school sales window — worth checking current-gen specs before assuming older is worse.",
         },
         computers: {
           h1: "Best Computer & Laptop Deals Today",
           description: "Live price drops on laptops, desktops, monitors, and PC components. Hack the Deal tracks computer deals from top retailers continuously.",
+          guide: "A discounted laptop or desktop is only a good deal if the specs still hold up — check RAM, storage type (SSD vs. eMMC), and GPU generation before the price. We track drops on full builds and individual components like monitors and storage, since a $40 monitor deal is easy to miss buried in a laptop-heavy feed.",
         },
         gaming: {
           h1: "Best Gaming Deals Today",
           description: "Live price drops on gaming consoles, PC games, accessories, and peripherals. Hack the Deal tracks gaming deals from top retailers continuously.",
+          guide: "Console bundle \"deals\" sometimes cost more than buying the console and games separately at their own sale prices — the discount shown is off the bundle's own list price, so it's worth doing that comparison yourself. Digital game sales move fast and can end same-day, so the posted date matters more here than almost anywhere else.",
         },
         apple: {
           h1: "Best Apple & iPhone Deals Today",
           description: "Live price drops on iPhone, iPad, Mac, AirPods, and Apple Watch. Hack the Deal tracks Apple deals from top retailers continuously.",
+          guide: "Apple rarely discounts directly, so real price drops come from authorized resellers clearing older or refurbished stock — check whether a listing is new, renewed, or open-box before assuming it's the same as buying from Apple. The best AirPods and Watch discounts tend to land around a new product launch, when retailers clear the outgoing model.",
         },
         cameras: {
           h1: "Best Camera & Photography Deals Today",
           description: "Live price drops on cameras, lenses, drones, and photography gear. Hack the Deal tracks camera deals from top retailers continuously.",
+          guide: "Camera body prices swing hard around a manufacturer's next release announcement — a body that's been out 18+ months is where the real discounts show up, not brand-new releases. Watch lens deals separately from bodies; a slower but well-reviewed lens on sale can outperform a kit lens at full price.",
         },
         software: {
           h1: "Best Software Deals Today",
           description: "Live price drops on software licenses, subscriptions, and digital tools. Hack the Deal tracks software deals from top retailers continuously.",
+          guide: "A perpetual license (buy once, own it) is usually a better long-term deal than a discounted first-year subscription that renews at full price — read the fine print on whether a \"deal\" price is one-time or an intro rate. We track individual licenses and bundle sites separately, since bundles can hide a couple of genuinely useful tools among filler.",
         },
         streaming: {
           h1: "Best Streaming & Digital Media Deals Today",
           description: "Live price drops on iTunes and Google Play movies, TV shows, and eBooks, plus streaming service offers like Hulu and YouTube TV. Hack the Deal tracks streaming deals from top retailers continuously.",
+          guide: "Digital movie and show sales tend to track physical media release windows — a title usually gets its steepest digital discount 3-6 months after release, then again around its one-year mark. Streaming service promo pricing almost always locks you into an annual plan; check the cancellation terms before committing for the discount alone.",
         },
         trading_cards: {
           h1: "Best Trading Card Deals Today",
           description: "Live price drops on trading card boxes, packs, and singles across Pokémon, sports, and TCGs. Hack the Deal tracks trading card deals continuously.",
+          guide: "Sealed product (boxes, packs) pricing is volatile and tied to secondary-market demand for what's inside, not retail MSRP — a \"deal\" on a box can still be above what it sold for a year ago if the set's grown popular. We track boxes and singles separately, since a single-card deal lives or dies on the exact card, not the set.",
         },
         fashion: {
           h1: "Best Fashion & Clothing Deals Today",
           description: "Live price drops on clothing, shoes, and accessories for men and women. Hack the Deal tracks fashion deals from top retailers continuously.",
+          guide: "End-of-season clearance (winter coats in February, sandals in September) is consistently where the deepest cuts show up versus mid-season \"sale\" pricing — worth buying a size ahead if you can. Sizing runs inconsistently across brands even at the same retailer, so check the specific brand's size chart rather than assuming your usual size.",
         },
         beauty: {
           h1: "Best Beauty & Health Deals Today",
           description: "Live price drops on makeup, skincare, haircare, and health essentials. Hack the Deal tracks beauty deals from top retailers continuously.",
+          guide: "Worth checking expiration/batch dates on steep skincare or haircare discounts, especially for niche or discontinued shades — a deep cut sometimes means a brand is clearing a line that's being replaced. Bundle sets can genuinely save money or just pad the price around one desirable item; check what the core product costs alone first.",
         },
         shoes: {
           h1: "Best Shoe Deals Today",
           description: "Live price drops on sneakers, boots, and shoes for men, women, and kids. Hack the Deal tracks shoe deals from top retailers continuously.",
+          guide: "Sneaker resale and collab drops behave differently from ordinary clearance — a \"deal\" on a hyped release can still be inflated over retail if it's coming from a reseller rather than the brand directly. For everyday shoes, checking whether a discontinued colorway is the only reason for the discount tells you whether it'll still be around next week.",
         },
         travel: {
           h1: "Best Travel Deals Today",
           description: "Live price drops on flights, hotels, cruises, and travel gear. Hack the Deal tracks travel deals from top retailers continuously.",
+          guide: "Flight and hotel deals expire fast and are seat/room-count limited, so the posted date matters more here than in almost any other category — a fare from three days ago is very likely gone already. Always re-check the total price (bags, resort fees) before booking, since the headline number rarely includes everything.",
         },
         drones: {
           h1: "Best Drone & FPV Parts Deals Today",
           description: "Live price drops on drones, FPV parts, batteries, motors, and accessories straight from vendors like Pyrodrone and RaceDayQuads. Hack the Deal tracks drone deals continuously.",
+          guide: "FPV parts pricing is tightly tied to a handful of vendors clearing older frame/motor generations ahead of a new release — checking a part's release date against current-gen specs tells you whether a discount is a real bargain or just outdated stock. Batteries and props are consumables worth stocking up on during a sale; frames and flight controllers are worth comparing specs on first.",
         },
         "3d_printing": {
           h1: "Best 3D Printer Deals Today",
           description: "Live price drops on 3D printers and supplies straight from vendors like Elegoo, Anycubic, and Sovol. Hack the Deal tracks 3D printing deals continuously.",
+          guide: "Printer deals cluster around a brand clearing a model right before — or right after — its successor launches; check whether a discounted printer is still receiving firmware updates before assuming last-gen is a bargain. Bundled filament or resin is a nice-to-have, not the reason to buy — price the printer on its own first.",
         },
         filament: {
           h1: "Best 3D Printer Filament Deals Today",
           description: "Live price drops on PLA, PETG, ABS, and specialty filament straight from vendors like Bambu Lab, Overture, and Polymaker. Hack the Deal tracks filament deals continuously.",
+          guide: "Filament pricing per kilogram varies a lot by material — PLA is cheapest, specialty resins and carbon-fiber blends cost more — so compare a \"deal\" against that material's typical price, not filament in general. Buying multiple spools during a sale only pays off if you're actually printing enough to use them before they degrade; PLA and PETG store better long-term than ABS.",
         },
       };
 
@@ -2507,7 +2534,13 @@
               null,
               e("p", { className: "hero-eyebrow" }, "$ curl hackthedeal.com --live"),
               e("h1", { className: "hero-title" }, (CATEGORY_COPY[activeCat] || CATEGORY_COPY[""]).h1),
-              e("p", { className: "hero-sub" }, (CATEGORY_COPY[activeCat] || CATEGORY_COPY[""]).description)
+              e("p", { className: "hero-sub" }, (CATEGORY_COPY[activeCat] || CATEGORY_COPY[""]).description),
+              e(
+                "p",
+                { className: "hero-guide", style: { maxWidth: 640, marginTop: 10, fontSize: 13, lineHeight: 1.6, color: "var(--muted)" } },
+                (CATEGORY_COPY[activeCat] || CATEGORY_COPY[""]).guide + " ",
+                e("a", { href: "/about.html" }, "How we find and verify deals →")
+              )
             )
           ),
 
@@ -2674,6 +2707,7 @@
                     )
                   )
                 ),
+                e("a", { href: "/about.html" }, "How We Find Deals"),
                 e("a", { href: "/contact.html", className: "footer-contact-link" }, "Partner With Us"),
                 e("a", { href: "/privacy.html" }, "Privacy Policy"),
                 e("a", { href: "/terms.html" }, "Terms of Use")
