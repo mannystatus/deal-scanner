@@ -2,15 +2,16 @@
 """
 Generates the site's static, crawlable surface from live deal data:
 
-  1. frontend/<slug>/index.html (+ the flat frontend/<slug>.html) for every
-     category route, and frontend/index.html for the homepage — same
-     per-category <title>/meta/canonical/OG/BreadcrumbList swap this script
-     always did, PLUS real deal cards + an ItemList JSON-LD block rendered
-     into the page between the `<!-- PRERENDER:START/END -->` markers inside
-     `<div id="root">`. The React app is untouched: it replaces everything
-     inside #root the instant it mounts (see frontend/index.html's module
-     script), so this is purely a fallback snapshot for crawlers and no-JS
-     visitors — real users see it for a flash at most.
+  1. frontend/<slug>/index.html for every category route (Cloudflare Pages
+     serves this at both /<slug> and /<slug>/ automatically), and
+     frontend/index.html for the homepage — same per-category
+     <title>/meta/canonical/OG/BreadcrumbList swap this script always did,
+     PLUS real deal cards + an ItemList JSON-LD block rendered into the page
+     between the `<!-- PRERENDER:START/END -->` markers inside `<div
+     id="root">`. The React app is untouched: it replaces everything inside
+     #root the instant it mounts (see frontend/index.html's module script),
+     so this is purely a fallback snapshot for crawlers and no-JS visitors —
+     real users see it for a flash at most.
   2. frontend/deal/<id>-<slug>/index.html — a standalone permalink page per
      active deal (Product + BreadcrumbList JSON-LD, no React/JS needed),
      so individual products are indexable and can rank on their own, not
@@ -731,7 +732,6 @@ def main() -> None:
     head_template = re.search(r"<!doctype html>.*?</head>", template, re.DOTALL | re.IGNORECASE).group(0) + "\n"
 
     with SessionLocal() as session:
-        redirect_lines = []
         for slug, copy in CATEGORIES.items():
             deals = [] if slug in NO_PRERENDER_CATEGORIES else fetch_category_deals(session, slug)
             page = build_page(template, slug, copy["h1"], copy["description"], copy.get("guide", ""), deals)
@@ -740,11 +740,6 @@ def main() -> None:
             dir_path.mkdir(parents=True, exist_ok=True)
             (dir_path / "index.html").write_text(page, encoding="utf-8")
             print(f"wrote {(dir_path / 'index.html').relative_to(ROOT)} ({len(deals)} deals)")
-
-            flat_path = ROOT / "frontend" / f"{slug}.html"
-            flat_path.write_text(page, encoding="utf-8")
-
-            redirect_lines.append(f"/{slug}  /{slug}.html  200")
 
         # Homepage.
         home_deals = fetch_home_deals(session)
@@ -764,19 +759,6 @@ def main() -> None:
             page_dir.mkdir(parents=True, exist_ok=True)
             (page_dir / "index.html").write_text(build_deal_page(head_template, deal), encoding="utf-8")
         print(f"wrote {len(all_deals)} deal permalink pages under {deal_dir.relative_to(ROOT)}")
-
-    redirects_path = ROOT / "frontend" / "_redirects"
-    header = (
-        "# Cloudflare Pages rewrite rules (see scripts/generate_category_pages.py).\n"
-        "# Status 200 = serve this file's content while keeping the requested URL,\n"
-        "# as opposed to a 301/302 which would change the browser's address bar.\n"
-        "# NOTE: as of 2026-07-21 these rules did not appear to take effect in\n"
-        "# production (see git history) — the <slug>/index.html files are the\n"
-        "# fix that's actually relied on. Left in place in case it starts\n"
-        "# working after a future platform change; harmless either way.\n"
-    )
-    redirects_path.write_text(header + "\n".join(redirect_lines) + "\n", encoding="utf-8")
-    print(f"wrote {redirects_path.relative_to(ROOT)}")
 
     sitemap_path = ROOT / "frontend" / "sitemap.xml"
     sitemap_path.write_text(build_sitemap(all_deals), encoding="utf-8")
