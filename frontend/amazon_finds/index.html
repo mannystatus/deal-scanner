@@ -62,13 +62,13 @@
     <meta name="description" content="Curated Amazon picks across tech, home, trading cards, fashion, and more — hand-picked finds from top-rated products and customer favorites." />
     <meta name="robots" content="index, follow" />
     <meta name="theme-color" content="#ffffff" />
-    <link rel="canonical" href="https://www.hackthedeal.com/amazon_finds" />
+    <link rel="canonical" href="https://www.hackthedeal.com/amazon_finds/" />
     <link rel="icon" href="/favicon-v3.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-v3.ico" sizes="any" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://www.hackthedeal.com/amazon_finds" />
+    <meta property="og:url" content="https://www.hackthedeal.com/amazon_finds/" />
     <meta property="og:title" content="Amazon Finds We Love – Live Price Drops | Hack the Deal" />
     <meta property="og:description" content="Curated Amazon picks across tech, home, trading cards, fashion, and more — hand-picked finds from top-rated products and customer favorites." />
     <meta property="og:site_name" content="Hack the Deal" />
@@ -689,7 +689,7 @@
       "@type": "BreadcrumbList",
       "itemListElement": [
 { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.hackthedeal.com/" },
-{ "@type": "ListItem", "position": 2, "name": "Amazon Finds We Love", "item": "https://www.hackthedeal.com/amazon_finds" }
+{ "@type": "ListItem", "position": 2, "name": "Amazon Finds We Love", "item": "https://www.hackthedeal.com/amazon_finds/" }
       ]
     }
     </script>
@@ -747,19 +747,19 @@
         <p>Hack the Deal tracks live price drops across tech, gaming, Apple, cameras, trading cards, and everyday essentials. Enable JavaScript to browse hundreds of current deals.</p>
         <h2>Popular Deal Categories</h2>
         <ul>
-          <li><a href="/computers">Computer &amp; Laptop Deals</a></li>
-          <li><a href="/gaming">Gaming Deals</a></li>
-          <li><a href="/apple">Apple &amp; iPhone Deals</a></li>
-          <li><a href="/cameras">Camera &amp; Photography Deals</a></li>
-          <li><a href="/software">Software Deals</a></li>
-          <li><a href="/trading_cards">Trading Card Deals</a></li>
-          <li><a href="/fashion">Fashion Deals</a></li>
-          <li><a href="/beauty">Beauty Deals</a></li>
-          <li><a href="/shoes">Shoe Deals</a></li>
-          <li><a href="/travel">Travel Deals</a></li>
-          <li><a href="/drones">Drone &amp; FPV Deals</a></li>
-          <li><a href="/3d_printing">3D Printer Deals</a></li>
-          <li><a href="/filament">3D Printer Filament Deals</a></li>
+          <li><a href="/computers/">Computer &amp; Laptop Deals</a></li>
+          <li><a href="/gaming/">Gaming Deals</a></li>
+          <li><a href="/apple/">Apple &amp; iPhone Deals</a></li>
+          <li><a href="/cameras/">Camera &amp; Photography Deals</a></li>
+          <li><a href="/software/">Software Deals</a></li>
+          <li><a href="/trading_cards/">Trading Card Deals</a></li>
+          <li><a href="/fashion/">Fashion Deals</a></li>
+          <li><a href="/beauty/">Beauty Deals</a></li>
+          <li><a href="/shoes/">Shoe Deals</a></li>
+          <li><a href="/travel/">Travel Deals</a></li>
+          <li><a href="/drones/">Drone &amp; FPV Deals</a></li>
+          <li><a href="/3d_printing/">3D Printer Deals</a></li>
+          <li><a href="/filament/">3D Printer Filament Deals</a></li>
         </ul>
       </div>
     </noscript>
@@ -2263,7 +2263,13 @@
         }
 
         function navigateToCategory(id) {
-          const path = id ? `/${id}` : "/";
+          // Trailing slash matters here even though this is client-side-only
+          // navigation (no server round trip): Render's static hosting has
+          // no directory-index auto-resolution for extensionless paths, so
+          // a bookmarked/shared/refreshed /computers (no slash) URL falls
+          // through to the SPA catch-all and serves the homepage instead —
+          // see deal_permalink()'s comment in generate_category_pages.py.
+          const path = id ? `/${id}/` : "/";
           if (location.pathname !== path) {
             history.pushState(null, "", path);
           }

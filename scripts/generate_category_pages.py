@@ -262,7 +262,16 @@ def slugify(title: str) -> str:
 
 
 def deal_permalink(deal: Deal) -> str:
-    return f"/deal/{deal.id}-{slugify(deal.title)}"
+    # Trailing slash matters: this site is hosted on Render (render.yaml),
+    # whose static-site routing has no directory-index auto-resolution —
+    # only a catch-all `/* -> /index.html` SPA fallback. A path like
+    # /deal/123-foo (no slash) never matches the literal
+    # frontend/deal/123-foo/index.html file, so it falls through to the
+    # catch-all and silently serves the homepage instead. /deal/123-foo/
+    # (trailing slash) matches the directory's index.html directly and
+    # works. Same reasoning applies everywhere a category slug builds a URL
+    # below.
+    return f"/deal/{deal.id}-{slugify(deal.title)}/"
 
 
 def format_price(value, currency: str = "USD") -> str | None:
@@ -365,7 +374,7 @@ def render_deal_card(deal: Deal) -> str:
 
 def render_static_footer() -> str:
     links = "".join(
-        f'<a href="/{slug}">{esc(label if slug == "amazon_finds" else label + " Deals")}</a>'
+        f'<a href="/{slug}/">{esc(label if slug == "amazon_finds" else label + " Deals")}</a>'
         for slug, label in CATEGORY_LABELS.items()
     )
     return f"""<footer class="site-footer">
@@ -574,7 +583,7 @@ def inject_seo_block(template: str, snippet: str) -> str:
 
 
 def build_page(template: str, slug: str, h1: str, description: str, guide: str, deals: list[Deal]) -> str:
-    url = f"{BASE_URL}/{slug}" if slug else f"{BASE_URL}/"
+    url = f"{BASE_URL}/{slug}/" if slug else f"{BASE_URL}/"
     title = f"{h1} – Live Price Drops | Hack the Deal" if slug else f"{h1} | Hack the Deal"
 
     page = swap_head_meta(template, title, description, url)
@@ -648,11 +657,11 @@ def build_deal_page(head_template: str, deal: Deal) -> str:
 
     breadcrumb_nav = ' <span aria-hidden="true">›</span> '.join(
         (f'<a href="{path}">{esc(name)}</a>' if path != url else esc(name))
-        for name, path in [("Home", "/")] + ([(label, f"/{deal.category}")] if label else []) + [(deal.title[:60], url)]
+        for name, path in [("Home", "/")] + ([(label, f"/{deal.category}/")] if label else []) + [(deal.title[:60], url)]
     )
 
     target = deal.affiliate_url or deal.url
-    see_more_href = f"/{deal.category}" if label else "/"
+    see_more_href = f"/{deal.category}/" if label else "/"
     see_more_label = f"See more {label} deals" if label else "See more deals"
 
     body = f"""  <body>
@@ -715,7 +724,7 @@ def build_sitemap(all_deals: list[Deal]) -> str:
     urls = list(STATIC_PAGES)
     today = date.today().isoformat()
     for slug in CATEGORIES:
-        urls.append((f"/{slug}", today, "daily", "0.8"))
+        urls.append((f"/{slug}/", today, "daily", "0.8"))
 
     entries = "\n".join(
         f"  <url>\n    <loc>{BASE_URL}{loc}</loc>\n    <lastmod>{lastmod}</lastmod>\n"
