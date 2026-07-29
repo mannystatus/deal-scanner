@@ -265,6 +265,56 @@
       }
       .network-bar-inner span { min-width: 0; }
 
+      /* fyi network switcher — dropdown listing our other sites */
+      .network-menu { position: relative; flex: 0 0 auto; }
+      .network-menu-btn {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        background: none;
+        border: none;
+        color: #a9b1d6;
+        font: inherit;
+        font-size: 11px;
+        letter-spacing: 0.04em;
+        cursor: pointer;
+        padding: 0;
+      }
+      .network-menu-btn:hover { color: var(--accent); }
+      .network-menu-btn .chevron { font-size: 9px; }
+      .network-menu-list {
+        position: absolute;
+        top: calc(100% + 8px);
+        right: 0;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 6px;
+        min-width: 190px;
+        z-index: 60;
+        list-style: none;
+        margin: 0;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.22);
+      }
+      .network-menu-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        border-radius: 6px;
+        font-size: 12.5px;
+        letter-spacing: normal;
+        color: var(--text);
+        text-decoration: none;
+      }
+      .network-menu-item:hover { background: var(--bg); color: var(--accent-text); }
+      .network-menu-item.current { color: var(--muted); }
+      .network-menu-tag {
+        margin-left: auto;
+        font-size: 10px;
+        color: var(--muted);
+      }
+
       /* Main header */
       .site-header {
         background: var(--surface);

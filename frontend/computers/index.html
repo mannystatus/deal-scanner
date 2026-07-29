@@ -265,6 +265,56 @@
       }
       .network-bar-inner span { min-width: 0; }
 
+      /* fyi network switcher — dropdown listing our other sites */
+      .network-menu { position: relative; flex: 0 0 auto; }
+      .network-menu-btn {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        background: none;
+        border: none;
+        color: #a9b1d6;
+        font: inherit;
+        font-size: 11px;
+        letter-spacing: 0.04em;
+        cursor: pointer;
+        padding: 0;
+      }
+      .network-menu-btn:hover { color: var(--accent); }
+      .network-menu-btn .chevron { font-size: 9px; }
+      .network-menu-list {
+        position: absolute;
+        top: calc(100% + 8px);
+        right: 0;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 6px;
+        min-width: 190px;
+        z-index: 60;
+        list-style: none;
+        margin: 0;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.22);
+      }
+      .network-menu-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        border-radius: 6px;
+        font-size: 12.5px;
+        letter-spacing: normal;
+        color: var(--text);
+        text-decoration: none;
+      }
+      .network-menu-item:hover { background: var(--bg); color: var(--accent-text); }
+      .network-menu-item.current { color: var(--muted); }
+      .network-menu-tag {
+        margin-left: auto;
+        font-size: 10px;
+        color: var(--muted);
+      }
+
       /* Main header */
       .site-header {
         background: var(--surface);
@@ -738,8 +788,7 @@
 { "@type": "ListItem", "position": 36, "name": "Monitor Stand Riser w/ Drawer & Pen Holders for $17 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/606-monitor-stand-riser-w-drawer-pen-holders-for-17-free-shippin/" },
 { "@type": "ListItem", "position": 37, "name": "Woot July Tech Best Sellers: Up to 85% off + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/593-woot-july-tech-best-sellers-up-to-85-off-free-shipping-w-pri/" },
 { "@type": "ListItem", "position": 38, "name": "Random Tech at Woot: Up to 83% off + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/579-random-tech-at-woot-up-to-83-off-free-shipping-w-prime/" },
-{ "@type": "ListItem", "position": 39, "name": "Tech Auctions on eBay Live for Deals from $1", "url": "https://www.hackthedeal.com/deal/586-tech-auctions-on-ebay-live-for-deals-from-1/" },
-{ "@type": "ListItem", "position": 40, "name": "Woot Extra Discounts Clearance Hub: Up to an extra 70% off + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/572-woot-extra-discounts-clearance-hub-up-to-an-extra-70-off-fre/" }
+{ "@type": "ListItem", "position": 39, "name": "Tech Auctions on eBay Live for Deals from $1", "url": "https://www.hackthedeal.com/deal/586-tech-auctions-on-ebay-live-for-deals-from-1/" }
       ]
     }
     </script>
@@ -1453,22 +1502,6 @@
         <div class="deal-meta">
           <span>dealnews</span>
           <span>Jul 4, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/572-woot-extra-discounts-clearance-hub-up-to-an-extra-70-off-fre/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1782203708-woot-logo-amazon-company-1ecw.png?h=184&amp;w=274" alt="Woot Extra Discounts Clearance Hub: Up to an extra 70% off + free shipping w/ Prime" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">computers</span>
-          <span class="discount-badge">70% off</span>
-        </div>
-        <p class="deal-title">Woot Extra Discounts Clearance Hub: Up to an extra 70% off + free shipping w/ Prime</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span style="font-size:13px;color:var(--muted)">See deal</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews</span>
-          <span>Jun 29, 2026</span>
         </div>
       </div>
     </a></div>
@@ -2407,6 +2440,78 @@
         return sub;
       }
 
+      // Other sites in the fyi family. hackthedeal isn't part of the
+      // multi-tenant fyi-network app (see frontend/lib/externalSites.ts
+      // over there), so this list is just maintained by hand here.
+      const FYI_NETWORK_SITES = [
+        { name: "fyiMac", url: "https://fyimac.com/" },
+        { name: "fyiWin", url: "https://fyiwin.com/" },
+        { name: "fyiGoogle", url: "https://fyigoogle.com/" },
+        { name: "fyiNetflix", url: "https://fyinetflix.com/" },
+        { name: "fyiFlyNow", url: "https://fyiflynow.com/" },
+        { name: "fyiLakers", url: "https://fyilakers.com/" },
+        { name: "fyiDodgers", url: "https://fyidodgers.com/" },
+      ];
+
+      function NetworkMenu() {
+        const [open, setOpen] = useState(false);
+        const ref = useRef(null);
+
+        useEffect(() => {
+          if (!open) return;
+          function onClickOutside(ev) {
+            if (ref.current && !ref.current.contains(ev.target)) setOpen(false);
+          }
+          document.addEventListener("mousedown", onClickOutside);
+          return () => document.removeEventListener("mousedown", onClickOutside);
+        }, [open]);
+
+        return e(
+          "div",
+          { className: "network-menu", ref },
+          e(
+            "button",
+            {
+              type: "button",
+              className: "network-menu-btn",
+              "aria-haspopup": "listbox",
+              "aria-expanded": open,
+              onClick: () => setOpen((v) => !v),
+            },
+            "fyi network",
+            e("span", { className: "chevron" }, open ? "▲" : "▼")
+          ),
+          open
+            ? e(
+                "ul",
+                { className: "network-menu-list", role: "listbox" },
+                e(
+                  "li",
+                  null,
+                  e(
+                    "span",
+                    { className: "network-menu-item current" },
+                    "hackthedeal",
+                    e("span", { className: "network-menu-tag" }, "current")
+                  )
+                ),
+                FYI_NETWORK_SITES.map((site) =>
+                  e(
+                    "li",
+                    { key: site.url },
+                    e(
+                      "a",
+                      { className: "network-menu-item", href: site.url, target: "_blank", rel: "noopener noreferrer" },
+                      site.name,
+                      e("span", { className: "network-menu-tag" }, "↗")
+                    )
+                  )
+                )
+              )
+            : null
+        );
+      }
+
       function NotifyPanel() {
         const supported = "serviceWorker" in navigator && "PushManager" in window;
         const [open, setOpen] = useState(false);
@@ -3128,7 +3233,12 @@
               "div",
               { className: "network-bar-inner", style: { maxWidth: 1152, margin: "0 auto", padding: "6px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" } },
               e("span", null, "Your source for the best deals on the web"),
-              e("span", { style: { fontSize: 10 } }, `${total.toLocaleString()} live deals updated continuously`)
+              e(
+                "div",
+                { style: { display: "flex", alignItems: "center", gap: 14 } },
+                e("span", { style: { fontSize: 10 } }, `${total.toLocaleString()} live deals updated continuously`),
+                e(NetworkMenu, null)
+              )
             )
           ),
 
