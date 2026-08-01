@@ -1,0 +1,40 @@
+name: Weekly email digest
+
+# Sends the weekly deals digest to every confirmed email subscriber — see
+# email_digest.py. Separate from ingest.yml on purpose: a digest-sending
+# failure shouldn't block daily ingest, and a weekly cadence needs its own
+# schedule rather than piggybacking on the daily one.
+#
+# Required repo secrets (Settings → Secrets and variables → Actions):
+#   - DATABASE_URL      Same Neon Postgres connection string as ingest.yml
+#   - RESEND_API_KEY    From resend.com, after verifying hackthedeal.com
+#                        (or a subdomain) as a sending domain there
+
+on:
+  schedule:
+    - cron: "0 14 * * 1"  # Monday 14:00 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Send weekly digest
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: python email_digest.py

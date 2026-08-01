@@ -2,7 +2,7 @@ from datetime import datetime
 from decimal import Decimal
 from typing import Dict, List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 
 class DealOut(BaseModel):
@@ -65,3 +65,8 @@ class PushUnsubscribeIn(BaseModel):
 
 class PublicKeyOut(BaseModel):
     publicKey: str
+
+
+class EmailSubscribeIn(BaseModel):
+    email: EmailStr
+    categories: List[str] = []

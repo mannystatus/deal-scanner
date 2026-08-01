@@ -1,5 +1,6 @@
 import logging
 import os
+import secrets
 import sys
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, timezone
@@ -19,15 +20,18 @@ load_dotenv()
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
 from sqlalchemy import delete, desc, func, or_, select
 
 from db import SessionLocal, engine, init_db, PRICE_TRACKED_CATEGORIES
-from models import Deal, PriceHistory, PushSubscription
+from email_sender import send_email
+from models import Deal, EmailSubscription, PriceHistory, PushSubscription
 from notifications import VAPID_PUBLIC_KEY
 from schemas import (
     CategoryCount,
     DealListOut,
     DealOut,
+    EmailSubscribeIn,
     HealthOut,
     PriceHistoryOut,
     PublicKeyOut,
@@ -213,3 +217,85 @@ def push_unsubscribe(body: PushUnsubscribeIn):
     with SessionLocal() as session:
         session.execute(delete(PushSubscription).where(PushSubscription.endpoint == body.endpoint))
         session.commit()
+
+
+# API_BASE_URL, not FRONTEND_BASE_URL — confirm/unsubscribe links go
+# straight to this service's own endpoints (which return a plain HTML
+# page below), not through the React frontend, so there's no cross-service
+# routing to keep in sync.
+API_BASE_URL = os.getenv("API_BASE_URL", "https://deal-scanner-api.onrender.com")
+
+
+def _status_page(title: str, message: str) -> HTMLResponse:
+    return HTMLResponse(f"""<!doctype html>
+<html><head><meta charset="utf-8"><title>{title} | Hack the Deal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" /></head>
+<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#1c1e2e;color:#d3dbfa;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;padding:24px;text-align:center">
+<div><h1 style="font-size:20px">{title}</h1><p style="color:#838dc0">{message}</p>
+<p><a href="https://www.hackthedeal.com/" style="color:#7aa2f7">← Back to Hack the Deal</a></p></div>
+</body></html>""")
+
+
+@app.post("/email/subscribe", status_code=204)
+def email_subscribe(body: EmailSubscribeIn):
+    categories = ",".join(c.strip() for c in body.categories if c.strip())
+    email = body.email.lower()
+    with SessionLocal() as session:
+        existing = session.execute(
+            select(EmailSubscription).where(EmailSubscription.email == email)
+        ).scalar_one_or_none()
+        if existing:
+            existing.categories = categories
+            if existing.confirmed:
+                # Already confirmed — update preferences and stop, rather
+                # than re-sending a confirmation email nobody asked for.
+                session.commit()
+                return
+            token = existing.token
+        else:
+            token = secrets.token_urlsafe(32)
+            session.add(
+                EmailSubscription(
+                    email=email,
+                    categories=categories,
+                    token=token,
+                    confirmed=False,
+                    created_at=datetime.now(timezone.utc),
+                )
+            )
+        session.commit()
+
+    confirm_url = f"{API_BASE_URL}/email/confirm?token={token}"
+    send_email(
+        email,
+        "Confirm your Hack the Deal digest",
+        f"""<div style="font-family:sans-serif;max-width:480px;margin:0 auto">
+        <h2>Confirm your subscription</h2>
+        <p>Click below to start getting a weekly roundup of the best deals from Hack the Deal.</p>
+        <p><a href="{confirm_url}" style="display:inline-block;background:#000;color:#fff;font-weight:700;padding:12px 24px;border-radius:999px;text-decoration:none">Confirm subscription</a></p>
+        <p style="font-size:12px;color:#888">If you didn't request this, you can ignore this email — you won't be subscribed unless you click the link above.</p>
+        </div>""",
+    )
+
+
+@app.get("/email/confirm", response_class=HTMLResponse)
+def email_confirm(token: str):
+    with SessionLocal() as session:
+        sub = session.execute(
+            select(EmailSubscription).where(EmailSubscription.token == token)
+        ).scalar_one_or_none()
+        if sub is None:
+            return _status_page("Link not found", "This confirmation link is invalid or has already been used.")
+        sub.confirmed = True
+        session.commit()
+    return _status_page("You're subscribed!", "You'll get a weekly roundup of the best deals in your inbox.")
+
+
+@app.get("/email/unsubscribe", response_class=HTMLResponse)
+def email_unsubscribe(token: str):
+    with SessionLocal() as session:
+        result = session.execute(delete(EmailSubscription).where(EmailSubscription.token == token))
+        session.commit()
+        if result.rowcount == 0:
+            return _status_page("Link not found", "This unsubscribe link is invalid or has already been used.")
+    return _status_page("Unsubscribed", "You won't receive any more digest emails from Hack the Deal.")

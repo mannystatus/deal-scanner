@@ -78,6 +78,26 @@ class PushSubscription(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 
 
+class EmailSubscription(Base):
+    """A weekly-digest email subscriber, plus which deal categories they
+    want (empty string = every category). Double opt-in: confirmed=False
+    until the subscriber clicks the link in the confirmation email (see
+    api.py's /email/confirm), so send_weekly_digest() never mails an
+    address nobody verified. token is reused for both the confirm link and
+    the unsubscribe link — a single unguessable value is enough for both,
+    no separate secret needed."""
+
+    __tablename__ = "email_subscriptions"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    email: Mapped[str] = mapped_column(String(255), unique=True, index=True)
+    categories: Mapped[str] = mapped_column(Text, default="")
+    token: Mapped[str] = mapped_column(String(64), unique=True, index=True)
+    confirmed: Mapped[bool] = mapped_column(default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    last_sent_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
 class SocialPost(Base):
     """Records a deal having been posted to a social platform, so the poster
     script never posts the same deal to the same platform twice."""
