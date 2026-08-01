@@ -222,28 +222,40 @@ DISCLOSURE_AND_CONSENT_HTML = """
         <div class="consent-text">
           <p class="consent-title">🍪 We use cookies</p>
           <p>
-            This site uses cookies to measure site performance and improve your experience.
-            By clicking OK, you accept our use of cookies as described in our
-            <a href="/privacy.html">Privacy Policy</a>.
+            This site uses cookies to measure site performance and improve your experience, and
+            works with Google Analytics and AdSense, which may use cookies for analytics and to
+            show personalized ads. See our <a href="/privacy.html">Privacy Policy</a> for details.
           </p>
         </div>
-        <button id="consent-ok" type="button">OK</button>
+        <div class="consent-actions">
+          <button id="consent-reject" type="button" class="consent-reject-btn">Reject</button>
+          <button id="consent-ok" type="button">Accept</button>
+        </div>
       </div>
     </div>
+    <button id="cookie-settings-btn" type="button" class="cookie-settings-btn">Cookie Settings</button>
     <script>
       (function () {
-        if (localStorage.getItem('htd_consent_v1') !== 'granted') {
-          document.getElementById('consent-overlay').style.display = 'flex';
-        }
-        document.getElementById('consent-ok').addEventListener('click', function () {
-          localStorage.setItem('htd_consent_v1', 'granted');
+        function setConsent(granted) {
+          localStorage.setItem('htd_consent_v1', granted ? 'granted' : 'denied');
           document.getElementById('consent-overlay').style.display = 'none';
           gtag('consent', 'update', {
-            'ad_storage': 'granted',
-            'ad_user_data': 'granted',
-            'ad_personalization': 'granted',
-            'analytics_storage': 'granted'
+            'ad_storage': granted ? 'granted' : 'denied',
+            'ad_user_data': granted ? 'granted' : 'denied',
+            'ad_personalization': granted ? 'granted' : 'denied',
+            'analytics_storage': granted ? 'granted' : 'denied'
           });
+          window.adsbygoogle = window.adsbygoogle || [];
+          window.adsbygoogle.push({ google_ad_client: 'ca-pub-6138840929831792', google_restrict_data_processing: !granted });
+          if (granted && window.htdLoadAwin) { window.htdLoadAwin(); }
+        }
+        if (!localStorage.getItem('htd_consent_v1')) {
+          document.getElementById('consent-overlay').style.display = 'flex';
+        }
+        document.getElementById('consent-ok').addEventListener('click', function () { setConsent(true); });
+        document.getElementById('consent-reject').addEventListener('click', function () { setConsent(false); });
+        document.getElementById('cookie-settings-btn').addEventListener('click', function () {
+          document.getElementById('consent-overlay').style.display = 'flex';
         });
       })();
     </script>
