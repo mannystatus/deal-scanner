@@ -346,11 +346,12 @@ def render_deal_card(deal: Deal) -> str:
     else:
         image_html = '<div class="deal-card-icon-fallback"></div>'
 
-    discount_html = (
-        f'<span class="discount-badge">{round(deal.discount_pct)}% off</span>'
-        if deal.discount_pct
-        else ""
-    )
+    if deal.is_dead:
+        discount_html = '<span class="expired-badge">Expired</span>'
+    elif deal.discount_pct:
+        discount_html = f'<span class="discount-badge">{round(deal.discount_pct)}% off</span>'
+    else:
+        discount_html = ""
     price = format_price(deal.deal_price, deal.currency)
     original = format_price(deal.original_price, deal.currency)
     price_html = (
@@ -374,7 +375,8 @@ def render_deal_card(deal: Deal) -> str:
     # link — crawlers get a real page to index and follow; the live React
     # app replaces this the instant it mounts and links straight to
     # affiliate_url/url instead, so real users' click-through is unchanged.
-    return f"""<a href="{esc(deal_permalink(deal))}" class="deal-card">
+    card_class = "deal-card is-dead" if deal.is_dead else "deal-card"
+    return f"""<a href="{esc(deal_permalink(deal))}" class="{card_class}">
       {image_html}
       <div class="deal-card-body">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
@@ -689,9 +691,12 @@ def build_deal_page(head_template: str, deal: Deal) -> str:
     )
     if original:
         price_html += f'<span class="price-original">{esc(original)}</span>'
-    discount_html = (
-        f'<span class="discount-badge">{round(deal.discount_pct)}% off</span>' if deal.discount_pct else ""
-    )
+    if deal.is_dead:
+        discount_html = '<span class="expired-badge">Expired</span>'
+    elif deal.discount_pct:
+        discount_html = f'<span class="discount-badge">{round(deal.discount_pct)}% off</span>'
+    else:
+        discount_html = ""
 
     breadcrumb_nav = ' <span aria-hidden="true">›</span> '.join(
         (f'<a href="{path}">{esc(name)}</a>' if path != url else esc(name))
@@ -724,10 +729,10 @@ def build_deal_page(head_template: str, deal: Deal) -> str:
           <p style="color:var(--muted);font-size:13px;margin:0 0 18px">Sold by {esc(deal.merchant or deal.source)} · Posted {esc(format_date(deal.posted_at))}{f" · ▲ {deal.vote_score}" if deal.vote_score is not None else ""}</p>
           <a href="{esc(target)}" target="_blank" rel="{outbound_rel(deal)}"
              style="display:inline-block;background:var(--accent);color:#0a0c12;font-weight:700;font-size:14px;padding:12px 26px;border-radius:999px;text-decoration:none">
-            Get This Deal →
+            {"Visit Retailer (may be expired) →" if deal.is_dead else "Get This Deal →"}
           </a>
           <p style="font-size:11px;color:var(--muted);margin-top:12px;max-width:420px">
-            Price and availability last confirmed {esc(format_date(deal.posted_at))}; subject to change on the retailer's site.
+            {'This link no longer resolved as of our last check — the deal may be sold out or expired. ' if deal.is_dead else ''}Price and availability last confirmed {esc(format_date(deal.posted_at))}; subject to change on the retailer's site.
             This is an affiliate link — Hack the Deal may earn a commission at no extra cost to you.
           </p>
         </div>

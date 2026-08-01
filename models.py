@@ -35,6 +35,13 @@ class Deal(Base):
     # (DealNews, 9to5toys, WooCommerce/Bambulab catalogs), not re-fetched
     # after ingest, same as every other field here (see upsert_deal).
     vote_score: Mapped[Optional[int]] = mapped_column(nullable=True)
+    # Outbound-link liveness, rechecked periodically after ingest rather
+    # than only determined once (see link_health.py). Dead deals aren't
+    # hidden or deleted — they keep showing with an "Expired" badge instead
+    # of the live CTA. link_checked_at is null until the first recheck pass
+    # reaches this deal.
+    is_dead: Mapped[bool] = mapped_column(default=False)
+    link_checked_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
 
     __table_args__ = (
         Index("ix_deals_category_posted", "category", "posted_at"),

@@ -21,6 +21,7 @@ class DealOut(BaseModel):
     confidence: float
     thumbnail_url: Optional[str] = None
     vote_score: Optional[int] = None
+    is_dead: bool = False
 
     model_config = {"from_attributes": True}
 

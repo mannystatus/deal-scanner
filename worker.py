@@ -15,6 +15,7 @@ load_dotenv()
 
 from db import init_db, get_session, upsert_deal, deal_exists, get_deal_by_url, update_deal_price
 from db import PRICE_TRACKED_CATEGORIES
+from link_health import recheck_stale_links
 from notifications import notify_new_deal
 from parsers import parse_title
 from reddit_source import iter_all_subreddits
@@ -196,6 +197,11 @@ def main() -> int:
                 notify_new_deal(session, parsed, thumbnail_url)
 
     logger.info("Done. %d total new deals ingested.", total_new)
+
+    with get_session() as session:
+        checked, newly_dead = recheck_stale_links(session)
+        logger.info("Link recheck: %d checked, %d newly flagged dead.", checked, newly_dead)
+
     return total_new
 
 
