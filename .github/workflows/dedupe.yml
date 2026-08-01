@@ -1,0 +1,50 @@
+name: Dedupe existing deals
+
+# Manual, one-off (but safe to re-run) cleanup for deals double-ingested
+# before db.py's dedup hash started stripping tracking-only query params —
+# see scripts/dedupe_existing_deals.py for the DealNews shoes/fashion
+# cross-post case that prompted this. Not on a schedule: this only needs to
+# run again if a similar cross-feed duplicate pattern shows up later.
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: write   # needed to push the regenerated static pages back to main
+
+jobs:
+  dedupe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Remove duplicate deals
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python scripts/dedupe_existing_deals.py
+
+      - name: Regenerate static SEO pages
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python scripts/generate_category_pages.py
+
+      - name: Commit & push regenerated static pages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add frontend/
+          if git diff --cached --quiet; then
+            echo "No frontend changes to commit"
+          else
+            git commit -m "Remove duplicate cross-feed deals and regenerate static pages"
+            git push
+          fi

@@ -3,7 +3,7 @@ import logging
 import os
 from contextlib import contextmanager
 from datetime import datetime, timezone
-from urllib.parse import urlparse
+from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
 
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import sessionmaker, Session
@@ -42,8 +42,29 @@ def init_db() -> None:
     Base.metadata.create_all(engine)
 
 
+# Tracking-only query params that vary by RSS feed/placement without
+# identifying a different underlying deal — e.g. DealNews cross-posts the
+# same article into both its Shoes and Clothing & Accessories feeds with
+# only `iref` (rss-c280 vs rss-c202) differing, which used to defeat the
+# URL-based dedup check below and double-ingest the same deal under two
+# categories (see the "Adidas Samba OG" / "Adidas Ultraboost 22" duplicates
+# that prompted this).
+_DEDUP_STRIP_PARAMS = {"iref"}
+_DEDUP_STRIP_PREFIXES = ("utm_",)
+
+
+def _normalize_for_dedup(url: str) -> str:
+    parsed = urlparse(url)
+    kept = [
+        (k, v)
+        for k, v in parse_qsl(parsed.query)
+        if k not in _DEDUP_STRIP_PARAMS and not k.startswith(_DEDUP_STRIP_PREFIXES)
+    ]
+    return urlunparse(parsed._replace(query=urlencode(kept)))
+
+
 def make_hash(url: str) -> str:
-    return hashlib.sha256(url.encode()).hexdigest()[:32]
+    return hashlib.sha256(_normalize_for_dedup(url).encode()).hexdigest()[:32]
 
 
 @contextmanager
