@@ -1,31 +1,41 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <!-- Consent Mode v2 — sets default (denied) consent state before any tag
-         below loads, so GTM/gtag still fire on every visit but only send
-         cookieless, anonymized signals until the user accepts the cookie
-         notice further down the page. If they already accepted on a past
-         visit, immediately upgrade to granted from the stored preference.
+    <!-- Consent Mode v2 — sets default consent state (denied unless already
+         granted on a past visit) before any tag below loads, so GTM/GA still
+         fire on every visit but only send cookieless, anonymized signals
+         until the user accepts the cookie notice further down the page.
+         Also puts AdSense into restricted-data-processing mode (non-
+         personalized ads only) by default — required for EEA/UK traffic
+         under Google's EU User Consent Policy.
          https://developers.google.com/tag-platform/security/guides/consent -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag() { dataLayer.push(arguments); }
       window.gtag = gtag;
+      var htdGranted = localStorage.getItem('htd_consent_v1') === 'granted';
       gtag('consent', 'default', {
-        'ad_storage': 'denied',
-        'ad_user_data': 'denied',
-        'ad_personalization': 'denied',
-        'analytics_storage': 'denied',
+        'ad_storage': htdGranted ? 'granted' : 'denied',
+        'ad_user_data': htdGranted ? 'granted' : 'denied',
+        'ad_personalization': htdGranted ? 'granted' : 'denied',
+        'analytics_storage': htdGranted ? 'granted' : 'denied',
         'wait_for_update': 500
       });
-      if (localStorage.getItem('htd_consent_v1') === 'granted') {
-        gtag('consent', 'update', {
-          'ad_storage': 'granted',
-          'ad_user_data': 'granted',
-          'ad_personalization': 'granted',
-          'analytics_storage': 'granted'
-        });
-      }
+      window.adsbygoogle = window.adsbygoogle || [];
+      window.adsbygoogle.push({ google_ad_client: 'ca-pub-6138840929831792', google_restrict_data_processing: !htdGranted });
+
+      // Awin's Publisher MasterTag sets affiliate click/conversion-tracking
+      // cookies, which isn't a Google product Consent Mode covers — gated
+      // separately here, and only injected once consent is granted (either
+      // already stored, or via the Accept button below).
+      window.htdLoadAwin = window.htdLoadAwin || function () {
+        if (window.htdAwinLoaded) return;
+        window.htdAwinLoaded = true;
+        var s = document.createElement('script');
+        s.src = 'https://www.dwin2.com/pub.2991473.min.js';
+        document.head.appendChild(s);
+      };
+      if (htdGranted) { window.htdLoadAwin(); }
     </script>
     <!-- End Consent Mode -->
 
@@ -125,8 +135,9 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6138840929831792"
      crossorigin="anonymous"></script>
 
-    <!-- Awin affiliate tracking (Publisher MasterTag) -->
-    <script src="https://www.dwin2.com/pub.2991473.min.js"></script>
+    <!-- Awin affiliate tracking (Publisher MasterTag) — loaded conditionally
+         by htdLoadAwin() in the Consent Mode script above, not statically
+         here, since it needs to wait on consent like everything else. -->
 
     <style>
       :root {
@@ -230,6 +241,11 @@
         color: var(--accent-text);
         font-weight: 600;
       }
+      .consent-actions {
+        display: flex;
+        flex: 0 0 auto;
+        gap: 10px;
+      }
       .consent-box button {
         flex: 0 0 auto;
         background: var(--accent);
@@ -243,6 +259,36 @@
       }
       .consent-box button:hover {
         opacity: 0.85;
+      }
+      .consent-box .consent-reject-btn {
+        background: transparent;
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+      .consent-box .consent-reject-btn:hover {
+        opacity: 1;
+        background: var(--bg);
+      }
+
+      /* Reopens the cookie banner so a visitor can change their choice
+         later — kept as static markup outside #root (like consent-overlay
+         itself) so it works identically for prerendered/no-JS pages and
+         after the React app mounts. */
+      .cookie-settings-btn {
+        position: fixed;
+        left: 12px;
+        bottom: 12px;
+        z-index: 998;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 11px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        cursor: pointer;
+      }
+      .cookie-settings-btn:hover {
+        color: var(--text);
       }
 
       /* Header network bar */
@@ -750,66 +796,66 @@
       "@type": "ItemList",
       "name": "Best Fashion & Clothing Deals Today",
       "itemListElement": [
-{ "@type": "ListItem", "position": 1, "name": "Pelican AEGIS Series Travel Backpack for $100 + free shipping", "url": "https://www.hackthedeal.com/deal/4106-pelican-aegis-series-travel-backpack-for-100-free-shipping/" },
-{ "@type": "ListItem", "position": 2, "name": "Nike Men's NikeCourt Lite 4 Tennis Shoes for $52 + free shipping", "url": "https://www.hackthedeal.com/deal/4107-nike-men-s-nikecourt-lite-4-tennis-shoes-for-52-free-shippin/" },
-{ "@type": "ListItem", "position": 3, "name": "Patagonia 2-Day Flash Deals at Dick's Sporting Goods: Up to 70% off + shipping varies", "url": "https://www.hackthedeal.com/deal/4108-patagonia-2-day-flash-deals-at-dick-s-sporting-goods-up-to-7/" },
-{ "@type": "ListItem", "position": 4, "name": "Kiuwoba Men's 3\" Mesh Running Shorts for $7 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4109-kiuwoba-men-s-3-mesh-running-shorts-for-7-free-shipping-w-pr/" },
-{ "@type": "ListItem", "position": 5, "name": "MATEIN HER Carry on Backpack with Hot Hair Travel Bag for $22.39 w/ Prime + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4110-matein-her-carry-on-backpack-with-hot-hair-travel-bag-for-22/" },
-{ "@type": "ListItem", "position": 6, "name": "JoS. A. Bank Weekend Sale: Up to 40% off + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/4111-jos-a-bank-weekend-sale-up-to-40-off-free-shipping-w-50/" },
-{ "@type": "ListItem", "position": 7, "name": "Simon Last Call Clearance Sale: Up to 90% off + shipping varies", "url": "https://www.hackthedeal.com/deal/4113-simon-last-call-clearance-sale-up-to-90-off-shipping-varies/" },
-{ "@type": "ListItem", "position": 8, "name": "adidas Terrex Back to School Shoe Deals for Kids' from $21, adults' from $41 + free shipping", "url": "https://www.hackthedeal.com/deal/4114-adidas-terrex-back-to-school-shoe-deals-for-kids-from-21-adu/" },
-{ "@type": "ListItem", "position": 9, "name": "PUMA Outlet Stores Free Backpack Offer : free backpack w/ $100 purchase   + in-stores only", "url": "https://www.hackthedeal.com/deal/4115-puma-outlet-stores-free-backpack-offer-free-backpack-w-100-p/" },
-{ "@type": "ListItem", "position": 10, "name": "adidas Men's Swift Run 1 Shoes for $34 + free shipping", "url": "https://www.hackthedeal.com/deal/4116-adidas-men-s-swift-run-1-shoes-for-34-free-shipping/" },
-{ "@type": "ListItem", "position": 11, "name": "HOKA Sale for Extra $20 off $150 + free shipping", "url": "https://www.hackthedeal.com/deal/4117-hoka-sale-for-extra-20-off-150-free-shipping/" },
-{ "@type": "ListItem", "position": 12, "name": "Amazon Haul Summer Clearance Sale: Up to 84% off + free shipping", "url": "https://www.hackthedeal.com/deal/4118-amazon-haul-summer-clearance-sale-up-to-84-off-free-shipping/" },
-{ "@type": "ListItem", "position": 13, "name": "adidas Men's Argentina 26 Home Fan Jersey for $35 + free shipping", "url": "https://www.hackthedeal.com/deal/4119-adidas-men-s-argentina-26-home-fan-jersey-for-35-free-shippi/" },
-{ "@type": "ListItem", "position": 14, "name": "adidas Back to School Jersey Deals: Up to 50% off + extra 15% off + free shipping", "url": "https://www.hackthedeal.com/deal/4120-adidas-back-to-school-jersey-deals-up-to-50-off-extra-15-off/" },
-{ "@type": "ListItem", "position": 15, "name": "adidas Men's Terrex Rockadia Hiking Shoes for $48 + free shipping", "url": "https://www.hackthedeal.com/deal/4121-adidas-men-s-terrex-rockadia-hiking-shoes-for-48-free-shippi/" },
-{ "@type": "ListItem", "position": 16, "name": "adidas Men's Ultraboost 5X Shoes for $77 + Free shipping", "url": "https://www.hackthedeal.com/deal/4122-adidas-men-s-ultraboost-5x-shoes-for-77-free-shipping/" },
-{ "@type": "ListItem", "position": 17, "name": "adidas Men's Back to School Deals: Up to 40% off + extra 15% off + free shipping", "url": "https://www.hackthedeal.com/deal/4123-adidas-men-s-back-to-school-deals-up-to-40-off-extra-15-off/" },
-{ "@type": "ListItem", "position": 18, "name": "Fanatics Clearance Deals: Up to 70% off", "url": "https://www.hackthedeal.com/deal/4124-fanatics-clearance-deals-up-to-70-off/" },
-{ "@type": "ListItem", "position": 19, "name": "Betbo Men's Short Sleeve Fishing Shirt for $13 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4125-betbo-men-s-short-sleeve-fishing-shirt-for-13-free-shipping/" },
-{ "@type": "ListItem", "position": 20, "name": "SheLucki Men's Hawaiian Shirt for $8 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4126-shelucki-men-s-hawaiian-shirt-for-8-free-shipping-w-prime/" },
-{ "@type": "ListItem", "position": 21, "name": "Men's Cotton Linen Shirt for 3 for $19 + $9 shipping", "url": "https://www.hackthedeal.com/deal/4127-men-s-cotton-linen-shirt-for-3-for-19-9-shipping/" },
-{ "@type": "ListItem", "position": 22, "name": "Viodia Women's 7\" High-Waisted Swim Board Shorts for $10 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4128-viodia-women-s-7-high-waisted-swim-board-shorts-for-10-free/" },
-{ "@type": "ListItem", "position": 23, "name": "Samsonite Centric 2 Hardside Expandable Luggage Set for $95 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4129-samsonite-centric-2-hardside-expandable-luggage-set-for-95-f/" },
-{ "@type": "ListItem", "position": 24, "name": "Vilanva Women's Breathable Athletic Shoes for $36 + free shipping", "url": "https://www.hackthedeal.com/deal/4130-vilanva-women-s-breathable-athletic-shoes-for-36-free-shippi/" },
-{ "@type": "ListItem", "position": 25, "name": "Nike Structure Plus Men's Road Running Shoes for $95 + free shipping", "url": "https://www.hackthedeal.com/deal/4131-nike-structure-plus-men-s-road-running-shoes-for-95-free-shi/" },
-{ "@type": "ListItem", "position": 26, "name": "Amazon Essentials Men's Stretch Jeans for $9 to $11 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4132-amazon-essentials-men-s-stretch-jeans-for-9-to-11-free-shipp/" },
-{ "@type": "ListItem", "position": 27, "name": "Amazon Essentials Men's Slip Deck Loafers for $11 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4133-amazon-essentials-men-s-slip-deck-loafers-for-11-free-shippi/" },
-{ "@type": "ListItem", "position": 28, "name": "adidas Ultraboost Back to School Deals: Up to 50% off + extra 15% off + free shipping", "url": "https://www.hackthedeal.com/deal/4112-adidas-ultraboost-back-to-school-deals-up-to-50-off-extra-15/" },
-{ "@type": "ListItem", "position": 29, "name": "Woot Summer Luggage Deals: Up to 87% off + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4134-woot-summer-luggage-deals-up-to-87-off-free-shipping-w-prime/" },
-{ "@type": "ListItem", "position": 30, "name": "$60.13* | The North Face 20L Isabella 3.0 Backpack w/ 16\" Laptop Sleeve (2 Colors) at Amazon", "url": "https://www.hackthedeal.com/deal/4205-60-13-the-north-face-20l-isabella-3-0-backpack-w-16-laptop-s/" },
-{ "@type": "ListItem", "position": 31, "name": "$24.32: Levi's Men's 559 Relaxed Straight Fit Jean (Various Colors/Sizes)", "url": "https://www.hackthedeal.com/deal/4199-24-32-levi-s-men-s-559-relaxed-straight-fit-jean-various-col/" },
-{ "@type": "ListItem", "position": 32, "name": "adidas Kid's Terrex Tracefinder Trail Running Shoes (Core Black / Grey One / Semi Impact Orange) $20", "url": "https://www.hackthedeal.com/deal/4189-adidas-kid-s-terrex-tracefinder-trail-running-shoes-core-bla/" },
-{ "@type": "ListItem", "position": 33, "name": "Teva Universal Trail Men's Sandals w/ Vibram Megagrip Outsole (Total Eclipse) $40.73 at REI w/ Free Store Pickup", "url": "https://www.hackthedeal.com/deal/4200-teva-universal-trail-men-s-sandals-w-vibram-megagrip-outsole/" },
-{ "@type": "ListItem", "position": 34, "name": "Nike Men's Air Monarch SE Sneaker (Wheat/Wheat-Gum/Med Brown) $55.99 + Free Shipping", "url": "https://www.hackthedeal.com/deal/4183-nike-men-s-air-monarch-se-sneaker-wheat-wheat-gum-med-brown/" },
-{ "@type": "ListItem", "position": 35, "name": "Mountain Hardwear Field Day Backpack for $60 + free shipping", "url": "https://www.hackthedeal.com/deal/4135-mountain-hardwear-field-day-backpack-for-60-free-shipping/" },
-{ "@type": "ListItem", "position": 36, "name": "Fruit of the Loom Men's Americana Stretch Boxer Briefs 3-Pack for $7 ... or less + free shipping w/ $35", "url": "https://www.hackthedeal.com/deal/4136-fruit-of-the-loom-men-s-americana-stretch-boxer-briefs-3-pac/" },
-{ "@type": "ListItem", "position": 37, "name": "Travelon Anti-Theft Roam Convertible Backpack Sling for $36 + free shipping", "url": "https://www.hackthedeal.com/deal/4137-travelon-anti-theft-roam-convertible-backpack-sling-for-36-f/" },
-{ "@type": "ListItem", "position": 38, "name": "George Men's Relaxed Fit Henley Shirt for $3.90 + free shipping w/ $35", "url": "https://www.hackthedeal.com/deal/4138-george-men-s-relaxed-fit-henley-shirt-for-3-90-free-shipping/" },
-{ "@type": "ListItem", "position": 39, "name": "Travelon Deluxe Wrap N' Rest Pillow for $8 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4139-travelon-deluxe-wrap-n-rest-pillow-for-8-free-shipping-w-pri/" },
-{ "@type": "ListItem", "position": 40, "name": "Gregory Rhune 25 Pack for $55 + free shipping w/ $60", "url": "https://www.hackthedeal.com/deal/4140-gregory-rhune-25-pack-for-55-free-shipping-w-60/" },
-{ "@type": "ListItem", "position": 41, "name": "REI Men's Co-op Trailmade Rain Jacket for $20 + free shipping w/ $60", "url": "https://www.hackthedeal.com/deal/4141-rei-men-s-co-op-trailmade-rain-jacket-for-20-free-shipping-w/" },
-{ "@type": "ListItem", "position": 42, "name": "adidas Women's Adilette Lite Slides (Select Colors & Sizes)) $8.80 + Free Shipping", "url": "https://www.hackthedeal.com/deal/4190-adidas-women-s-adilette-lite-slides-select-colors-sizes-8-80/" },
-{ "@type": "ListItem", "position": 43, "name": "REI Men's Co-op Trailmade Fleece Jacket for $20 + free shipping w/ $60", "url": "https://www.hackthedeal.com/deal/4142-rei-men-s-co-op-trailmade-fleece-jacket-for-20-free-shipping/" },
-{ "@type": "ListItem", "position": 44, "name": "REI Co-op Men's 650 Down Vest (Forest Shade) $29.83 + Free Store Pickup", "url": "https://www.hackthedeal.com/deal/4201-rei-co-op-men-s-650-down-vest-forest-shade-29-83-free-store/" },
-{ "@type": "ListItem", "position": 45, "name": "REI Co-op Men's Trailmade Rain Jacket (Limited Sizes) $19.85 + Free Pickup", "url": "https://www.hackthedeal.com/deal/4202-rei-co-op-men-s-trailmade-rain-jacket-limited-sizes-19-85-fr/" },
-{ "@type": "ListItem", "position": 46, "name": "adidas Italy Stadium Sackpack for $9 + free shipping w/ $49", "url": "https://www.hackthedeal.com/deal/4143-adidas-italy-stadium-sackpack-for-9-free-shipping-w-49/" },
-{ "@type": "ListItem", "position": 47, "name": "REI Co-op Men's Trailmade Fleece Jacket (Navy) $19.83 + Free Store Pickup", "url": "https://www.hackthedeal.com/deal/4203-rei-co-op-men-s-trailmade-fleece-jacket-navy-19-83-free-stor/" },
-{ "@type": "ListItem", "position": 48, "name": "Air Jordan 1 Women's Mid SE Edge Shoe (Pale Ivory/Black/Muslin/Racer Pink) $74.23 + Free Shipping", "url": "https://www.hackthedeal.com/deal/4184-air-jordan-1-women-s-mid-se-edge-shoe-pale-ivory-black-musli/" },
-{ "@type": "ListItem", "position": 49, "name": "Nike 24L Brasilia Training Backpack for $25 + free shipping w/ $49", "url": "https://www.hackthedeal.com/deal/4144-nike-24l-brasilia-training-backpack-for-25-free-shipping-w-4/" },
-{ "@type": "ListItem", "position": 50, "name": "Nike Women's Legend Essential 3 Next Nature Workout Shoes for $31 + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/4145-nike-women-s-legend-essential-3-next-nature-workout-shoes-fo/" },
-{ "@type": "ListItem", "position": 51, "name": "Nike Women's Air Max Nuaxis Shoes for $55 + free shipping", "url": "https://www.hackthedeal.com/deal/4146-nike-women-s-air-max-nuaxis-shoes-for-55-free-shipping/" },
-{ "@type": "ListItem", "position": 52, "name": "Up to 70% Off REI Outlet Handpicked Deals", "url": "https://www.hackthedeal.com/deal/4204-up-to-70-off-rei-outlet-handpicked-deals/" },
-{ "@type": "ListItem", "position": 53, "name": "JCPenney Mystery Sale: Extra 30% off ... or more + free shipping w/ $49", "url": "https://www.hackthedeal.com/deal/4147-jcpenney-mystery-sale-extra-30-off-or-more-free-shipping-w-4/" },
-{ "@type": "ListItem", "position": 54, "name": "24L Nike Aura Backpack (Blue) $37.77 + Free Shipping on $49+", "url": "https://www.hackthedeal.com/deal/4185-24l-nike-aura-backpack-blue-37-77-free-shipping-on-49/" },
-{ "@type": "ListItem", "position": 55, "name": "24L Nike Brasilia Training Backpack (Sesame) $25.17 + Free Shipping on $49+", "url": "https://www.hackthedeal.com/deal/4186-24l-nike-brasilia-training-backpack-sesame-25-17-free-shippi/" },
-{ "@type": "ListItem", "position": 56, "name": "Nike Women's Air Max Nuaxis Shoes in Black | HF1233-001 $54.73", "url": "https://www.hackthedeal.com/deal/4187-nike-women-s-air-max-nuaxis-shoes-in-black-hf1233-001-54-73/" },
-{ "@type": "ListItem", "position": 57, "name": "adidas Adizero EVO SL Running Shoes (For Men) - (Mississippi State colorway) $69.99", "url": "https://www.hackthedeal.com/deal/4191-adidas-adizero-evo-sl-running-shoes-for-men-mississippi-stat/" },
-{ "@type": "ListItem", "position": 58, "name": "adidas Men's Cloudfoam Cuxxion - Sock shoe, Charcoal/Carbon $28.23", "url": "https://www.hackthedeal.com/deal/4192-adidas-men-s-cloudfoam-cuxxion-sock-shoe-charcoal-carbon-28/" },
-{ "@type": "ListItem", "position": 59, "name": "adidas Men's  Ultradream DNA Shoes $36 + Free Shipping", "url": "https://www.hackthedeal.com/deal/4193-adidas-men-s-ultradream-dna-shoes-36-free-shipping/" },
-{ "@type": "ListItem", "position": 60, "name": "adidas Men's Response Runner Shoes (Various) $28 + Free Shipping", "url": "https://www.hackthedeal.com/deal/4194-adidas-men-s-response-runner-shoes-various-28-free-shipping/" }
+{ "@type": "ListItem", "position": 1, "name": "REI Co-op Ruckpack Waist Pack (2 Colors) $21.83 + Free Store Pickup", "url": "https://www.hackthedeal.com/deal/4367-rei-co-op-ruckpack-waist-pack-2-colors-21-83-free-store-pick/" },
+{ "@type": "ListItem", "position": 2, "name": "REI Co-op Stuff Travel Waist Pack & Sling (Green) $11.83 + Free Store Pickup", "url": "https://www.hackthedeal.com/deal/4368-rei-co-op-stuff-travel-waist-pack-sling-green-11-83-free-sto/" },
+{ "@type": "ListItem", "position": 3, "name": "REI Co-op Men's XeroCloud 3L Rain Jacket (Red) $59.83 + Free Store Pickup", "url": "https://www.hackthedeal.com/deal/4369-rei-co-op-men-s-xerocloud-3l-rain-jacket-red-59-83-free-stor/" },
+{ "@type": "ListItem", "position": 4, "name": "REI Co-op Women's Campwell Down Jacket (Various) $52.83 + Free Store Pickup", "url": "https://www.hackthedeal.com/deal/4370-rei-co-op-women-s-campwell-down-jacket-various-52-83-free-st/" },
+{ "@type": "ListItem", "position": 5, "name": "Lands' End Sale & Clearance: Up to 75% off + free shipping w/ $99", "url": "https://www.hackthedeal.com/deal/4307-lands-end-sale-clearance-up-to-75-off-free-shipping-w-99/" },
+{ "@type": "ListItem", "position": 6, "name": "L.L.Bean Clearance Sale: Up to 44% off + free shipping w/ $75", "url": "https://www.hackthedeal.com/deal/4308-l-l-bean-clearance-sale-up-to-44-off-free-shipping-w-75/" },
+{ "@type": "ListItem", "position": 7, "name": "Spider-Man Men's & Big Men's Spidey Crawl Graphic Tee for $10 + free shipping w/ $35", "url": "https://www.hackthedeal.com/deal/4309-spider-man-men-s-big-men-s-spidey-crawl-graphic-tee-for-10-f/" },
+{ "@type": "ListItem", "position": 8, "name": "32 Degrees Men's Cool Classic Crew T-Shirt 4-Pack for $18 + free shipping w/ $23.75", "url": "https://www.hackthedeal.com/deal/4310-32-degrees-men-s-cool-classic-crew-t-shirt-4-pack-for-18-fre/" },
+{ "@type": "ListItem", "position": 9, "name": "Nike Girls'  Nike Sportswear Club Fleece Boxy Crew-Neck Sweatshirt )Rush Fuchsia/White, Sizes: XS=XL) $23.98 + Free Shipping on $50", "url": "https://www.hackthedeal.com/deal/4360-nike-girls-nike-sportswear-club-fleece-boxy-crew-neck-sweats/" },
+{ "@type": "ListItem", "position": 10, "name": "Nike Women's Jordan Brooklyn Fleece Pullover Hoodie (Particle Rose/White, Sizes: XS-XL) $31.48 + Free Shipping on $50", "url": "https://www.hackthedeal.com/deal/4361-nike-women-s-jordan-brooklyn-fleece-pullover-hoodie-particle/" },
+{ "@type": "ListItem", "position": 11, "name": "32 Degrees Men's Cool Active T-Shirt for $6 + free shipping w/ $23.75", "url": "https://www.hackthedeal.com/deal/4311-32-degrees-men-s-cool-active-t-shirt-for-6-free-shipping-w-2/" },
+{ "@type": "ListItem", "position": 12, "name": "32 Degrees Men's Twill Tech 9\" or 7\" Shorts for $15 + free shipping w/ $23.75", "url": "https://www.hackthedeal.com/deal/4312-32-degrees-men-s-twill-tech-9-or-7-shorts-for-15-free-shippi/" },
+{ "@type": "ListItem", "position": 13, "name": "Pacsun Men's Bryce Stacked Skinny Jeans for $25 + extra $5 off w/ PS Rewards + free shipping", "url": "https://www.hackthedeal.com/deal/4314-pacsun-men-s-bryce-stacked-skinny-jeans-for-25-extra-5-off-w/" },
+{ "@type": "ListItem", "position": 14, "name": "Pacsun Jeans & Pants Flash Sale for Up to 73% off + $5 off $20 w/ PS Rewards + free shipping", "url": "https://www.hackthedeal.com/deal/4315-pacsun-jeans-pants-flash-sale-for-up-to-73-off-5-off-20-w-ps/" },
+{ "@type": "ListItem", "position": 15, "name": "Nike Women's Pacific Low-Profile Sneakers (Sail/Crimson/Blue, Sizes: 6-11) $38.98 + Free Shipping on $49+", "url": "https://www.hackthedeal.com/deal/4362-nike-women-s-pacific-low-profile-sneakers-sail-crimson-blue/" },
+{ "@type": "ListItem", "position": 16, "name": "Nike Women's Free Metcon 6 Training Shoes (Sweet Beet) $67.47 + Free Shipping", "url": "https://www.hackthedeal.com/deal/4363-nike-women-s-free-metcon-6-training-shoes-sweet-beet-67-47-f/" },
+{ "@type": "ListItem", "position": 17, "name": "SHEIN Trending Brands Deals: Up to 82% off + shipping varies", "url": "https://www.hackthedeal.com/deal/4316-shein-trending-brands-deals-up-to-82-off-shipping-varies/" },
+{ "@type": "ListItem", "position": 18, "name": "Mode of One Men's 5\" Liquid Camo  Swim Trunks for $10 + free shipping w/ $39", "url": "https://www.hackthedeal.com/deal/4317-mode-of-one-men-s-5-liquid-camo-swim-trunks-for-10-free-ship/" },
+{ "@type": "ListItem", "position": 19, "name": "Tommy Hilfiger Men's Flex Performance Zip-Front Bomber Jacket for $45 + free shipping", "url": "https://www.hackthedeal.com/deal/4318-tommy-hilfiger-men-s-flex-performance-zip-front-bomber-jacke/" },
+{ "@type": "ListItem", "position": 20, "name": "SHEIN Men's Apparel Deals for From $2.58 + shipping varies", "url": "https://www.hackthedeal.com/deal/4319-shein-men-s-apparel-deals-for-from-2-58-shipping-varies/" },
+{ "@type": "ListItem", "position": 21, "name": "Tommy Hilfiger Men's 10\" Summer Wool Regular-Fit Dress Shorts for $30 + free shipping w/ $39", "url": "https://www.hackthedeal.com/deal/4320-tommy-hilfiger-men-s-10-summer-wool-regular-fit-dress-shorts/" },
+{ "@type": "ListItem", "position": 22, "name": "Samsonite Luggage Deals at Macy's: Up to 70% off + free shipping w/ $39", "url": "https://www.hackthedeal.com/deal/4321-samsonite-luggage-deals-at-macy-s-up-to-70-off-free-shipping/" },
+{ "@type": "ListItem", "position": 23, "name": "Nike Men's Tennis Classic Shoes for $62 + free shipping", "url": "https://www.hackthedeal.com/deal/4322-nike-men-s-tennis-classic-shoes-for-62-free-shipping/" },
+{ "@type": "ListItem", "position": 24, "name": "Jordan Sport Men's Dri-FIT Y2K Shorts for $34 + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/4323-jordan-sport-men-s-dri-fit-y2k-shorts-for-34-free-shipping-w/" },
+{ "@type": "ListItem", "position": 25, "name": "Nike Air Jordan Men's or Women's Skyline Low LE Shoes for $79 + free shipping", "url": "https://www.hackthedeal.com/deal/4324-nike-air-jordan-men-s-or-women-s-skyline-low-le-shoes-for-79/" },
+{ "@type": "ListItem", "position": 26, "name": "Longines HydroConquest Automatic Men's Watch for $1,295 + free shipping", "url": "https://www.hackthedeal.com/deal/4325-longines-hydroconquest-automatic-men-s-watch-for-1-295-free/" },
+{ "@type": "ListItem", "position": 27, "name": "Movado Bold Silver Dial Stainless Steel Women's Watch for $199 + free shipping", "url": "https://www.hackthedeal.com/deal/4326-movado-bold-silver-dial-stainless-steel-women-s-watch-for-19/" },
+{ "@type": "ListItem", "position": 28, "name": "Movado Bold Shimmer Stainless Steel Women's Watch for $299 + free shipping", "url": "https://www.hackthedeal.com/deal/4327-movado-bold-shimmer-stainless-steel-women-s-watch-for-299-fr/" },
+{ "@type": "ListItem", "position": 29, "name": "Gregory Men's Katmai 65 Plus-Size Pack for $130 + free shipping", "url": "https://www.hackthedeal.com/deal/4328-gregory-men-s-katmai-65-plus-size-pack-for-130-free-shipping/" },
+{ "@type": "ListItem", "position": 30, "name": "Pelican AEGIS Modpak Medium Storage Pouch for $13 + free shipping", "url": "https://www.hackthedeal.com/deal/4329-pelican-aegis-modpak-medium-storage-pouch-for-13-free-shippi/" },
+{ "@type": "ListItem", "position": 31, "name": "Men's Wearhouse Clearance Sale: Up to 70% off + free shipping", "url": "https://www.hackthedeal.com/deal/4313-men-s-wearhouse-clearance-sale-up-to-70-off-free-shipping/" },
+{ "@type": "ListItem", "position": 32, "name": "REI Co-op Men's 650 Down Vest for $30 + free shipping w/ $60", "url": "https://www.hackthedeal.com/deal/4330-rei-co-op-men-s-650-down-vest-for-30-free-shipping-w-60/" },
+{ "@type": "ListItem", "position": 33, "name": "REI Co-op Men's Rainier Rain Jacket (L sizes only) for $30 + free shipping w/ $60", "url": "https://www.hackthedeal.com/deal/4331-rei-co-op-men-s-rainier-rain-jacket-l-sizes-only-for-30-free/" },
+{ "@type": "ListItem", "position": 34, "name": "REI Co-op Stuff Travel Waist Pack for $12 + free shipping w/ $60", "url": "https://www.hackthedeal.com/deal/4332-rei-co-op-stuff-travel-waist-pack-for-12-free-shipping-w-60/" },
+{ "@type": "ListItem", "position": 35, "name": "REI Co-op Women's 650 Down Jacket for $64 + free shipping", "url": "https://www.hackthedeal.com/deal/4333-rei-co-op-women-s-650-down-jacket-for-64-free-shipping/" },
+{ "@type": "ListItem", "position": 36, "name": "Adidas Unisex-Adult World Cup Soccer Ball (Various, Size 4 and 5) from $17.49 + Free Shipping w/ Prime or on $35+", "url": "https://www.hackthedeal.com/deal/4366-adidas-unisex-adult-world-cup-soccer-ball-various-size-4-and/" },
+{ "@type": "ListItem", "position": 37, "name": "The North Face 2-Day Flash Deals at Dick's Sporting Goods: Up to 70% off + shipping varies", "url": "https://www.hackthedeal.com/deal/4334-the-north-face-2-day-flash-deals-at-dick-s-sporting-goods-up/" },
+{ "@type": "ListItem", "position": 38, "name": "2-Piece Nike Toddler Girls' Lace It Up Crewneck T-Shirt & Shorts Set (University Blue, Sizes: 2Y=4T) $19.13 + Free Store Pickup at Macy's or Free Shipping on $39+", "url": "https://www.hackthedeal.com/deal/4364-2-piece-nike-toddler-girls-lace-it-up-crewneck-t-shirt-short/" },
+{ "@type": "ListItem", "position": 39, "name": "Nike Women's Sportswear Phoenix Fleece Oversized Pullover Hoodie (Orewood Brown/sail) $31.93 + Free Store Pickup at Macy's or Free Shipping on $39+", "url": "https://www.hackthedeal.com/deal/4365-nike-women-s-sportswear-phoenix-fleece-oversized-pullover-ho/" },
+{ "@type": "ListItem", "position": 40, "name": "On 2-Day Flash Deals at Dick's Sporting Goods: Up to 71% off + shipping varies", "url": "https://www.hackthedeal.com/deal/4335-on-2-day-flash-deals-at-dick-s-sporting-goods-up-to-71-off-s/" },
+{ "@type": "ListItem", "position": 41, "name": "adidas Amplifier 27L Laptop Backpack for $34.80 + free shipping", "url": "https://www.hackthedeal.com/deal/4336-adidas-amplifier-27l-laptop-backpack-for-34-80-free-shipping/" },
+{ "@type": "ListItem", "position": 42, "name": "Gildan Adult Heavy Cotton T-Shirt 2-Pack for $6 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4337-gildan-adult-heavy-cotton-t-shirt-2-pack-for-6-free-shipping/" },
+{ "@type": "ListItem", "position": 43, "name": "adidas Men's Originals Adicolor Essentials Trefoil Hoodie (XS & M only) for $15 + free shipping", "url": "https://www.hackthedeal.com/deal/4338-adidas-men-s-originals-adicolor-essentials-trefoil-hoodie-xs/" },
+{ "@type": "ListItem", "position": 44, "name": "adidas 2-Day Flash Deals at Dick's Sporting Goods: Up to 75% off + free shipping w/ $49", "url": "https://www.hackthedeal.com/deal/4339-adidas-2-day-flash-deals-at-dick-s-sporting-goods-up-to-75-o/" },
+{ "@type": "ListItem", "position": 45, "name": "Nike Men's Air Monarch IV Workout Shoes for $48 + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/4340-nike-men-s-air-monarch-iv-workout-shoes-for-48-free-shipping/" },
+{ "@type": "ListItem", "position": 46, "name": "Nike Men's Giannis Immortality 4 Basketball Shoes for $47 + free shipping w/ $49", "url": "https://www.hackthedeal.com/deal/4341-nike-men-s-giannis-immortality-4-basketball-shoes-for-47-fre/" },
+{ "@type": "ListItem", "position": 47, "name": "Pelican AEGIS Series Travel Backpack for $100 + free shipping", "url": "https://www.hackthedeal.com/deal/4106-pelican-aegis-series-travel-backpack-for-100-free-shipping/" },
+{ "@type": "ListItem", "position": 48, "name": "Nike Men's NikeCourt Lite 4 Tennis Shoes for $52 + free shipping", "url": "https://www.hackthedeal.com/deal/4107-nike-men-s-nikecourt-lite-4-tennis-shoes-for-52-free-shippin/" },
+{ "@type": "ListItem", "position": 49, "name": "Patagonia 2-Day Flash Deals at Dick's Sporting Goods: Up to 70% off + shipping varies", "url": "https://www.hackthedeal.com/deal/4108-patagonia-2-day-flash-deals-at-dick-s-sporting-goods-up-to-7/" },
+{ "@type": "ListItem", "position": 50, "name": "Kiuwoba Men's 3\" Mesh Running Shorts for $7 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4109-kiuwoba-men-s-3-mesh-running-shorts-for-7-free-shipping-w-pr/" },
+{ "@type": "ListItem", "position": 51, "name": "MATEIN HER Carry on Backpack with Hot Hair Travel Bag for $22.39 w/ Prime + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4110-matein-her-carry-on-backpack-with-hot-hair-travel-bag-for-22/" },
+{ "@type": "ListItem", "position": 52, "name": "JoS. A. Bank Weekend Sale: Up to 40% off + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/4111-jos-a-bank-weekend-sale-up-to-40-off-free-shipping-w-50/" },
+{ "@type": "ListItem", "position": 53, "name": "Simon Last Call Clearance Sale: Up to 90% off + shipping varies", "url": "https://www.hackthedeal.com/deal/4113-simon-last-call-clearance-sale-up-to-90-off-shipping-varies/" },
+{ "@type": "ListItem", "position": 54, "name": "adidas Terrex Back to School Shoe Deals for Kids' from $21, adults' from $41 + free shipping", "url": "https://www.hackthedeal.com/deal/4114-adidas-terrex-back-to-school-shoe-deals-for-kids-from-21-adu/" },
+{ "@type": "ListItem", "position": 55, "name": "PUMA Outlet Stores Free Backpack Offer : free backpack w/ $100 purchase   + in-stores only", "url": "https://www.hackthedeal.com/deal/4115-puma-outlet-stores-free-backpack-offer-free-backpack-w-100-p/" },
+{ "@type": "ListItem", "position": 56, "name": "adidas Men's Swift Run 1 Shoes for $34 + free shipping", "url": "https://www.hackthedeal.com/deal/4116-adidas-men-s-swift-run-1-shoes-for-34-free-shipping/" },
+{ "@type": "ListItem", "position": 57, "name": "HOKA Sale for Extra $20 off $150 + free shipping", "url": "https://www.hackthedeal.com/deal/4117-hoka-sale-for-extra-20-off-150-free-shipping/" },
+{ "@type": "ListItem", "position": 58, "name": "Amazon Haul Summer Clearance Sale: Up to 84% off + free shipping", "url": "https://www.hackthedeal.com/deal/4118-amazon-haul-summer-clearance-sale-up-to-84-off-free-shipping/" },
+{ "@type": "ListItem", "position": 59, "name": "adidas Men's Argentina 26 Home Fan Jersey for $35 + free shipping", "url": "https://www.hackthedeal.com/deal/4119-adidas-men-s-argentina-26-home-fan-jersey-for-35-free-shippi/" },
+{ "@type": "ListItem", "position": 60, "name": "adidas Back to School Jersey Deals: Up to 50% off + extra 15% off + free shipping", "url": "https://www.hackthedeal.com/deal/4120-adidas-back-to-school-jersey-deals-up-to-50-off-extra-15-off/" }
       ]
     }
     </script>
@@ -828,35 +874,48 @@
     </div>
 
     <!-- Privacy / cookie consent notice — static markup so it's visible even
-         before React mounts. GTM/GA already loaded in Consent Mode's default
-         "denied" state (see <head>); clicking OK just upgrades the signal. -->
+         before React mounts. GTM/GA/AdSense already loaded in Consent Mode's
+         default state from localStorage (see <head>); Accept/Reject here
+         just update that signal going forward. -->
     <div id="consent-overlay" class="consent-overlay" style="display: none;">
       <div class="consent-box">
         <div class="consent-text">
           <p class="consent-title">🍪 We use cookies</p>
           <p>
-            This site uses cookies to measure site performance and improve your experience.
-            By clicking OK, you accept our use of cookies as described in our
-            <a href="/privacy.html">Privacy Policy</a>.
+            This site uses cookies to measure site performance and improve your experience, and
+            works with Google Analytics and AdSense, which may use cookies for analytics and to
+            show personalized ads. See our <a href="/privacy.html">Privacy Policy</a> for details.
           </p>
         </div>
-        <button id="consent-ok" type="button">OK</button>
+        <div class="consent-actions">
+          <button id="consent-reject" type="button" class="consent-reject-btn">Reject</button>
+          <button id="consent-ok" type="button">Accept</button>
+        </div>
       </div>
     </div>
+    <button id="cookie-settings-btn" type="button" class="cookie-settings-btn">Cookie Settings</button>
     <script>
       (function () {
-        if (localStorage.getItem('htd_consent_v1') !== 'granted') {
-          document.getElementById('consent-overlay').style.display = 'flex';
-        }
-        document.getElementById('consent-ok').addEventListener('click', function () {
-          localStorage.setItem('htd_consent_v1', 'granted');
+        function setConsent(granted) {
+          localStorage.setItem('htd_consent_v1', granted ? 'granted' : 'denied');
           document.getElementById('consent-overlay').style.display = 'none';
           gtag('consent', 'update', {
-            'ad_storage': 'granted',
-            'ad_user_data': 'granted',
-            'ad_personalization': 'granted',
-            'analytics_storage': 'granted'
+            'ad_storage': granted ? 'granted' : 'denied',
+            'ad_user_data': granted ? 'granted' : 'denied',
+            'ad_personalization': granted ? 'granted' : 'denied',
+            'analytics_storage': granted ? 'granted' : 'denied'
           });
+          window.adsbygoogle = window.adsbygoogle || [];
+          window.adsbygoogle.push({ google_ad_client: 'ca-pub-6138840929831792', google_restrict_data_processing: !granted });
+          if (granted && window.htdLoadAwin) { window.htdLoadAwin(); }
+        }
+        if (!localStorage.getItem('htd_consent_v1')) {
+          document.getElementById('consent-overlay').style.display = 'flex';
+        }
+        document.getElementById('consent-ok').addEventListener('click', function () { setConsent(true); });
+        document.getElementById('consent-reject').addEventListener('click', function () { setConsent(false); });
+        document.getElementById('cookie-settings-btn').addEventListener('click', function () {
+          document.getElementById('consent-overlay').style.display = 'flex';
         });
       })();
     </script>
@@ -901,7 +960,743 @@
       </section>
       <main style="max-width:1152px;margin:0 auto;padding:8px 16px 40px">
         <div class="section-title-bar"><span class="section-label">Latest Deals</span></div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px"><a href="/deal/4106-pelican-aegis-series-travel-backpack-for-100-free-shipping/" class="deal-card">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px"><a href="/deal/4367-rei-co-op-ruckpack-waist-pack-2-colors-21-83-free-store-pick/" class="deal-card">
+      <div class="deal-card-icon-fallback"></div>
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          
+        </div>
+        <p class="deal-title">REI Co-op Ruckpack Waist Pack (2 Colors) $21.83 + Free Store Pickup</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$21.83</span>
+        </div>
+        <div class="deal-meta">
+          <span>slickdeals-rei</span>
+          <span>Aug 1, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4368-rei-co-op-stuff-travel-waist-pack-sling-green-11-83-free-sto/" class="deal-card">
+      <div class="deal-card-icon-fallback"></div>
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          
+        </div>
+        <p class="deal-title">REI Co-op Stuff Travel Waist Pack &amp; Sling (Green) $11.83 + Free Store Pickup</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$11.83</span>
+        </div>
+        <div class="deal-meta">
+          <span>slickdeals-rei</span>
+          <span>Aug 1, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4369-rei-co-op-men-s-xerocloud-3l-rain-jacket-red-59-83-free-stor/" class="deal-card">
+      <div class="deal-card-icon-fallback"></div>
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          
+        </div>
+        <p class="deal-title">REI Co-op Men&#x27;s XeroCloud 3L Rain Jacket (Red) $59.83 + Free Store Pickup</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$59.83</span>
+        </div>
+        <div class="deal-meta">
+          <span>slickdeals-rei</span>
+          <span>Aug 1, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4370-rei-co-op-women-s-campwell-down-jacket-various-52-83-free-st/" class="deal-card">
+      <div class="deal-card-icon-fallback"></div>
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          
+        </div>
+        <p class="deal-title">REI Co-op Women&#x27;s Campwell Down Jacket (Various) $52.83 + Free Store Pickup</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$52.83</span>
+        </div>
+        <div class="deal-meta">
+          <span>slickdeals-rei</span>
+          <span>Aug 1, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4307-lands-end-sale-clearance-up-to-75-off-free-shipping-w-99/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1701448487-dn-image-6651679.jpg?h=512&amp;w=1024" alt="Lands&#x27; End Sale &amp; Clearance: Up to 75% off + free shipping w/ $99" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          <span class="discount-badge">75% off</span>
+        </div>
+        <p class="deal-title">Lands&#x27; End Sale &amp; Clearance: Up to 75% off + free shipping w/ $99</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$99.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Aug 1, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4308-l-l-bean-clearance-sale-up-to-44-off-free-shipping-w-75/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785539247-a0211793_2_fmt_webp_rgb_lossy_bfc_on.webp?h=352&amp;w=302" alt="L.L.Bean Clearance Sale: Up to 44% off + free shipping w/ $75" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          <span class="discount-badge">44% off</span>
+        </div>
+        <p class="deal-title">L.L.Bean Clearance Sale: Up to 44% off + free shipping w/ $75</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$75.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4309-spider-man-men-s-big-men-s-spidey-crawl-graphic-tee-for-10-f/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785532649-spider-man-men-s-big-men-s-graphic-tee-with-short-sleeves-spidey-crawl-sizes-s-3xl_c7230796-0beb-405.avif?h=1024&amp;w=768" alt="Spider-Man Men&#x27;s &amp; Big Men&#x27;s Spidey Crawl Graphic Tee for $10 + free shipping w/ $35" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          <span class="discount-badge">71% off</span>
+        </div>
+        <p class="deal-title">Spider-Man Men&#x27;s &amp; Big Men&#x27;s Spidey Crawl Graphic Tee for $10 + free shipping w/ $35</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$10.00</span><span class="price-original">$35.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4310-32-degrees-men-s-cool-classic-crew-t-shirt-4-pack-for-18-fre/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785529833-product-trimmed.png?h=540&amp;w=458" alt="32 Degrees Men&#x27;s Cool Classic Crew T-Shirt 4-Pack for $18 + free shipping w/ $23.75" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          <span class="discount-badge">24% off</span>
+        </div>
+        <p class="deal-title">32 Degrees Men&#x27;s Cool Classic Crew T-Shirt 4-Pack for $18 + free shipping w/ $23.75</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$18.00</span><span class="price-original">$23.75</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4360-nike-girls-nike-sportswear-club-fleece-boxy-crew-neck-sweats/" class="deal-card">
+      <div class="deal-card-icon-fallback"></div>
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          <span class="discount-badge">52% off</span>
+        </div>
+        <p class="deal-title">Nike Girls&#x27;  Nike Sportswear Club Fleece Boxy Crew-Neck Sweatshirt )Rush Fuchsia/White, Sizes: XS=XL) $23.98 + Free Shipping on $50</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$23.98</span><span class="price-original">$50.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>slickdeals-nike</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4361-nike-women-s-jordan-brooklyn-fleece-pullover-hoodie-particle/" class="deal-card">
+      <div class="deal-card-icon-fallback"></div>
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          <span class="discount-badge">37% off</span>
+        </div>
+        <p class="deal-title">Nike Women&#x27;s Jordan Brooklyn Fleece Pullover Hoodie (Particle Rose/White, Sizes: XS-XL) $31.48 + Free Shipping on $50</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$31.48</span><span class="price-original">$50.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>slickdeals-nike</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4311-32-degrees-men-s-cool-active-t-shirt-for-6-free-shipping-w-2/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785528555-product-trimmed.png?h=540&amp;w=427" alt="32 Degrees Men&#x27;s Cool Active T-Shirt for $6 + free shipping w/ $23.75" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          <span class="discount-badge">75% off</span>
+        </div>
+        <p class="deal-title">32 Degrees Men&#x27;s Cool Active T-Shirt for $6 + free shipping w/ $23.75</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$6.00</span><span class="price-original">$23.75</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4312-32-degrees-men-s-twill-tech-9-or-7-shorts-for-15-free-shippi/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785528322-product-trimmed.png?h=540&amp;w=622" alt="32 Degrees Men&#x27;s Twill Tech 9&quot; or 7&quot; Shorts for $15 + free shipping w/ $23.75" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          <span class="discount-badge">37% off</span>
+        </div>
+        <p class="deal-title">32 Degrees Men&#x27;s Twill Tech 9&quot; or 7&quot; Shorts for $15 + free shipping w/ $23.75</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$15.00</span><span class="price-original">$23.75</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4314-pacsun-men-s-bryce-stacked-skinny-jeans-for-25-extra-5-off-w/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785527995-0131454210184new_00_001.jpg?h=1024&amp;w=660" alt="Pacsun Men&#x27;s Bryce Stacked Skinny Jeans for $25 + extra $5 off w/ PS Rewards + free shipping" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          
+        </div>
+        <p class="deal-title">Pacsun Men&#x27;s Bryce Stacked Skinny Jeans for $25 + extra $5 off w/ PS Rewards + free shipping</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$25.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4315-pacsun-jeans-pants-flash-sale-for-up-to-73-off-5-off-20-w-ps/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785527309-0131604890057new_00_510.webp?h=1024&amp;w=660" alt="Pacsun Jeans &amp; Pants Flash Sale for Up to 73% off + $5 off $20 w/ PS Rewards + free shipping" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          <span class="discount-badge">73% off</span>
+        </div>
+        <p class="deal-title">Pacsun Jeans &amp; Pants Flash Sale for Up to 73% off + $5 off $20 w/ PS Rewards + free shipping</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$20.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4362-nike-women-s-pacific-low-profile-sneakers-sail-crimson-blue/" class="deal-card">
+      <div class="deal-card-icon-fallback"></div>
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          
+        </div>
+        <p class="deal-title">Nike Women&#x27;s Pacific Low-Profile Sneakers (Sail/Crimson/Blue, Sizes: 6-11) $38.98 + Free Shipping on $49+</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$38.98</span>
+        </div>
+        <div class="deal-meta">
+          <span>slickdeals-nike</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4363-nike-women-s-free-metcon-6-training-shoes-sweet-beet-67-47-f/" class="deal-card">
+      <div class="deal-card-icon-fallback"></div>
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          
+        </div>
+        <p class="deal-title">Nike Women&#x27;s Free Metcon 6 Training Shoes (Sweet Beet) $67.47 + Free Shipping</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$67.47</span>
+        </div>
+        <div class="deal-meta">
+          <span>slickdeals-nike</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4316-shein-trending-brands-deals-up-to-82-off-shipping-varies/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785523422-product-trimmed.png?h=540&amp;w=432" alt="SHEIN Trending Brands Deals: Up to 82% off + shipping varies" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          <span class="discount-badge">82% off</span>
+        </div>
+        <p class="deal-title">SHEIN Trending Brands Deals: Up to 82% off + shipping varies</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span style="font-size:13px;color:var(--muted)">See deal</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4317-mode-of-one-men-s-5-liquid-camo-swim-trunks-for-10-free-ship/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785522669-35490382_fpx.webp?h=855&amp;w=700" alt="Mode of One Men&#x27;s 5&quot; Liquid Camo  Swim Trunks for $10 + free shipping w/ $39" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          <span class="discount-badge">74% off</span>
+        </div>
+        <p class="deal-title">Mode of One Men&#x27;s 5&quot; Liquid Camo  Swim Trunks for $10 + free shipping w/ $39</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$10.00</span><span class="price-original">$39.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4318-tommy-hilfiger-men-s-flex-performance-zip-front-bomber-jacke/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785521901-37000266_fpx.jpeg?h=400&amp;w=328" alt="Tommy Hilfiger Men&#x27;s Flex Performance Zip-Front Bomber Jacket for $45 + free shipping" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          
+        </div>
+        <p class="deal-title">Tommy Hilfiger Men&#x27;s Flex Performance Zip-Front Bomber Jacket for $45 + free shipping</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$45.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4319-shein-men-s-apparel-deals-for-from-2-58-shipping-varies/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785521786-product-trimmed.png?h=613&amp;w=669" alt="SHEIN Men&#x27;s Apparel Deals for From $2.58 + shipping varies" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          
+        </div>
+        <p class="deal-title">SHEIN Men&#x27;s Apparel Deals for From $2.58 + shipping varies</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$2.58</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4320-tommy-hilfiger-men-s-10-summer-wool-regular-fit-dress-shorts/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785521451-36124928_fpx.jpeg?h=400&amp;w=328" alt="Tommy Hilfiger Men&#x27;s 10&quot; Summer Wool Regular-Fit Dress Shorts for $30 + free shipping w/ $39" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          <span class="discount-badge">23% off</span>
+        </div>
+        <p class="deal-title">Tommy Hilfiger Men&#x27;s 10&quot; Summer Wool Regular-Fit Dress Shorts for $30 + free shipping w/ $39</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$30.00</span><span class="price-original">$39.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4321-samsonite-luggage-deals-at-macy-s-up-to-70-off-free-shipping/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785521110-product-trimmed.jpg?h=298&amp;w=170" alt="Samsonite Luggage Deals at Macy&#x27;s: Up to 70% off + free shipping w/ $39" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          <span class="discount-badge">70% off</span>
+        </div>
+        <p class="deal-title">Samsonite Luggage Deals at Macy&#x27;s: Up to 70% off + free shipping w/ $39</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$39.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4322-nike-men-s-tennis-classic-shoes-for-62-free-shipping/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785519282-product-trimmed.png?h=490&amp;w=1024" alt="Nike Men&#x27;s Tennis Classic Shoes for $62 + free shipping" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          
+        </div>
+        <p class="deal-title">Nike Men&#x27;s Tennis Classic Shoes for $62 + free shipping</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$62.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4323-jordan-sport-men-s-dri-fit-y2k-shorts-for-34-free-shipping-w/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785518755-product-trimmed.png?h=539&amp;w=553" alt="Jordan Sport Men&#x27;s Dri-FIT Y2K Shorts for $34 + free shipping w/ $50" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          <span class="discount-badge">32% off</span>
+        </div>
+        <p class="deal-title">Jordan Sport Men&#x27;s Dri-FIT Y2K Shorts for $34 + free shipping w/ $50</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$34.00</span><span class="price-original">$50.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4324-nike-air-jordan-men-s-or-women-s-skyline-low-le-shoes-for-79/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785518498-product-trimmed.png?h=540&amp;w=934" alt="Nike Air Jordan Men&#x27;s or Women&#x27;s Skyline Low LE Shoes for $79 + free shipping" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          
+        </div>
+        <p class="deal-title">Nike Air Jordan Men&#x27;s or Women&#x27;s Skyline Low LE Shoes for $79 + free shipping</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$79.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4325-longines-hydroconquest-automatic-men-s-watch-for-1-295-free/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785514907-l37813587_1776789344.jpg?h=800&amp;w=650" alt="Longines HydroConquest Automatic Men&#x27;s Watch for $1,295 + free shipping" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          
+        </div>
+        <p class="deal-title">Longines HydroConquest Automatic Men&#x27;s Watch for $1,295 + free shipping</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$1.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4326-movado-bold-silver-dial-stainless-steel-women-s-watch-for-19/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785514135-3600084_1752160713.jpg?h=900&amp;w=900" alt="Movado Bold Silver Dial Stainless Steel Women&#x27;s Watch for $199 + free shipping" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          
+        </div>
+        <p class="deal-title">Movado Bold Silver Dial Stainless Steel Women&#x27;s Watch for $199 + free shipping</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$199.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4327-movado-bold-shimmer-stainless-steel-women-s-watch-for-299-fr/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785513537-3600656_1669997534.jpg?h=800&amp;w=650" alt="Movado Bold Shimmer Stainless Steel Women&#x27;s Watch for $299 + free shipping" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          
+        </div>
+        <p class="deal-title">Movado Bold Shimmer Stainless Steel Women&#x27;s Watch for $299 + free shipping</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$299.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4328-gregory-men-s-katmai-65-plus-size-pack-for-130-free-shipping/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785513241-241196.jpeg?h=440&amp;w=364" alt="Gregory Men&#x27;s Katmai 65 Plus-Size Pack for $130 + free shipping" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          
+        </div>
+        <p class="deal-title">Gregory Men&#x27;s Katmai 65 Plus-Size Pack for $130 + free shipping</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$130.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4329-pelican-aegis-modpak-medium-storage-pouch-for-13-free-shippi/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785512926-pelican_spm_trvl_indg_aegis_modpak_storage_pouch_1737418852_1862482.jpg?h=500&amp;w=500" alt="Pelican AEGIS Modpak Medium Storage Pouch for $13 + free shipping" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          
+        </div>
+        <p class="deal-title">Pelican AEGIS Modpak Medium Storage Pouch for $13 + free shipping</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$13.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4313-men-s-wearhouse-clearance-sale-up-to-70-off-free-shipping/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1768486408-dn-image-6824638.jpg?h=57&amp;w=777" alt="Men&#x27;s Wearhouse Clearance Sale: Up to 70% off + free shipping" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          <span class="discount-badge">70% off</span>
+        </div>
+        <p class="deal-title">Men&#x27;s Wearhouse Clearance Sale: Up to 70% off + free shipping</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span style="font-size:13px;color:var(--muted)">See deal</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4330-rei-co-op-men-s-650-down-vest-for-30-free-shipping-w-60/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785512688-42d7c1a4-779d-4785-9820-bdf6f95975e8.avif?h=1024&amp;w=755" alt="REI Co-op Men&#x27;s 650 Down Vest for $30 + free shipping w/ $60" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          <span class="discount-badge">50% off</span>
+        </div>
+        <p class="deal-title">REI Co-op Men&#x27;s 650 Down Vest for $30 + free shipping w/ $60</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$30.00</span><span class="price-original">$60.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4331-rei-co-op-men-s-rainier-rain-jacket-l-sizes-only-for-30-free/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785512410-7606217a-be50-4a77-a5e3-a01cd4e28ffd.avif?h=1024&amp;w=1024" alt="REI Co-op Men&#x27;s Rainier Rain Jacket (L sizes only) for $30 + free shipping w/ $60" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          <span class="discount-badge">50% off</span>
+        </div>
+        <p class="deal-title">REI Co-op Men&#x27;s Rainier Rain Jacket (L sizes only) for $30 + free shipping w/ $60</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$30.00</span><span class="price-original">$60.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4332-rei-co-op-stuff-travel-waist-pack-for-12-free-shipping-w-60/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785511614-55fd7825-7456-455d-86ce-66b401c3e68e.jpeg?h=671&amp;w=1024" alt="REI Co-op Stuff Travel Waist Pack for $12 + free shipping w/ $60" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          <span class="discount-badge">80% off</span>
+        </div>
+        <p class="deal-title">REI Co-op Stuff Travel Waist Pack for $12 + free shipping w/ $60</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$12.00</span><span class="price-original">$60.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4333-rei-co-op-women-s-650-down-jacket-for-64-free-shipping/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785511402-c070d9fc-ad2c-4bc1-ac18-ade9338d474e.avif?h=1024&amp;w=1024" alt="REI Co-op Women&#x27;s 650 Down Jacket for $64 + free shipping" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          
+        </div>
+        <p class="deal-title">REI Co-op Women&#x27;s 650 Down Jacket for $64 + free shipping</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$64.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4366-adidas-unisex-adult-world-cup-soccer-ball-various-size-4-and/" class="deal-card">
+      <div class="deal-card-icon-fallback"></div>
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          
+        </div>
+        <p class="deal-title">Adidas Unisex-Adult World Cup Soccer Ball (Various, Size 4 and 5) from $17.49 + Free Shipping w/ Prime or on $35+</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$17.49</span>
+        </div>
+        <div class="deal-meta">
+          <span>slickdeals-adidas</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4334-the-north-face-2-day-flash-deals-at-dick-s-sporting-goods-up/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785509870-product-trimmed.jpg?h=252&amp;w=146" alt="The North Face 2-Day Flash Deals at Dick&#x27;s Sporting Goods: Up to 70% off + shipping varies" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          <span class="discount-badge">70% off</span>
+        </div>
+        <p class="deal-title">The North Face 2-Day Flash Deals at Dick&#x27;s Sporting Goods: Up to 70% off + shipping varies</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span style="font-size:13px;color:var(--muted)">See deal</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4364-2-piece-nike-toddler-girls-lace-it-up-crewneck-t-shirt-short/" class="deal-card">
+      <div class="deal-card-icon-fallback"></div>
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          
+        </div>
+        <p class="deal-title">2-Piece Nike Toddler Girls&#x27; Lace It Up Crewneck T-Shirt &amp; Shorts Set (University Blue, Sizes: 2Y=4T) $19.13 + Free Store Pickup at Macy&#x27;s or Free Shipping on $39+</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$19.13</span>
+        </div>
+        <div class="deal-meta">
+          <span>slickdeals-nike</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4365-nike-women-s-sportswear-phoenix-fleece-oversized-pullover-ho/" class="deal-card">
+      <div class="deal-card-icon-fallback"></div>
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          
+        </div>
+        <p class="deal-title">Nike Women&#x27;s Sportswear Phoenix Fleece Oversized Pullover Hoodie (Orewood Brown/sail) $31.93 + Free Store Pickup at Macy&#x27;s or Free Shipping on $39+</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$31.93</span>
+        </div>
+        <div class="deal-meta">
+          <span>slickdeals-nike</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4335-on-2-day-flash-deals-at-dick-s-sporting-goods-up-to-71-off-s/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785508992-product-trimmed.jpg?h=117&amp;w=248" alt="On 2-Day Flash Deals at Dick&#x27;s Sporting Goods: Up to 71% off + shipping varies" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          <span class="discount-badge">71% off</span>
+        </div>
+        <p class="deal-title">On 2-Day Flash Deals at Dick&#x27;s Sporting Goods: Up to 71% off + shipping varies</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span style="font-size:13px;color:var(--muted)">See deal</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4336-adidas-amplifier-27l-laptop-backpack-for-34-80-free-shipping/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785508656-81ds7wb89cl.jpg?h=1024&amp;w=1024" alt="adidas Amplifier 27L Laptop Backpack for $34.80 + free shipping" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          
+        </div>
+        <p class="deal-title">adidas Amplifier 27L Laptop Backpack for $34.80 + free shipping</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$34.80</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4337-gildan-adult-heavy-cotton-t-shirt-2-pack-for-6-free-shipping/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785508301-71drnwptpfl.jpg?h=1024&amp;w=1024" alt="Gildan Adult Heavy Cotton T-Shirt 2-Pack for $6 + free shipping w/ Prime" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          
+        </div>
+        <p class="deal-title">Gildan Adult Heavy Cotton T-Shirt 2-Pack for $6 + free shipping w/ Prime</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$6.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4338-adidas-men-s-originals-adicolor-essentials-trefoil-hoodie-xs/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785508133-product-trimmed.png?h=603&amp;w=413" alt="adidas Men&#x27;s Originals Adicolor Essentials Trefoil Hoodie (XS &amp; M only) for $15 + free shipping" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          
+        </div>
+        <p class="deal-title">adidas Men&#x27;s Originals Adicolor Essentials Trefoil Hoodie (XS &amp; M only) for $15 + free shipping</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$15.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4339-adidas-2-day-flash-deals-at-dick-s-sporting-goods-up-to-75-o/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785507701-product-trimmed.jpg?h=99&amp;w=243" alt="adidas 2-Day Flash Deals at Dick&#x27;s Sporting Goods: Up to 75% off + free shipping w/ $49" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          <span class="discount-badge">75% off</span>
+        </div>
+        <p class="deal-title">adidas 2-Day Flash Deals at Dick&#x27;s Sporting Goods: Up to 75% off + free shipping w/ $49</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$49.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4340-nike-men-s-air-monarch-iv-workout-shoes-for-48-free-shipping/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785507526-product-trimmed.png?h=360&amp;w=692" alt="Nike Men&#x27;s Air Monarch IV Workout Shoes for $48 + free shipping w/ $50" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          <span class="discount-badge">4% off</span>
+        </div>
+        <p class="deal-title">Nike Men&#x27;s Air Monarch IV Workout Shoes for $48 + free shipping w/ $50</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$48.00</span><span class="price-original">$50.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4341-nike-men-s-giannis-immortality-4-basketball-shoes-for-47-fre/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785507261-25nikabaskmmrtlty4jtg_white_black_wolf_grey.webp?h=507&amp;w=1024" alt="Nike Men&#x27;s Giannis Immortality 4 Basketball Shoes for $47 + free shipping w/ $49" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">fashion</span>
+          <span class="discount-badge">4% off</span>
+        </div>
+        <p class="deal-title">Nike Men&#x27;s Giannis Immortality 4 Basketball Shoes for $47 + free shipping w/ $49</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$47.00</span><span class="price-original">$49.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-fashion</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4106-pelican-aegis-series-travel-backpack-for-100-free-shipping/" class="deal-card">
       <img src="https://d.dlnws.com/64599/1785507073-pelican_px18_trvl_sand_aegis_series_backpack_blue_1862472.jpg?h=538&amp;w=1024" alt="Pelican AEGIS Series Travel Backpack for $100 + free shipping" loading="lazy" />
       <div class="deal-card-body">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
@@ -1123,742 +1918,6 @@
         <div class="deal-meta">
           <span>dealnews-fashion</span>
           <span>Jul 31, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4121-adidas-men-s-terrex-rockadia-hiking-shoes-for-48-free-shippi/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1785498117-product-trimmed.png?h=539&amp;w=463" alt="adidas Men&#x27;s Terrex Rockadia Hiking Shoes for $48 + free shipping" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          
-        </div>
-        <p class="deal-title">adidas Men&#x27;s Terrex Rockadia Hiking Shoes for $48 + free shipping</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$48.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-fashion</span>
-          <span>Jul 31, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4122-adidas-men-s-ultraboost-5x-shoes-for-77-free-shipping/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1785497616-product-trimmed.png?h=359&amp;w=696" alt="adidas Men&#x27;s Ultraboost 5X Shoes for $77 + Free shipping" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          
-        </div>
-        <p class="deal-title">adidas Men&#x27;s Ultraboost 5X Shoes for $77 + Free shipping</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$77.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-fashion</span>
-          <span>Jul 31, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4123-adidas-men-s-back-to-school-deals-up-to-40-off-extra-15-off/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1785496918-product-trimmed.png?h=461&amp;w=541" alt="adidas Men&#x27;s Back to School Deals: Up to 40% off + extra 15% off + free shipping" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          <span class="discount-badge">40% off</span>
-        </div>
-        <p class="deal-title">adidas Men&#x27;s Back to School Deals: Up to 40% off + extra 15% off + free shipping</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span style="font-size:13px;color:var(--muted)">See deal</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-fashion</span>
-          <span>Jul 31, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4124-fanatics-clearance-deals-up-to-70-off/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1701448437-dn-image-6661870.png?h=160&amp;w=766" alt="Fanatics Clearance Deals: Up to 70% off" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          <span class="discount-badge">70% off</span>
-        </div>
-        <p class="deal-title">Fanatics Clearance Deals: Up to 70% off</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span style="font-size:13px;color:var(--muted)">See deal</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-fashion</span>
-          <span>Jul 31, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4125-betbo-men-s-short-sleeve-fishing-shirt-for-13-free-shipping/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1785490877-draftworks_img_7tmphqvl287m9jghhcf.jpeg?h=500&amp;w=400" alt="Betbo Men&#x27;s Short Sleeve Fishing Shirt for $13 + free shipping w/ Prime" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          
-        </div>
-        <p class="deal-title">Betbo Men&#x27;s Short Sleeve Fishing Shirt for $13 + free shipping w/ Prime</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$13.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-fashion</span>
-          <span>Jul 31, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4126-shelucki-men-s-hawaiian-shirt-for-8-free-shipping-w-prime/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1785492245-717pc2v3zyl-ac_sy741.jpg?h=741&amp;w=528" alt="SheLucki Men&#x27;s Hawaiian Shirt for $8 + free shipping w/ Prime" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          
-        </div>
-        <p class="deal-title">SheLucki Men&#x27;s Hawaiian Shirt for $8 + free shipping w/ Prime</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$8.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-fashion</span>
-          <span>Jul 31, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4127-men-s-cotton-linen-shirt-for-3-for-19-9-shipping/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1785492005-8_3bc6c872-70ed-472d-be2a-6fe7a6add298.png?h=1024&amp;w=1024" alt="Men&#x27;s Cotton Linen Shirt for 3 for $19 + $9 shipping" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          <span class="discount-badge">53% off</span>
-        </div>
-        <p class="deal-title">Men&#x27;s Cotton Linen Shirt for 3 for $19 + $9 shipping</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$9.00</span><span class="price-original">$19.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-fashion</span>
-          <span>Jul 31, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4128-viodia-women-s-7-high-waisted-swim-board-shorts-for-10-free/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          
-        </div>
-        <p class="deal-title">Viodia Women&#x27;s 7&quot; High-Waisted Swim Board Shorts for $10 + free shipping w/ Prime</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$10.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-fashion</span>
-          <span>Jul 31, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4129-samsonite-centric-2-hardside-expandable-luggage-set-for-95-f/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          
-        </div>
-        <p class="deal-title">Samsonite Centric 2 Hardside Expandable Luggage Set for $95 + free shipping w/ Prime</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$95.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-fashion</span>
-          <span>Jul 31, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4130-vilanva-women-s-breathable-athletic-shoes-for-36-free-shippi/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          
-        </div>
-        <p class="deal-title">Vilanva Women&#x27;s Breathable Athletic Shoes for $36 + free shipping</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$36.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-fashion</span>
-          <span>Jul 31, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4131-nike-structure-plus-men-s-road-running-shoes-for-95-free-shi/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          
-        </div>
-        <p class="deal-title">Nike Structure Plus Men&#x27;s Road Running Shoes for $95 + free shipping</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$95.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-fashion</span>
-          <span>Jul 31, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4132-amazon-essentials-men-s-stretch-jeans-for-9-to-11-free-shipp/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          <span class="discount-badge">18% off</span>
-        </div>
-        <p class="deal-title">Amazon Essentials Men&#x27;s Stretch Jeans for $9 to $11 + free shipping w/ Prime</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$9.00</span><span class="price-original">$11.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-fashion</span>
-          <span>Jul 31, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4133-amazon-essentials-men-s-slip-deck-loafers-for-11-free-shippi/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          
-        </div>
-        <p class="deal-title">Amazon Essentials Men&#x27;s Slip Deck Loafers for $11 + free shipping w/ Prime</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$11.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-fashion</span>
-          <span>Jul 31, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4112-adidas-ultraboost-back-to-school-deals-up-to-50-off-extra-15/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1785497313-screenshot_2026-07-31_at_12-27-54-removebg-preview.png?h=363&amp;w=688" alt="adidas Ultraboost Back to School Deals: Up to 50% off + extra 15% off + free shipping" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          <span class="discount-badge">50% off</span>
-        </div>
-        <p class="deal-title">adidas Ultraboost Back to School Deals: Up to 50% off + extra 15% off + free shipping</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span style="font-size:13px;color:var(--muted)">See deal</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-fashion</span>
-          <span>Jul 31, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4134-woot-summer-luggage-deals-up-to-87-off-free-shipping-w-prime/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          <span class="discount-badge">87% off</span>
-        </div>
-        <p class="deal-title">Woot Summer Luggage Deals: Up to 87% off + free shipping w/ Prime</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span style="font-size:13px;color:var(--muted)">See deal</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-fashion</span>
-          <span>Jul 31, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4205-60-13-the-north-face-20l-isabella-3-0-backpack-w-16-laptop-s/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          
-        </div>
-        <p class="deal-title">$60.13* | The North Face 20L Isabella 3.0 Backpack w/ 16&quot; Laptop Sleeve (2 Colors) at Amazon</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$60.13</span>
-        </div>
-        <div class="deal-meta">
-          <span>Amazon</span>
-          <span>Jul 31, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4199-24-32-levi-s-men-s-559-relaxed-straight-fit-jean-various-col/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          
-        </div>
-        <p class="deal-title">$24.32: Levi&#x27;s Men&#x27;s 559 Relaxed Straight Fit Jean (Various Colors/Sizes)</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$24.32</span>
-        </div>
-        <div class="deal-meta">
-          <span>slickdeals-levis</span>
-          <span>Jul 31, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4189-adidas-kid-s-terrex-tracefinder-trail-running-shoes-core-bla/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          
-        </div>
-        <p class="deal-title">adidas Kid&#x27;s Terrex Tracefinder Trail Running Shoes (Core Black / Grey One / Semi Impact Orange) $20</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$20.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>slickdeals-adidas</span>
-          <span>Jul 31, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4200-teva-universal-trail-men-s-sandals-w-vibram-megagrip-outsole/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          
-        </div>
-        <p class="deal-title">Teva Universal Trail Men&#x27;s Sandals w/ Vibram Megagrip Outsole (Total Eclipse) $40.73 at REI w/ Free Store Pickup</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$40.73</span>
-        </div>
-        <div class="deal-meta">
-          <span>slickdeals-rei</span>
-          <span>Jul 31, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4183-nike-men-s-air-monarch-se-sneaker-wheat-wheat-gum-med-brown/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          
-        </div>
-        <p class="deal-title">Nike Men&#x27;s Air Monarch SE Sneaker (Wheat/Wheat-Gum/Med Brown) $55.99 + Free Shipping</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$55.99</span>
-        </div>
-        <div class="deal-meta">
-          <span>slickdeals-nike</span>
-          <span>Jul 31, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4135-mountain-hardwear-field-day-backpack-for-60-free-shipping/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          
-        </div>
-        <p class="deal-title">Mountain Hardwear Field Day Backpack for $60 + free shipping</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$60.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-fashion</span>
-          <span>Jul 31, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4136-fruit-of-the-loom-men-s-americana-stretch-boxer-briefs-3-pac/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          <span class="discount-badge">80% off</span>
-        </div>
-        <p class="deal-title">Fruit of the Loom Men&#x27;s Americana Stretch Boxer Briefs 3-Pack for $7 ... or less + free shipping w/ $35</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$7.00</span><span class="price-original">$35.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-fashion</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4137-travelon-anti-theft-roam-convertible-backpack-sling-for-36-f/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          
-        </div>
-        <p class="deal-title">Travelon Anti-Theft Roam Convertible Backpack Sling for $36 + free shipping</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$36.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-fashion</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4138-george-men-s-relaxed-fit-henley-shirt-for-3-90-free-shipping/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          <span class="discount-badge">89% off</span>
-        </div>
-        <p class="deal-title">George Men&#x27;s Relaxed Fit Henley Shirt for $3.90 + free shipping w/ $35</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$3.90</span><span class="price-original">$35.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-fashion</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4139-travelon-deluxe-wrap-n-rest-pillow-for-8-free-shipping-w-pri/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          
-        </div>
-        <p class="deal-title">Travelon Deluxe Wrap N&#x27; Rest Pillow for $8 + free shipping w/ Prime</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$8.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-fashion</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4140-gregory-rhune-25-pack-for-55-free-shipping-w-60/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          <span class="discount-badge">8% off</span>
-        </div>
-        <p class="deal-title">Gregory Rhune 25 Pack for $55 + free shipping w/ $60</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$55.00</span><span class="price-original">$60.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-fashion</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4141-rei-men-s-co-op-trailmade-rain-jacket-for-20-free-shipping-w/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          <span class="discount-badge">67% off</span>
-        </div>
-        <p class="deal-title">REI Men&#x27;s Co-op Trailmade Rain Jacket for $20 + free shipping w/ $60</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$20.00</span><span class="price-original">$60.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-fashion</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4190-adidas-women-s-adilette-lite-slides-select-colors-sizes-8-80/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          
-        </div>
-        <p class="deal-title">adidas Women&#x27;s Adilette Lite Slides (Select Colors &amp; Sizes)) $8.80 + Free Shipping</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$8.80</span>
-        </div>
-        <div class="deal-meta">
-          <span>slickdeals-adidas</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4142-rei-men-s-co-op-trailmade-fleece-jacket-for-20-free-shipping/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          <span class="discount-badge">67% off</span>
-        </div>
-        <p class="deal-title">REI Men&#x27;s Co-op Trailmade Fleece Jacket for $20 + free shipping w/ $60</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$20.00</span><span class="price-original">$60.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-fashion</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4201-rei-co-op-men-s-650-down-vest-forest-shade-29-83-free-store/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          
-        </div>
-        <p class="deal-title">REI Co-op Men&#x27;s 650 Down Vest (Forest Shade) $29.83 + Free Store Pickup</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$29.83</span>
-        </div>
-        <div class="deal-meta">
-          <span>slickdeals-rei</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4202-rei-co-op-men-s-trailmade-rain-jacket-limited-sizes-19-85-fr/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          
-        </div>
-        <p class="deal-title">REI Co-op Men&#x27;s Trailmade Rain Jacket (Limited Sizes) $19.85 + Free Pickup</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$19.85</span>
-        </div>
-        <div class="deal-meta">
-          <span>slickdeals-rei</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4143-adidas-italy-stadium-sackpack-for-9-free-shipping-w-49/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          <span class="discount-badge">82% off</span>
-        </div>
-        <p class="deal-title">adidas Italy Stadium Sackpack for $9 + free shipping w/ $49</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$9.00</span><span class="price-original">$49.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-fashion</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4203-rei-co-op-men-s-trailmade-fleece-jacket-navy-19-83-free-stor/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          
-        </div>
-        <p class="deal-title">REI Co-op Men&#x27;s Trailmade Fleece Jacket (Navy) $19.83 + Free Store Pickup</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$19.83</span>
-        </div>
-        <div class="deal-meta">
-          <span>slickdeals-rei</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4184-air-jordan-1-women-s-mid-se-edge-shoe-pale-ivory-black-musli/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          
-        </div>
-        <p class="deal-title">Air Jordan 1 Women&#x27;s Mid SE Edge Shoe (Pale Ivory/Black/Muslin/Racer Pink) $74.23 + Free Shipping</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$74.23</span>
-        </div>
-        <div class="deal-meta">
-          <span>slickdeals-nike</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4144-nike-24l-brasilia-training-backpack-for-25-free-shipping-w-4/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          <span class="discount-badge">49% off</span>
-        </div>
-        <p class="deal-title">Nike 24L Brasilia Training Backpack for $25 + free shipping w/ $49</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$25.00</span><span class="price-original">$49.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-fashion</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4145-nike-women-s-legend-essential-3-next-nature-workout-shoes-fo/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          <span class="discount-badge">38% off</span>
-        </div>
-        <p class="deal-title">Nike Women&#x27;s Legend Essential 3 Next Nature Workout Shoes for $31 + free shipping w/ $50</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$31.00</span><span class="price-original">$50.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-fashion</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4146-nike-women-s-air-max-nuaxis-shoes-for-55-free-shipping/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          
-        </div>
-        <p class="deal-title">Nike Women&#x27;s Air Max Nuaxis Shoes for $55 + free shipping</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$55.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-fashion</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4204-up-to-70-off-rei-outlet-handpicked-deals/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          <span class="discount-badge">70% off</span>
-        </div>
-        <p class="deal-title">Up to 70% Off REI Outlet Handpicked Deals</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span style="font-size:13px;color:var(--muted)">See deal</span>
-        </div>
-        <div class="deal-meta">
-          <span>slickdeals-rei</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4147-jcpenney-mystery-sale-extra-30-off-or-more-free-shipping-w-4/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          <span class="discount-badge">30% off</span>
-        </div>
-        <p class="deal-title">JCPenney Mystery Sale: Extra 30% off ... or more + free shipping w/ $49</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$49.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-fashion</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4185-24l-nike-aura-backpack-blue-37-77-free-shipping-on-49/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          
-        </div>
-        <p class="deal-title">24L Nike Aura Backpack (Blue) $37.77 + Free Shipping on $49+</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$37.77</span>
-        </div>
-        <div class="deal-meta">
-          <span>slickdeals-nike</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4186-24l-nike-brasilia-training-backpack-sesame-25-17-free-shippi/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          
-        </div>
-        <p class="deal-title">24L Nike Brasilia Training Backpack (Sesame) $25.17 + Free Shipping on $49+</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$25.17</span>
-        </div>
-        <div class="deal-meta">
-          <span>slickdeals-nike</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4187-nike-women-s-air-max-nuaxis-shoes-in-black-hf1233-001-54-73/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          
-        </div>
-        <p class="deal-title">Nike Women&#x27;s Air Max Nuaxis Shoes in Black | HF1233-001 $54.73</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$54.73</span>
-        </div>
-        <div class="deal-meta">
-          <span>slickdeals-nike</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4191-adidas-adizero-evo-sl-running-shoes-for-men-mississippi-stat/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          
-        </div>
-        <p class="deal-title">adidas Adizero EVO SL Running Shoes (For Men) - (Mississippi State colorway) $69.99</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$69.99</span>
-        </div>
-        <div class="deal-meta">
-          <span>slickdeals-adidas</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4192-adidas-men-s-cloudfoam-cuxxion-sock-shoe-charcoal-carbon-28/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          
-        </div>
-        <p class="deal-title">adidas Men&#x27;s Cloudfoam Cuxxion - Sock shoe, Charcoal/Carbon $28.23</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$28.23</span>
-        </div>
-        <div class="deal-meta">
-          <span>slickdeals-adidas</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4193-adidas-men-s-ultradream-dna-shoes-36-free-shipping/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          
-        </div>
-        <p class="deal-title">adidas Men&#x27;s  Ultradream DNA Shoes $36 + Free Shipping</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$36.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>slickdeals-adidas</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/4194-adidas-men-s-response-runner-shoes-various-28-free-shipping/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          
-        </div>
-        <p class="deal-title">adidas Men&#x27;s Response Runner Shoes (Various) $28 + Free Shipping</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$28.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>slickdeals-adidas</span>
-          <span>Jul 30, 2026</span>
         </div>
       </div>
     </a></div>

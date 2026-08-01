@@ -1,31 +1,41 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <!-- Consent Mode v2 — sets default (denied) consent state before any tag
-         below loads, so GTM/gtag still fire on every visit but only send
-         cookieless, anonymized signals until the user accepts the cookie
-         notice further down the page. If they already accepted on a past
-         visit, immediately upgrade to granted from the stored preference.
+    <!-- Consent Mode v2 — sets default consent state (denied unless already
+         granted on a past visit) before any tag below loads, so GTM/GA still
+         fire on every visit but only send cookieless, anonymized signals
+         until the user accepts the cookie notice further down the page.
+         Also puts AdSense into restricted-data-processing mode (non-
+         personalized ads only) by default — required for EEA/UK traffic
+         under Google's EU User Consent Policy.
          https://developers.google.com/tag-platform/security/guides/consent -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag() { dataLayer.push(arguments); }
       window.gtag = gtag;
+      var htdGranted = localStorage.getItem('htd_consent_v1') === 'granted';
       gtag('consent', 'default', {
-        'ad_storage': 'denied',
-        'ad_user_data': 'denied',
-        'ad_personalization': 'denied',
-        'analytics_storage': 'denied',
+        'ad_storage': htdGranted ? 'granted' : 'denied',
+        'ad_user_data': htdGranted ? 'granted' : 'denied',
+        'ad_personalization': htdGranted ? 'granted' : 'denied',
+        'analytics_storage': htdGranted ? 'granted' : 'denied',
         'wait_for_update': 500
       });
-      if (localStorage.getItem('htd_consent_v1') === 'granted') {
-        gtag('consent', 'update', {
-          'ad_storage': 'granted',
-          'ad_user_data': 'granted',
-          'ad_personalization': 'granted',
-          'analytics_storage': 'granted'
-        });
-      }
+      window.adsbygoogle = window.adsbygoogle || [];
+      window.adsbygoogle.push({ google_ad_client: 'ca-pub-6138840929831792', google_restrict_data_processing: !htdGranted });
+
+      // Awin's Publisher MasterTag sets affiliate click/conversion-tracking
+      // cookies, which isn't a Google product Consent Mode covers — gated
+      // separately here, and only injected once consent is granted (either
+      // already stored, or via the Accept button below).
+      window.htdLoadAwin = window.htdLoadAwin || function () {
+        if (window.htdAwinLoaded) return;
+        window.htdAwinLoaded = true;
+        var s = document.createElement('script');
+        s.src = 'https://www.dwin2.com/pub.2991473.min.js';
+        document.head.appendChild(s);
+      };
+      if (htdGranted) { window.htdLoadAwin(); }
     </script>
     <!-- End Consent Mode -->
 
@@ -125,8 +135,9 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6138840929831792"
      crossorigin="anonymous"></script>
 
-    <!-- Awin affiliate tracking (Publisher MasterTag) -->
-    <script src="https://www.dwin2.com/pub.2991473.min.js"></script>
+    <!-- Awin affiliate tracking (Publisher MasterTag) — loaded conditionally
+         by htdLoadAwin() in the Consent Mode script above, not statically
+         here, since it needs to wait on consent like everything else. -->
 
     <style>
       :root {
@@ -230,6 +241,11 @@
         color: var(--accent-text);
         font-weight: 600;
       }
+      .consent-actions {
+        display: flex;
+        flex: 0 0 auto;
+        gap: 10px;
+      }
       .consent-box button {
         flex: 0 0 auto;
         background: var(--accent);
@@ -243,6 +259,36 @@
       }
       .consent-box button:hover {
         opacity: 0.85;
+      }
+      .consent-box .consent-reject-btn {
+        background: transparent;
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+      .consent-box .consent-reject-btn:hover {
+        opacity: 1;
+        background: var(--bg);
+      }
+
+      /* Reopens the cookie banner so a visitor can change their choice
+         later — kept as static markup outside #root (like consent-overlay
+         itself) so it works identically for prerendered/no-JS pages and
+         after the React app mounts. */
+      .cookie-settings-btn {
+        position: fixed;
+        left: 12px;
+        bottom: 12px;
+        z-index: 998;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 11px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        cursor: pointer;
+      }
+      .cookie-settings-btn:hover {
+        color: var(--text);
       }
 
       /* Header network bar */
@@ -750,18 +796,19 @@
       "@type": "ItemList",
       "name": "Best Streaming & Digital Media Deals Today",
       "itemListElement": [
-{ "@type": "ListItem", "position": 1, "name": "TARGET 8/2-8/8 Buy a $50 GOOGLE PLAY GC, get $5 Target Gift Card", "url": "https://www.hackthedeal.com/deal/4000-target-8-2-8-8-buy-a-50-google-play-gc-get-5-target-gift-car/" },
-{ "@type": "ListItem", "position": 2, "name": "Today\u2019s best Apple TV deals from $5: Bourne Ultimate Collection, Harry Potter complete, The Menu, much more", "url": "https://www.hackthedeal.com/deal/4093-today-s-best-apple-tv-deals-from-5-bourne-ultimate-collectio/" },
-{ "@type": "ListItem", "position": 3, "name": "Mid-week Apple TV deals up to 65% off: X-Files collection, horror flicks, Pan\u2019s Labyrinth, No Sudden Move, more", "url": "https://www.hackthedeal.com/deal/3837-mid-week-apple-tv-deals-up-to-65-off-x-files-collection-horr/" },
-{ "@type": "ListItem", "position": 4, "name": "Tuesday\u2019s Apple TV deals from $3: Devil Wears Prada 1 and 2, Harry Potter and Bourne collections, JFK, more", "url": "https://www.hackthedeal.com/deal/3569-tuesday-s-apple-tv-deals-from-3-devil-wears-prada-1-and-2-ha/" },
-{ "@type": "ListItem", "position": 5, "name": "Monday\u2019s Apple TV deals up to 83% off: Studio Ghibli 6-Film Collection, Miami Vice, The Flash, more", "url": "https://www.hackthedeal.com/deal/3295-monday-s-apple-tv-deals-up-to-83-off-studio-ghibli-6-film-co/" },
-{ "@type": "ListItem", "position": 6, "name": "Mamoru Hosoda 5-Film Collection 4K (Summer Wars, Wolf Children, The Girl Who Leapt Through Time, The Boy and The Beast, BELLE) $12.99", "url": "https://www.hackthedeal.com/deal/3133-mamoru-hosoda-5-film-collection-4k-summer-wars-wolf-children/" },
-{ "@type": "ListItem", "position": 7, "name": "Friday Apple TV deals from $1: Just about every Spider-Man movie and bundle now on sale, La La Land, and more", "url": "https://www.hackthedeal.com/deal/2741-friday-apple-tv-deals-from-1-just-about-every-spider-man-mov/" },
-{ "@type": "ListItem", "position": 8, "name": "Today\u2019s Apple TV deals: Super Mario Galaxy, Blue Moon, Mortal Kombat, Castlevania, Ghost in the Shell, more from $5", "url": "https://www.hackthedeal.com/deal/2507-today-s-apple-tv-deals-super-mario-galaxy-blue-moon-mortal-k/" },
-{ "@type": "ListItem", "position": 9, "name": "Mid-week Apple TV deals from $5: Justice League collections, Memento, Man of Steel, FernGully, more", "url": "https://www.hackthedeal.com/deal/2301-mid-week-apple-tv-deals-from-5-justice-league-collections-me/" },
-{ "@type": "ListItem", "position": 10, "name": "Giant lineup of Tuesday Apple TV deals up to 95% off: Deadpool, Captain America, Venom, Matrix, Star Wars trilogies, more", "url": "https://www.hackthedeal.com/deal/1998-giant-lineup-of-tuesday-apple-tv-deals-up-to-95-off-deadpool/" },
-{ "@type": "ListItem", "position": 11, "name": "$12.99 | Dystopian Worlds - 10-Movie Collection at iTunes", "url": "https://www.hackthedeal.com/deal/2091-12-99-dystopian-worlds-10-movie-collection-at-itunes/" },
-{ "@type": "ListItem", "position": 12, "name": "The Waterboy HD 1080p appletv digital $4.99", "url": "https://www.hackthedeal.com/deal/2092-the-waterboy-hd-1080p-appletv-digital-4-99/" }
+{ "@type": "ListItem", "position": 1, "name": "Giant lineup of Friday Apple TV deals from $2: Jurassic World, Jaws, American Gangster, Uncharted, Wag the Dog, more", "url": "https://www.hackthedeal.com/deal/4298-giant-lineup-of-friday-apple-tv-deals-from-2-jurassic-world/" },
+{ "@type": "ListItem", "position": 2, "name": "TARGET 8/2-8/8 Buy a $50 GOOGLE PLAY GC, get $5 Target Gift Card", "url": "https://www.hackthedeal.com/deal/4000-target-8-2-8-8-buy-a-50-google-play-gc-get-5-target-gift-car/" },
+{ "@type": "ListItem", "position": 3, "name": "Today\u2019s best Apple TV deals from $5: Bourne Ultimate Collection, Harry Potter complete, The Menu, much more", "url": "https://www.hackthedeal.com/deal/4093-today-s-best-apple-tv-deals-from-5-bourne-ultimate-collectio/" },
+{ "@type": "ListItem", "position": 4, "name": "Mid-week Apple TV deals up to 65% off: X-Files collection, horror flicks, Pan\u2019s Labyrinth, No Sudden Move, more", "url": "https://www.hackthedeal.com/deal/3837-mid-week-apple-tv-deals-up-to-65-off-x-files-collection-horr/" },
+{ "@type": "ListItem", "position": 5, "name": "Tuesday\u2019s Apple TV deals from $3: Devil Wears Prada 1 and 2, Harry Potter and Bourne collections, JFK, more", "url": "https://www.hackthedeal.com/deal/3569-tuesday-s-apple-tv-deals-from-3-devil-wears-prada-1-and-2-ha/" },
+{ "@type": "ListItem", "position": 6, "name": "Monday\u2019s Apple TV deals up to 83% off: Studio Ghibli 6-Film Collection, Miami Vice, The Flash, more", "url": "https://www.hackthedeal.com/deal/3295-monday-s-apple-tv-deals-up-to-83-off-studio-ghibli-6-film-co/" },
+{ "@type": "ListItem", "position": 7, "name": "Mamoru Hosoda 5-Film Collection 4K (Summer Wars, Wolf Children, The Girl Who Leapt Through Time, The Boy and The Beast, BELLE) $12.99", "url": "https://www.hackthedeal.com/deal/3133-mamoru-hosoda-5-film-collection-4k-summer-wars-wolf-children/" },
+{ "@type": "ListItem", "position": 8, "name": "Friday Apple TV deals from $1: Just about every Spider-Man movie and bundle now on sale, La La Land, and more", "url": "https://www.hackthedeal.com/deal/2741-friday-apple-tv-deals-from-1-just-about-every-spider-man-mov/" },
+{ "@type": "ListItem", "position": 9, "name": "Today\u2019s Apple TV deals: Super Mario Galaxy, Blue Moon, Mortal Kombat, Castlevania, Ghost in the Shell, more from $5", "url": "https://www.hackthedeal.com/deal/2507-today-s-apple-tv-deals-super-mario-galaxy-blue-moon-mortal-k/" },
+{ "@type": "ListItem", "position": 10, "name": "Mid-week Apple TV deals from $5: Justice League collections, Memento, Man of Steel, FernGully, more", "url": "https://www.hackthedeal.com/deal/2301-mid-week-apple-tv-deals-from-5-justice-league-collections-me/" },
+{ "@type": "ListItem", "position": 11, "name": "Giant lineup of Tuesday Apple TV deals up to 95% off: Deadpool, Captain America, Venom, Matrix, Star Wars trilogies, more", "url": "https://www.hackthedeal.com/deal/1998-giant-lineup-of-tuesday-apple-tv-deals-up-to-95-off-deadpool/" },
+{ "@type": "ListItem", "position": 12, "name": "$12.99 | Dystopian Worlds - 10-Movie Collection at iTunes", "url": "https://www.hackthedeal.com/deal/2091-12-99-dystopian-worlds-10-movie-collection-at-itunes/" },
+{ "@type": "ListItem", "position": 13, "name": "The Waterboy HD 1080p appletv digital $4.99", "url": "https://www.hackthedeal.com/deal/2092-the-waterboy-hd-1080p-appletv-digital-4-99/" }
       ]
     }
     </script>
@@ -780,35 +827,48 @@
     </div>
 
     <!-- Privacy / cookie consent notice — static markup so it's visible even
-         before React mounts. GTM/GA already loaded in Consent Mode's default
-         "denied" state (see <head>); clicking OK just upgrades the signal. -->
+         before React mounts. GTM/GA/AdSense already loaded in Consent Mode's
+         default state from localStorage (see <head>); Accept/Reject here
+         just update that signal going forward. -->
     <div id="consent-overlay" class="consent-overlay" style="display: none;">
       <div class="consent-box">
         <div class="consent-text">
           <p class="consent-title">🍪 We use cookies</p>
           <p>
-            This site uses cookies to measure site performance and improve your experience.
-            By clicking OK, you accept our use of cookies as described in our
-            <a href="/privacy.html">Privacy Policy</a>.
+            This site uses cookies to measure site performance and improve your experience, and
+            works with Google Analytics and AdSense, which may use cookies for analytics and to
+            show personalized ads. See our <a href="/privacy.html">Privacy Policy</a> for details.
           </p>
         </div>
-        <button id="consent-ok" type="button">OK</button>
+        <div class="consent-actions">
+          <button id="consent-reject" type="button" class="consent-reject-btn">Reject</button>
+          <button id="consent-ok" type="button">Accept</button>
+        </div>
       </div>
     </div>
+    <button id="cookie-settings-btn" type="button" class="cookie-settings-btn">Cookie Settings</button>
     <script>
       (function () {
-        if (localStorage.getItem('htd_consent_v1') !== 'granted') {
-          document.getElementById('consent-overlay').style.display = 'flex';
-        }
-        document.getElementById('consent-ok').addEventListener('click', function () {
-          localStorage.setItem('htd_consent_v1', 'granted');
+        function setConsent(granted) {
+          localStorage.setItem('htd_consent_v1', granted ? 'granted' : 'denied');
           document.getElementById('consent-overlay').style.display = 'none';
           gtag('consent', 'update', {
-            'ad_storage': 'granted',
-            'ad_user_data': 'granted',
-            'ad_personalization': 'granted',
-            'analytics_storage': 'granted'
+            'ad_storage': granted ? 'granted' : 'denied',
+            'ad_user_data': granted ? 'granted' : 'denied',
+            'ad_personalization': granted ? 'granted' : 'denied',
+            'analytics_storage': granted ? 'granted' : 'denied'
           });
+          window.adsbygoogle = window.adsbygoogle || [];
+          window.adsbygoogle.push({ google_ad_client: 'ca-pub-6138840929831792', google_restrict_data_processing: !granted });
+          if (granted && window.htdLoadAwin) { window.htdLoadAwin(); }
+        }
+        if (!localStorage.getItem('htd_consent_v1')) {
+          document.getElementById('consent-overlay').style.display = 'flex';
+        }
+        document.getElementById('consent-ok').addEventListener('click', function () { setConsent(true); });
+        document.getElementById('consent-reject').addEventListener('click', function () { setConsent(false); });
+        document.getElementById('cookie-settings-btn').addEventListener('click', function () {
+          document.getElementById('consent-overlay').style.display = 'flex';
         });
       })();
     </script>
@@ -853,7 +913,23 @@
       </section>
       <main style="max-width:1152px;margin:0 auto;padding:8px 16px 40px">
         <div class="section-title-bar"><span class="section-label">Latest Deals</span></div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px"><a href="/deal/4000-target-8-2-8-8-buy-a-50-google-play-gc-get-5-target-gift-car/" class="deal-card">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px"><a href="/deal/4298-giant-lineup-of-friday-apple-tv-deals-from-2-jurassic-world/" class="deal-card">
+      <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/07/Apple-TV-Jul-31.webp?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="Giant lineup of Friday Apple TV deals from $2: Jurassic World, Jaws, American Gangster, Uncharted, Wag the Dog, more" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">streaming</span>
+          
+        </div>
+        <p class="deal-title">Giant lineup of Friday Apple TV deals from $2: Jurassic World, Jaws, American Gangster, Uncharted, Wag the Dog, more</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$2.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>9to5toys</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4000-target-8-2-8-8-buy-a-50-google-play-gc-get-5-target-gift-car/" class="deal-card">
       <div class="deal-card-icon-fallback"></div>
       <div class="deal-card-body">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">

@@ -1,31 +1,41 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <!-- Consent Mode v2 — sets default (denied) consent state before any tag
-         below loads, so GTM/gtag still fire on every visit but only send
-         cookieless, anonymized signals until the user accepts the cookie
-         notice further down the page. If they already accepted on a past
-         visit, immediately upgrade to granted from the stored preference.
+    <!-- Consent Mode v2 — sets default consent state (denied unless already
+         granted on a past visit) before any tag below loads, so GTM/GA still
+         fire on every visit but only send cookieless, anonymized signals
+         until the user accepts the cookie notice further down the page.
+         Also puts AdSense into restricted-data-processing mode (non-
+         personalized ads only) by default — required for EEA/UK traffic
+         under Google's EU User Consent Policy.
          https://developers.google.com/tag-platform/security/guides/consent -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag() { dataLayer.push(arguments); }
       window.gtag = gtag;
+      var htdGranted = localStorage.getItem('htd_consent_v1') === 'granted';
       gtag('consent', 'default', {
-        'ad_storage': 'denied',
-        'ad_user_data': 'denied',
-        'ad_personalization': 'denied',
-        'analytics_storage': 'denied',
+        'ad_storage': htdGranted ? 'granted' : 'denied',
+        'ad_user_data': htdGranted ? 'granted' : 'denied',
+        'ad_personalization': htdGranted ? 'granted' : 'denied',
+        'analytics_storage': htdGranted ? 'granted' : 'denied',
         'wait_for_update': 500
       });
-      if (localStorage.getItem('htd_consent_v1') === 'granted') {
-        gtag('consent', 'update', {
-          'ad_storage': 'granted',
-          'ad_user_data': 'granted',
-          'ad_personalization': 'granted',
-          'analytics_storage': 'granted'
-        });
-      }
+      window.adsbygoogle = window.adsbygoogle || [];
+      window.adsbygoogle.push({ google_ad_client: 'ca-pub-6138840929831792', google_restrict_data_processing: !htdGranted });
+
+      // Awin's Publisher MasterTag sets affiliate click/conversion-tracking
+      // cookies, which isn't a Google product Consent Mode covers — gated
+      // separately here, and only injected once consent is granted (either
+      // already stored, or via the Accept button below).
+      window.htdLoadAwin = window.htdLoadAwin || function () {
+        if (window.htdAwinLoaded) return;
+        window.htdAwinLoaded = true;
+        var s = document.createElement('script');
+        s.src = 'https://www.dwin2.com/pub.2991473.min.js';
+        document.head.appendChild(s);
+      };
+      if (htdGranted) { window.htdLoadAwin(); }
     </script>
     <!-- End Consent Mode -->
 
@@ -125,8 +135,9 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6138840929831792"
      crossorigin="anonymous"></script>
 
-    <!-- Awin affiliate tracking (Publisher MasterTag) -->
-    <script src="https://www.dwin2.com/pub.2991473.min.js"></script>
+    <!-- Awin affiliate tracking (Publisher MasterTag) — loaded conditionally
+         by htdLoadAwin() in the Consent Mode script above, not statically
+         here, since it needs to wait on consent like everything else. -->
 
     <style>
       :root {
@@ -230,6 +241,11 @@
         color: var(--accent-text);
         font-weight: 600;
       }
+      .consent-actions {
+        display: flex;
+        flex: 0 0 auto;
+        gap: 10px;
+      }
       .consent-box button {
         flex: 0 0 auto;
         background: var(--accent);
@@ -243,6 +259,36 @@
       }
       .consent-box button:hover {
         opacity: 0.85;
+      }
+      .consent-box .consent-reject-btn {
+        background: transparent;
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+      .consent-box .consent-reject-btn:hover {
+        opacity: 1;
+        background: var(--bg);
+      }
+
+      /* Reopens the cookie banner so a visitor can change their choice
+         later — kept as static markup outside #root (like consent-overlay
+         itself) so it works identically for prerendered/no-JS pages and
+         after the React app mounts. */
+      .cookie-settings-btn {
+        position: fixed;
+        left: 12px;
+        bottom: 12px;
+        z-index: 998;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 11px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        cursor: pointer;
+      }
+      .cookie-settings-btn:hover {
+        color: var(--text);
       }
 
       /* Header network bar */
@@ -750,66 +796,66 @@
       "@type": "ItemList",
       "name": "Best Beauty & Health Deals Today",
       "itemListElement": [
-{ "@type": "ListItem", "position": 1, "name": "Redneck Sport SPF 50 Sunscreen Spray for $10 + free shipping w/ $25", "url": "https://www.hackthedeal.com/deal/4169-redneck-sport-spf-50-sunscreen-spray-for-10-free-shipping-w/" },
-{ "@type": "ListItem", "position": 2, "name": "FitTimer Sonic Electric Toothbrush for $25 + free shipping", "url": "https://www.hackthedeal.com/deal/4170-fittimer-sonic-electric-toothbrush-for-25-free-shipping/" },
-{ "@type": "ListItem", "position": 3, "name": "Banana Boat Sport SPF 50 Lip Sunscreen 2-Pack for $5 + free shipping w/ $25", "url": "https://www.hackthedeal.com/deal/4172-banana-boat-sport-spf-50-lip-sunscreen-2-pack-for-5-free-shi/" },
-{ "@type": "ListItem", "position": 4, "name": "Walmart Fragrances Flash Deals: Up to 76% off + free shipping w/ $35", "url": "https://www.hackthedeal.com/deal/4173-walmart-fragrances-flash-deals-up-to-76-off-free-shipping-w/" },
-{ "@type": "ListItem", "position": 5, "name": "Cliganic Organic Lip Balm Set for $7.99 w/ Subscribe & Save + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4174-cliganic-organic-lip-balm-set-for-7-99-w-subscribe-save-free/" },
-{ "@type": "ListItem", "position": 6, "name": "Cliganic 10-Pack Mosquito Repellent Bracelets for $9 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4175-cliganic-10-pack-mosquito-repellent-bracelets-for-9-free-shi/" },
-{ "@type": "ListItem", "position": 7, "name": "Etekcity Smart Fitness Scale for $20 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4176-etekcity-smart-fitness-scale-for-20-free-shipping-w-prime/" },
-{ "@type": "ListItem", "position": 8, "name": "Electric Rotary Shaver for Men for $40 + free shipping", "url": "https://www.hackthedeal.com/deal/4177-electric-rotary-shaver-for-men-for-40-free-shipping/" },
-{ "@type": "ListItem", "position": 9, "name": "Shea Moisture 100% Virgin Coconut Oil 8-oz. Leave-in Treatment for $4.92 via Sub & Save + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4178-shea-moisture-100-virgin-coconut-oil-8-oz-leave-in-treatment/" },
-{ "@type": "ListItem", "position": 10, "name": "Walgreens Contact Lens Deals: 20% off + free shipping", "url": "https://www.hackthedeal.com/deal/4179-walgreens-contact-lens-deals-20-off-free-shipping/" },
-{ "@type": "ListItem", "position": 11, "name": "English Laundry Men's Legacy Eau de Parfum 4-Piece Gift Set for $25 + free shipping w/ $39", "url": "https://www.hackthedeal.com/deal/4180-english-laundry-men-s-legacy-eau-de-parfum-4-piece-gift-set/" },
-{ "@type": "ListItem", "position": 12, "name": "Harry's Plus Razor & Blade Value Pack w/ 9 Refill Cartridges for $17 via Sub. & Save + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3903-harry-s-plus-razor-blade-value-pack-w-9-refill-cartridges-fo/" },
-{ "@type": "ListItem", "position": 13, "name": "Degree Men Cool Rush Antiperspirant Deodorant 2-Pack for $3 via Sub. & Save + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3904-degree-men-cool-rush-antiperspirant-deodorant-2-pack-for-3-v/" },
-{ "@type": "ListItem", "position": 14, "name": "Rogaine Men's Thickening 2-in-1 Shampoo & Conditioner 8.4-oz. Bottle for $8.70 via Sub. & Save + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3905-rogaine-men-s-thickening-2-in-1-shampoo-conditioner-8-4-oz-b/" },
-{ "@type": "ListItem", "position": 15, "name": "Woot Beauty & Fragrance Glamorous You Sale: Up to 92% off + extra 20% off + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3906-woot-beauty-fragrance-glamorous-you-sale-up-to-92-off-extra/" },
-{ "@type": "ListItem", "position": 16, "name": "Dollar Shave Club Ultimate Set for $14 via Sub & Save + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3907-dollar-shave-club-ultimate-set-for-14-via-sub-save-free-ship/" },
-{ "@type": "ListItem", "position": 17, "name": "Amazon Basics 5-Piece Nail Care Grooming Kit for $6 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3908-amazon-basics-5-piece-nail-care-grooming-kit-for-6-free-ship/" },
-{ "@type": "ListItem", "position": 18, "name": "Hask Hair Care Deals at Target: Buy 1, Get 1 50% off + free shipping w/ $35", "url": "https://www.hackthedeal.com/deal/3909-hask-hair-care-deals-at-target-buy-1-get-1-50-off-free-shipp/" },
-{ "@type": "ListItem", "position": 19, "name": "Anastasia Beverly Hills National Lipstick Day Deals: Up to 30% off + free shipping w/ $45", "url": "https://www.hackthedeal.com/deal/3636-anastasia-beverly-hills-national-lipstick-day-deals-up-to-30/" },
-{ "@type": "ListItem", "position": 20, "name": "ColourPop Lip Product Deals: 30% to 50% off + free shipping w/ $35", "url": "https://www.hackthedeal.com/deal/3637-colourpop-lip-product-deals-30-to-50-off-free-shipping-w-35/" },
-{ "@type": "ListItem", "position": 21, "name": "NYX National Lipstick Day Deals for 25% off + free NYX Smushy holder w/ $40 + free shipping w/ $30", "url": "https://www.hackthedeal.com/deal/3638-nyx-national-lipstick-day-deals-for-25-off-free-nyx-smushy-h/" },
-{ "@type": "ListItem", "position": 22, "name": "Rare Beauty National Lipstick Day Deal for 30% off lipstick & lip oil, free bag w/ $50 + shipping varies", "url": "https://www.hackthedeal.com/deal/3639-rare-beauty-national-lipstick-day-deal-for-30-off-lipstick-l/" },
-{ "@type": "ListItem", "position": 23, "name": "Target Lip Product Deals: Buy 1, get extra 25% off 2nd + free shipping w/ $35", "url": "https://www.hackthedeal.com/deal/3640-target-lip-product-deals-buy-1-get-extra-25-off-2nd-free-shi/" },
-{ "@type": "ListItem", "position": 24, "name": "MAC National Lipstick Day Deals: 40% off + free shipping w/ $60", "url": "https://www.hackthedeal.com/deal/3641-mac-national-lipstick-day-deals-40-off-free-shipping-w-60/" },
-{ "@type": "ListItem", "position": 25, "name": "Ulta Beauty National Lipstick Day Deals for 50% off + free lipstick kit w/ $95 + free shipping w/ $25", "url": "https://www.hackthedeal.com/deal/3642-ulta-beauty-national-lipstick-day-deals-for-50-off-free-lips/" },
-{ "@type": "ListItem", "position": 26, "name": "Sephora National Lipstick Day Deals: Up to 50% off + free shipping", "url": "https://www.hackthedeal.com/deal/3643-sephora-national-lipstick-day-deals-up-to-50-off-free-shippi/" },
-{ "@type": "ListItem", "position": 27, "name": "Macy's National Lipstick Day Deals: 30% to 50% off + free shipping w/ $39", "url": "https://www.hackthedeal.com/deal/3644-macy-s-national-lipstick-day-deals-30-to-50-off-free-shippin/" },
-{ "@type": "ListItem", "position": 28, "name": "Amazon Basics Power Rechargeable Electric Toothbrush for $8 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3645-amazon-basics-power-rechargeable-electric-toothbrush-for-8-f/" },
-{ "@type": "ListItem", "position": 29, "name": "Target Skincare & Suncare Sale: Up to 50% off + free shipping", "url": "https://www.hackthedeal.com/deal/3647-target-skincare-suncare-sale-up-to-50-off-free-shipping/" },
-{ "@type": "ListItem", "position": 30, "name": "ZORAMI Ear & Nose Hair Trimmer for $10 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3648-zorami-ear-nose-hair-trimmer-for-10-free-shipping-w-prime/" },
-{ "@type": "ListItem", "position": 31, "name": "Nutricost 100-Serving 500g Creatine Monohydrate Micronized Powder for $12 w/ Subscribe & Save + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3649-nutricost-100-serving-500g-creatine-monohydrate-micronized-p/" },
-{ "@type": "ListItem", "position": 32, "name": "Ulta Beauty Lipstick Week Sale: Up to 40% off + free shipping w/ $35", "url": "https://www.hackthedeal.com/deal/3650-ulta-beauty-lipstick-week-sale-up-to-40-off-free-shipping-w/" },
-{ "@type": "ListItem", "position": 33, "name": "Clinique Almost Lipstick Tinted Lip Balm for $15 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3651-clinique-almost-lipstick-tinted-lip-balm-for-15-free-shippin/" },
-{ "@type": "ListItem", "position": 34, "name": "Coslus C60 Ultrasonic Retainer Cleaner for $18 w/ Prime + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3339-coslus-c60-ultrasonic-retainer-cleaner-for-18-w-prime-free-s/" },
-{ "@type": "ListItem", "position": 35, "name": "Scent Social Fragrance Sale at Woot: Up to 61% off + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3340-scent-social-fragrance-sale-at-woot-up-to-61-off-free-shippi/" },
-{ "@type": "ListItem", "position": 36, "name": "Grocery & Personal Care Cleanout Sale at Woot: Up to 86% off + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3341-grocery-personal-care-cleanout-sale-at-woot-up-to-86-off-fre/" },
-{ "@type": "ListItem", "position": 37, "name": "Fragrance Deals at Woot: Up to 65% off + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3342-fragrance-deals-at-woot-up-to-65-off-free-shipping-w-prime/" },
-{ "@type": "ListItem", "position": 38, "name": "MERIDIAN The Trimmer Original Body Hair Trimmer for $30 + free shipping", "url": "https://www.hackthedeal.com/deal/3343-meridian-the-trimmer-original-body-hair-trimmer-for-30-free/" },
-{ "@type": "ListItem", "position": 39, "name": "MAC Lip Makeup Sale at Macy's: 40% off + free shipping w/ $39", "url": "https://www.hackthedeal.com/deal/3344-mac-lip-makeup-sale-at-macy-s-40-off-free-shipping-w-39/" },
-{ "@type": "ListItem", "position": 40, "name": "Macy's National Lipstick Day Sale: Up to 60% off + free shipping w/ $39", "url": "https://www.hackthedeal.com/deal/3345-macy-s-national-lipstick-day-sale-up-to-60-off-free-shipping/" },
-{ "@type": "ListItem", "position": 41, "name": "Dollar Shave Club for Your Head Shaver for $35 + free shipping", "url": "https://www.hackthedeal.com/deal/3346-dollar-shave-club-for-your-head-shaver-for-35-free-shipping/" },
-{ "@type": "ListItem", "position": 42, "name": "Force Factor Hair Growth Accelerator 90-Count Soft Chews for $33 + free shipping", "url": "https://www.hackthedeal.com/deal/3347-force-factor-hair-growth-accelerator-90-count-soft-chews-for/" },
-{ "@type": "ListItem", "position": 43, "name": "Essential Elements T-Hero Platinum 60-Count Testosterone Support Supplement  for $45 + free shipping", "url": "https://www.hackthedeal.com/deal/3348-essential-elements-t-hero-platinum-60-count-testosterone-sup/" },
-{ "@type": "ListItem", "position": 44, "name": "IcyMe Gua Sha & Jade Roller Set for $7 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3349-icyme-gua-sha-jade-roller-set-for-7-free-shipping-w-prime/" },
-{ "@type": "ListItem", "position": 45, "name": "1MD Nutrition CholestMD 60-Count Supplement  for $35 w/ Sub & Save + free shipping", "url": "https://www.hackthedeal.com/deal/3350-1md-nutrition-cholestmd-60-count-supplement-for-35-w-sub-sav/" },
-{ "@type": "ListItem", "position": 46, "name": "Banana Boat Sport Ultra SPF 50 Sunscreen Spray 2-Pack for $14 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3351-banana-boat-sport-ultra-spf-50-sunscreen-spray-2-pack-for-14/" },
-{ "@type": "ListItem", "position": 47, "name": "Blue Lizard Sensitive Mineral SPF 50 Sunscreen Stick for $8 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3352-blue-lizard-sensitive-mineral-spf-50-sunscreen-stick-for-8-f/" },
-{ "@type": "ListItem", "position": 48, "name": "Amzpony Cordless Rechargeable Neck Massager for $19 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3353-amzpony-cordless-rechargeable-neck-massager-for-19-free-ship/" },
-{ "@type": "ListItem", "position": 49, "name": "LifeZoom Undereye Infrared Red Light Therapy Device for $62.30 + free shipping", "url": "https://www.hackthedeal.com/deal/3117-lifezoom-undereye-infrared-red-light-therapy-device-for-62-3/" },
-{ "@type": "ListItem", "position": 50, "name": "Eco Bandage Liquid Bandage 2-Pack for $10 + free shipping w/ $35", "url": "https://www.hackthedeal.com/deal/3118-eco-bandage-liquid-bandage-2-pack-for-10-free-shipping-w-35/" },
-{ "@type": "ListItem", "position": 51, "name": "Braun Series 7 Men's Electric Shaver w/ Clean & Charge Center for $180 + free shipping", "url": "https://www.hackthedeal.com/deal/3119-braun-series-7-men-s-electric-shaver-w-clean-charge-center-f/" },
-{ "@type": "ListItem", "position": 52, "name": "Wellness & Everyday Essentials Sale at Woot: Up to 68% off + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3120-wellness-everyday-essentials-sale-at-woot-up-to-68-off-free/" },
-{ "@type": "ListItem", "position": 53, "name": "HoMedics Therapist Select Plus Percussion Massager for $12 + free shipping", "url": "https://www.hackthedeal.com/deal/3121-homedics-therapist-select-plus-percussion-massager-for-12-fr/" },
-{ "@type": "ListItem", "position": 54, "name": "BIC Comfort 3 Disposable Razors 24-Pack for $7.70 via Sub. & Save + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3122-bic-comfort-3-disposable-razors-24-pack-for-7-70-via-sub-sav/" },
-{ "@type": "ListItem", "position": 55, "name": "Live Conscious MoveWell Plus Joint Health Supplement for $25 via Sub & Save + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/2941-live-conscious-movewell-plus-joint-health-supplement-for-25/" },
-{ "@type": "ListItem", "position": 56, "name": "Happy Nuts Comfort Powder Spray for $8.79 via Sub. & Save + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/2942-happy-nuts-comfort-powder-spray-for-8-79-via-sub-save-free-s/" },
-{ "@type": "ListItem", "position": 57, "name": "Bellway Psyllium Husk Powder Fiber Supplement for $9 + free shipping", "url": "https://www.hackthedeal.com/deal/2943-bellway-psyllium-husk-powder-fiber-supplement-for-9-free-shi/" },
-{ "@type": "ListItem", "position": 58, "name": "Beauty Faves Clearance at Woot: Up to 94% off + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/2944-beauty-faves-clearance-at-woot-up-to-94-off-free-shipping-w/" },
-{ "@type": "ListItem", "position": 59, "name": "LifeZoom Red Light Therapy Face and Cold Sore Wand for $64 + free shipping", "url": "https://www.hackthedeal.com/deal/2945-lifezoom-red-light-therapy-face-and-cold-sore-wand-for-64-fr/" },
-{ "@type": "ListItem", "position": 60, "name": "Calvin Klein Men's Obsession 3-Piece Set for $27 + free shipping", "url": "https://www.hackthedeal.com/deal/2946-calvin-klein-men-s-obsession-3-piece-set-for-27-free-shippin/" }
+{ "@type": "ListItem", "position": 1, "name": "Amazon Basics 5-Blade MotionSphere Razor w/ 2 Cartridges for $6.40 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4348-amazon-basics-5-blade-motionsphere-razor-w-2-cartridges-for/" },
+{ "@type": "ListItem", "position": 2, "name": "Harry's Razors Bundles & Sets Deals: Up to 30% off + free shipping w/ $30", "url": "https://www.hackthedeal.com/deal/4349-harry-s-razors-bundles-sets-deals-up-to-30-off-free-shipping/" },
+{ "@type": "ListItem", "position": 3, "name": "Harry's Plus Value Pack for $20 + free shipping w/ $30", "url": "https://www.hackthedeal.com/deal/4350-harry-s-plus-value-pack-for-20-free-shipping-w-30/" },
+{ "@type": "ListItem", "position": 4, "name": "Harry's Plus Shave Set for $20 + free shipping w/ $30", "url": "https://www.hackthedeal.com/deal/4351-harry-s-plus-shave-set-for-20-free-shipping-w-30/" },
+{ "@type": "ListItem", "position": 5, "name": "Harry's Plus Annual Plan for $77 + free shipping", "url": "https://www.hackthedeal.com/deal/4352-harry-s-plus-annual-plan-for-77-free-shipping/" },
+{ "@type": "ListItem", "position": 6, "name": "Harry's Plus 8 Blades & 1 Gel for $31 + free shipping", "url": "https://www.hackthedeal.com/deal/4353-harry-s-plus-8-blades-1-gel-for-31-free-shipping/" },
+{ "@type": "ListItem", "position": 7, "name": "Harry's Plus Razor for Men w/ 1 Handle & 1 Razor Blade Cartridge for $12 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4354-harry-s-plus-razor-for-men-w-1-handle-1-razor-blade-cartridg/" },
+{ "@type": "ListItem", "position": 8, "name": "Stsvzorr Orthopedic Arch Support Insoles for From $9.49 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4355-stsvzorr-orthopedic-arch-support-insoles-for-from-9-49-free/" },
+{ "@type": "ListItem", "position": 9, "name": "Redneck Sport SPF 50 Sunscreen Spray for $10 + free shipping w/ $25", "url": "https://www.hackthedeal.com/deal/4169-redneck-sport-spf-50-sunscreen-spray-for-10-free-shipping-w/" },
+{ "@type": "ListItem", "position": 10, "name": "FitTimer Sonic Electric Toothbrush for $25 + free shipping", "url": "https://www.hackthedeal.com/deal/4170-fittimer-sonic-electric-toothbrush-for-25-free-shipping/" },
+{ "@type": "ListItem", "position": 11, "name": "Banana Boat Sport SPF 50 Lip Sunscreen 2-Pack for $5 + free shipping w/ $25", "url": "https://www.hackthedeal.com/deal/4172-banana-boat-sport-spf-50-lip-sunscreen-2-pack-for-5-free-shi/" },
+{ "@type": "ListItem", "position": 12, "name": "Walmart Fragrances Flash Deals: Up to 76% off + free shipping w/ $35", "url": "https://www.hackthedeal.com/deal/4173-walmart-fragrances-flash-deals-up-to-76-off-free-shipping-w/" },
+{ "@type": "ListItem", "position": 13, "name": "Cliganic Organic Lip Balm Set for $7.99 w/ Subscribe & Save + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4174-cliganic-organic-lip-balm-set-for-7-99-w-subscribe-save-free/" },
+{ "@type": "ListItem", "position": 14, "name": "Cliganic 10-Pack Mosquito Repellent Bracelets for $9 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4175-cliganic-10-pack-mosquito-repellent-bracelets-for-9-free-shi/" },
+{ "@type": "ListItem", "position": 15, "name": "Etekcity Smart Fitness Scale for $20 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4176-etekcity-smart-fitness-scale-for-20-free-shipping-w-prime/" },
+{ "@type": "ListItem", "position": 16, "name": "Electric Rotary Shaver for Men for $40 + free shipping", "url": "https://www.hackthedeal.com/deal/4177-electric-rotary-shaver-for-men-for-40-free-shipping/" },
+{ "@type": "ListItem", "position": 17, "name": "Shea Moisture 100% Virgin Coconut Oil 8-oz. Leave-in Treatment for $4.92 via Sub & Save + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4178-shea-moisture-100-virgin-coconut-oil-8-oz-leave-in-treatment/" },
+{ "@type": "ListItem", "position": 18, "name": "Walgreens Contact Lens Deals: 20% off + free shipping", "url": "https://www.hackthedeal.com/deal/4179-walgreens-contact-lens-deals-20-off-free-shipping/" },
+{ "@type": "ListItem", "position": 19, "name": "English Laundry Men's Legacy Eau de Parfum 4-Piece Gift Set for $25 + free shipping w/ $39", "url": "https://www.hackthedeal.com/deal/4180-english-laundry-men-s-legacy-eau-de-parfum-4-piece-gift-set/" },
+{ "@type": "ListItem", "position": 20, "name": "Harry's Plus Razor & Blade Value Pack w/ 9 Refill Cartridges for $17 via Sub. & Save + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3903-harry-s-plus-razor-blade-value-pack-w-9-refill-cartridges-fo/" },
+{ "@type": "ListItem", "position": 21, "name": "Degree Men Cool Rush Antiperspirant Deodorant 2-Pack for $3 via Sub. & Save + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3904-degree-men-cool-rush-antiperspirant-deodorant-2-pack-for-3-v/" },
+{ "@type": "ListItem", "position": 22, "name": "Rogaine Men's Thickening 2-in-1 Shampoo & Conditioner 8.4-oz. Bottle for $8.70 via Sub. & Save + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3905-rogaine-men-s-thickening-2-in-1-shampoo-conditioner-8-4-oz-b/" },
+{ "@type": "ListItem", "position": 23, "name": "Woot Beauty & Fragrance Glamorous You Sale: Up to 92% off + extra 20% off + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3906-woot-beauty-fragrance-glamorous-you-sale-up-to-92-off-extra/" },
+{ "@type": "ListItem", "position": 24, "name": "Dollar Shave Club Ultimate Set for $14 via Sub & Save + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3907-dollar-shave-club-ultimate-set-for-14-via-sub-save-free-ship/" },
+{ "@type": "ListItem", "position": 25, "name": "Amazon Basics 5-Piece Nail Care Grooming Kit for $6 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3908-amazon-basics-5-piece-nail-care-grooming-kit-for-6-free-ship/" },
+{ "@type": "ListItem", "position": 26, "name": "Hask Hair Care Deals at Target: Buy 1, Get 1 50% off + free shipping w/ $35", "url": "https://www.hackthedeal.com/deal/3909-hask-hair-care-deals-at-target-buy-1-get-1-50-off-free-shipp/" },
+{ "@type": "ListItem", "position": 27, "name": "Anastasia Beverly Hills National Lipstick Day Deals: Up to 30% off + free shipping w/ $45", "url": "https://www.hackthedeal.com/deal/3636-anastasia-beverly-hills-national-lipstick-day-deals-up-to-30/" },
+{ "@type": "ListItem", "position": 28, "name": "ColourPop Lip Product Deals: 30% to 50% off + free shipping w/ $35", "url": "https://www.hackthedeal.com/deal/3637-colourpop-lip-product-deals-30-to-50-off-free-shipping-w-35/" },
+{ "@type": "ListItem", "position": 29, "name": "NYX National Lipstick Day Deals for 25% off + free NYX Smushy holder w/ $40 + free shipping w/ $30", "url": "https://www.hackthedeal.com/deal/3638-nyx-national-lipstick-day-deals-for-25-off-free-nyx-smushy-h/" },
+{ "@type": "ListItem", "position": 30, "name": "Rare Beauty National Lipstick Day Deal for 30% off lipstick & lip oil, free bag w/ $50 + shipping varies", "url": "https://www.hackthedeal.com/deal/3639-rare-beauty-national-lipstick-day-deal-for-30-off-lipstick-l/" },
+{ "@type": "ListItem", "position": 31, "name": "Target Lip Product Deals: Buy 1, get extra 25% off 2nd + free shipping w/ $35", "url": "https://www.hackthedeal.com/deal/3640-target-lip-product-deals-buy-1-get-extra-25-off-2nd-free-shi/" },
+{ "@type": "ListItem", "position": 32, "name": "MAC National Lipstick Day Deals: 40% off + free shipping w/ $60", "url": "https://www.hackthedeal.com/deal/3641-mac-national-lipstick-day-deals-40-off-free-shipping-w-60/" },
+{ "@type": "ListItem", "position": 33, "name": "Ulta Beauty National Lipstick Day Deals for 50% off + free lipstick kit w/ $95 + free shipping w/ $25", "url": "https://www.hackthedeal.com/deal/3642-ulta-beauty-national-lipstick-day-deals-for-50-off-free-lips/" },
+{ "@type": "ListItem", "position": 34, "name": "Sephora National Lipstick Day Deals: Up to 50% off + free shipping", "url": "https://www.hackthedeal.com/deal/3643-sephora-national-lipstick-day-deals-up-to-50-off-free-shippi/" },
+{ "@type": "ListItem", "position": 35, "name": "Macy's National Lipstick Day Deals: 30% to 50% off + free shipping w/ $39", "url": "https://www.hackthedeal.com/deal/3644-macy-s-national-lipstick-day-deals-30-to-50-off-free-shippin/" },
+{ "@type": "ListItem", "position": 36, "name": "Amazon Basics Power Rechargeable Electric Toothbrush for $8 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3645-amazon-basics-power-rechargeable-electric-toothbrush-for-8-f/" },
+{ "@type": "ListItem", "position": 37, "name": "Target Skincare & Suncare Sale: Up to 50% off + free shipping", "url": "https://www.hackthedeal.com/deal/3647-target-skincare-suncare-sale-up-to-50-off-free-shipping/" },
+{ "@type": "ListItem", "position": 38, "name": "ZORAMI Ear & Nose Hair Trimmer for $10 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3648-zorami-ear-nose-hair-trimmer-for-10-free-shipping-w-prime/" },
+{ "@type": "ListItem", "position": 39, "name": "Nutricost 100-Serving 500g Creatine Monohydrate Micronized Powder for $12 w/ Subscribe & Save + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3649-nutricost-100-serving-500g-creatine-monohydrate-micronized-p/" },
+{ "@type": "ListItem", "position": 40, "name": "Ulta Beauty Lipstick Week Sale: Up to 40% off + free shipping w/ $35", "url": "https://www.hackthedeal.com/deal/3650-ulta-beauty-lipstick-week-sale-up-to-40-off-free-shipping-w/" },
+{ "@type": "ListItem", "position": 41, "name": "Clinique Almost Lipstick Tinted Lip Balm for $15 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3651-clinique-almost-lipstick-tinted-lip-balm-for-15-free-shippin/" },
+{ "@type": "ListItem", "position": 42, "name": "Coslus C60 Ultrasonic Retainer Cleaner for $18 w/ Prime + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3339-coslus-c60-ultrasonic-retainer-cleaner-for-18-w-prime-free-s/" },
+{ "@type": "ListItem", "position": 43, "name": "Scent Social Fragrance Sale at Woot: Up to 61% off + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3340-scent-social-fragrance-sale-at-woot-up-to-61-off-free-shippi/" },
+{ "@type": "ListItem", "position": 44, "name": "Grocery & Personal Care Cleanout Sale at Woot: Up to 86% off + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3341-grocery-personal-care-cleanout-sale-at-woot-up-to-86-off-fre/" },
+{ "@type": "ListItem", "position": 45, "name": "Fragrance Deals at Woot: Up to 65% off + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3342-fragrance-deals-at-woot-up-to-65-off-free-shipping-w-prime/" },
+{ "@type": "ListItem", "position": 46, "name": "MERIDIAN The Trimmer Original Body Hair Trimmer for $30 + free shipping", "url": "https://www.hackthedeal.com/deal/3343-meridian-the-trimmer-original-body-hair-trimmer-for-30-free/" },
+{ "@type": "ListItem", "position": 47, "name": "MAC Lip Makeup Sale at Macy's: 40% off + free shipping w/ $39", "url": "https://www.hackthedeal.com/deal/3344-mac-lip-makeup-sale-at-macy-s-40-off-free-shipping-w-39/" },
+{ "@type": "ListItem", "position": 48, "name": "Macy's National Lipstick Day Sale: Up to 60% off + free shipping w/ $39", "url": "https://www.hackthedeal.com/deal/3345-macy-s-national-lipstick-day-sale-up-to-60-off-free-shipping/" },
+{ "@type": "ListItem", "position": 49, "name": "Dollar Shave Club for Your Head Shaver for $35 + free shipping", "url": "https://www.hackthedeal.com/deal/3346-dollar-shave-club-for-your-head-shaver-for-35-free-shipping/" },
+{ "@type": "ListItem", "position": 50, "name": "Force Factor Hair Growth Accelerator 90-Count Soft Chews for $33 + free shipping", "url": "https://www.hackthedeal.com/deal/3347-force-factor-hair-growth-accelerator-90-count-soft-chews-for/" },
+{ "@type": "ListItem", "position": 51, "name": "Essential Elements T-Hero Platinum 60-Count Testosterone Support Supplement  for $45 + free shipping", "url": "https://www.hackthedeal.com/deal/3348-essential-elements-t-hero-platinum-60-count-testosterone-sup/" },
+{ "@type": "ListItem", "position": 52, "name": "IcyMe Gua Sha & Jade Roller Set for $7 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3349-icyme-gua-sha-jade-roller-set-for-7-free-shipping-w-prime/" },
+{ "@type": "ListItem", "position": 53, "name": "1MD Nutrition CholestMD 60-Count Supplement  for $35 w/ Sub & Save + free shipping", "url": "https://www.hackthedeal.com/deal/3350-1md-nutrition-cholestmd-60-count-supplement-for-35-w-sub-sav/" },
+{ "@type": "ListItem", "position": 54, "name": "Banana Boat Sport Ultra SPF 50 Sunscreen Spray 2-Pack for $14 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3351-banana-boat-sport-ultra-spf-50-sunscreen-spray-2-pack-for-14/" },
+{ "@type": "ListItem", "position": 55, "name": "Blue Lizard Sensitive Mineral SPF 50 Sunscreen Stick for $8 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3352-blue-lizard-sensitive-mineral-spf-50-sunscreen-stick-for-8-f/" },
+{ "@type": "ListItem", "position": 56, "name": "Amzpony Cordless Rechargeable Neck Massager for $19 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3353-amzpony-cordless-rechargeable-neck-massager-for-19-free-ship/" },
+{ "@type": "ListItem", "position": 57, "name": "LifeZoom Undereye Infrared Red Light Therapy Device for $62.30 + free shipping", "url": "https://www.hackthedeal.com/deal/3117-lifezoom-undereye-infrared-red-light-therapy-device-for-62-3/" },
+{ "@type": "ListItem", "position": 58, "name": "Eco Bandage Liquid Bandage 2-Pack for $10 + free shipping w/ $35", "url": "https://www.hackthedeal.com/deal/3118-eco-bandage-liquid-bandage-2-pack-for-10-free-shipping-w-35/" },
+{ "@type": "ListItem", "position": 59, "name": "Braun Series 7 Men's Electric Shaver w/ Clean & Charge Center for $180 + free shipping", "url": "https://www.hackthedeal.com/deal/3119-braun-series-7-men-s-electric-shaver-w-clean-charge-center-f/" },
+{ "@type": "ListItem", "position": 60, "name": "Wellness & Everyday Essentials Sale at Woot: Up to 68% off + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3120-wellness-everyday-essentials-sale-at-woot-up-to-68-off-free/" }
       ]
     }
     </script>
@@ -828,35 +874,48 @@
     </div>
 
     <!-- Privacy / cookie consent notice — static markup so it's visible even
-         before React mounts. GTM/GA already loaded in Consent Mode's default
-         "denied" state (see <head>); clicking OK just upgrades the signal. -->
+         before React mounts. GTM/GA/AdSense already loaded in Consent Mode's
+         default state from localStorage (see <head>); Accept/Reject here
+         just update that signal going forward. -->
     <div id="consent-overlay" class="consent-overlay" style="display: none;">
       <div class="consent-box">
         <div class="consent-text">
           <p class="consent-title">🍪 We use cookies</p>
           <p>
-            This site uses cookies to measure site performance and improve your experience.
-            By clicking OK, you accept our use of cookies as described in our
-            <a href="/privacy.html">Privacy Policy</a>.
+            This site uses cookies to measure site performance and improve your experience, and
+            works with Google Analytics and AdSense, which may use cookies for analytics and to
+            show personalized ads. See our <a href="/privacy.html">Privacy Policy</a> for details.
           </p>
         </div>
-        <button id="consent-ok" type="button">OK</button>
+        <div class="consent-actions">
+          <button id="consent-reject" type="button" class="consent-reject-btn">Reject</button>
+          <button id="consent-ok" type="button">Accept</button>
+        </div>
       </div>
     </div>
+    <button id="cookie-settings-btn" type="button" class="cookie-settings-btn">Cookie Settings</button>
     <script>
       (function () {
-        if (localStorage.getItem('htd_consent_v1') !== 'granted') {
-          document.getElementById('consent-overlay').style.display = 'flex';
-        }
-        document.getElementById('consent-ok').addEventListener('click', function () {
-          localStorage.setItem('htd_consent_v1', 'granted');
+        function setConsent(granted) {
+          localStorage.setItem('htd_consent_v1', granted ? 'granted' : 'denied');
           document.getElementById('consent-overlay').style.display = 'none';
           gtag('consent', 'update', {
-            'ad_storage': 'granted',
-            'ad_user_data': 'granted',
-            'ad_personalization': 'granted',
-            'analytics_storage': 'granted'
+            'ad_storage': granted ? 'granted' : 'denied',
+            'ad_user_data': granted ? 'granted' : 'denied',
+            'ad_personalization': granted ? 'granted' : 'denied',
+            'analytics_storage': granted ? 'granted' : 'denied'
           });
+          window.adsbygoogle = window.adsbygoogle || [];
+          window.adsbygoogle.push({ google_ad_client: 'ca-pub-6138840929831792', google_restrict_data_processing: !granted });
+          if (granted && window.htdLoadAwin) { window.htdLoadAwin(); }
+        }
+        if (!localStorage.getItem('htd_consent_v1')) {
+          document.getElementById('consent-overlay').style.display = 'flex';
+        }
+        document.getElementById('consent-ok').addEventListener('click', function () { setConsent(true); });
+        document.getElementById('consent-reject').addEventListener('click', function () { setConsent(false); });
+        document.getElementById('cookie-settings-btn').addEventListener('click', function () {
+          document.getElementById('consent-overlay').style.display = 'flex';
         });
       })();
     </script>
@@ -901,7 +960,135 @@
       </section>
       <main style="max-width:1152px;margin:0 auto;padding:8px 16px 40px">
         <div class="section-title-bar"><span class="section-label">Latest Deals</span></div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px"><a href="/deal/4169-redneck-sport-spf-50-sunscreen-spray-for-10-free-shipping-w/" class="deal-card">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px"><a href="/deal/4348-amazon-basics-5-blade-motionsphere-razor-w-2-cartridges-for/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785521474-71zuuyqwm8l.jpg?h=1024&amp;w=1024" alt="Amazon Basics 5-Blade MotionSphere Razor w/ 2 Cartridges for $6.40 + free shipping w/ Prime" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">beauty</span>
+          
+        </div>
+        <p class="deal-title">Amazon Basics 5-Blade MotionSphere Razor w/ 2 Cartridges for $6.40 + free shipping w/ Prime</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$6.40</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-beauty</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4349-harry-s-razors-bundles-sets-deals-up-to-30-off-free-shipping/" class="deal-card">
+      <div class="deal-card-icon-fallback"></div>
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">beauty</span>
+          <span class="discount-badge">30% off</span>
+        </div>
+        <p class="deal-title">Harry&#x27;s Razors Bundles &amp; Sets Deals: Up to 30% off + free shipping w/ $30</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$30.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-beauty</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4350-harry-s-plus-value-pack-for-20-free-shipping-w-30/" class="deal-card">
+      <div class="deal-card-icon-fallback"></div>
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">beauty</span>
+          <span class="discount-badge">33% off</span>
+        </div>
+        <p class="deal-title">Harry&#x27;s Plus Value Pack for $20 + free shipping w/ $30</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$20.00</span><span class="price-original">$30.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-beauty</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4351-harry-s-plus-shave-set-for-20-free-shipping-w-30/" class="deal-card">
+      <div class="deal-card-icon-fallback"></div>
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">beauty</span>
+          <span class="discount-badge">33% off</span>
+        </div>
+        <p class="deal-title">Harry&#x27;s Plus Shave Set for $20 + free shipping w/ $30</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$20.00</span><span class="price-original">$30.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-beauty</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4352-harry-s-plus-annual-plan-for-77-free-shipping/" class="deal-card">
+      <div class="deal-card-icon-fallback"></div>
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">beauty</span>
+          
+        </div>
+        <p class="deal-title">Harry&#x27;s Plus Annual Plan for $77 + free shipping</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$77.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-beauty</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4353-harry-s-plus-8-blades-1-gel-for-31-free-shipping/" class="deal-card">
+      <div class="deal-card-icon-fallback"></div>
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">beauty</span>
+          
+        </div>
+        <p class="deal-title">Harry&#x27;s Plus 8 Blades &amp; 1 Gel for $31 + free shipping</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$31.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-beauty</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4354-harry-s-plus-razor-for-men-w-1-handle-1-razor-blade-cartridg/" class="deal-card">
+      <div class="deal-card-icon-fallback"></div>
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">beauty</span>
+          
+        </div>
+        <p class="deal-title">Harry&#x27;s Plus Razor for Men w/ 1 Handle &amp; 1 Razor Blade Cartridge for $12 + free shipping w/ Prime</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$12.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-beauty</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4355-stsvzorr-orthopedic-arch-support-insoles-for-from-9-49-free/" class="deal-card">
+      <div class="deal-card-icon-fallback"></div>
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">beauty</span>
+          
+        </div>
+        <p class="deal-title">Stsvzorr Orthopedic Arch Support Insoles for From $9.49 + free shipping w/ Prime</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$9.49</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-beauty</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4169-redneck-sport-spf-50-sunscreen-spray-for-10-free-shipping-w/" class="deal-card">
       <div class="deal-card-icon-fallback"></div>
       <div class="deal-card-body">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
@@ -1731,134 +1918,6 @@
         <div class="deal-meta">
           <span>dealnews-beauty</span>
           <span>Jul 27, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/3121-homedics-therapist-select-plus-percussion-massager-for-12-fr/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">beauty</span>
-          
-        </div>
-        <p class="deal-title">HoMedics Therapist Select Plus Percussion Massager for $12 + free shipping</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$12.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-beauty</span>
-          <span>Jul 26, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/3122-bic-comfort-3-disposable-razors-24-pack-for-7-70-via-sub-sav/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">beauty</span>
-          
-        </div>
-        <p class="deal-title">BIC Comfort 3 Disposable Razors 24-Pack for $7.70 via Sub. &amp; Save + free shipping w/ Prime</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$7.70</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-beauty</span>
-          <span>Jul 26, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/2941-live-conscious-movewell-plus-joint-health-supplement-for-25/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1784921687-draftworks_img_5o23p6p5bkvp6alhmcp.jpeg?h=500&amp;w=500" alt="Live Conscious MoveWell Plus Joint Health Supplement for $25 via Sub &amp; Save + free shipping w/ Prime" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">beauty</span>
-          
-        </div>
-        <p class="deal-title">Live Conscious MoveWell Plus Joint Health Supplement for $25 via Sub &amp; Save + free shipping w/ Prime</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$25.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-beauty</span>
-          <span>Jul 26, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/2942-happy-nuts-comfort-powder-spray-for-8-79-via-sub-save-free-s/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1785051109-product-trimmed.jpg?h=1024&amp;w=479" alt="Happy Nuts Comfort Powder Spray for $8.79 via Sub. &amp; Save + free shipping w/ Prime" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">beauty</span>
-          
-        </div>
-        <p class="deal-title">Happy Nuts Comfort Powder Spray for $8.79 via Sub. &amp; Save + free shipping w/ Prime</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$8.79</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-beauty</span>
-          <span>Jul 26, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/2943-bellway-psyllium-husk-powder-fiber-supplement-for-9-free-shi/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1785050862-product-trimmed.jpg?h=1024&amp;w=631" alt="Bellway Psyllium Husk Powder Fiber Supplement for $9 + free shipping" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">beauty</span>
-          
-        </div>
-        <p class="deal-title">Bellway Psyllium Husk Powder Fiber Supplement for $9 + free shipping</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$9.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-beauty</span>
-          <span>Jul 26, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/2944-beauty-faves-clearance-at-woot-up-to-94-off-free-shipping-w/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1785050514-product-trimmed.jpg?h=148&amp;w=141" alt="Beauty Faves Clearance at Woot: Up to 94% off + free shipping w/ Prime" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">beauty</span>
-          <span class="discount-badge">94% off</span>
-        </div>
-        <p class="deal-title">Beauty Faves Clearance at Woot: Up to 94% off + free shipping w/ Prime</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span style="font-size:13px;color:var(--muted)">See deal</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-beauty</span>
-          <span>Jul 26, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/2945-lifezoom-red-light-therapy-face-and-cold-sore-wand-for-64-fr/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1784918950-draftworks_img_hrnu8sfglu94cafjojc.jpeg?h=500&amp;w=500" alt="LifeZoom Red Light Therapy Face and Cold Sore Wand for $64 + free shipping" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">beauty</span>
-          
-        </div>
-        <p class="deal-title">LifeZoom Red Light Therapy Face and Cold Sore Wand for $64 + free shipping</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$64.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-beauty</span>
-          <span>Jul 26, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/2946-calvin-klein-men-s-obsession-3-piece-set-for-27-free-shippin/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1784987934-product-trimmed.png?h=375&amp;w=665" alt="Calvin Klein Men&#x27;s Obsession 3-Piece Set for $27 + free shipping" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">beauty</span>
-          
-        </div>
-        <p class="deal-title">Calvin Klein Men&#x27;s Obsession 3-Piece Set for $27 + free shipping</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$27.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-beauty</span>
-          <span>Jul 25, 2026</span>
         </div>
       </div>
     </a></div>

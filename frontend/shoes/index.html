@@ -1,31 +1,41 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <!-- Consent Mode v2 — sets default (denied) consent state before any tag
-         below loads, so GTM/gtag still fire on every visit but only send
-         cookieless, anonymized signals until the user accepts the cookie
-         notice further down the page. If they already accepted on a past
-         visit, immediately upgrade to granted from the stored preference.
+    <!-- Consent Mode v2 — sets default consent state (denied unless already
+         granted on a past visit) before any tag below loads, so GTM/GA still
+         fire on every visit but only send cookieless, anonymized signals
+         until the user accepts the cookie notice further down the page.
+         Also puts AdSense into restricted-data-processing mode (non-
+         personalized ads only) by default — required for EEA/UK traffic
+         under Google's EU User Consent Policy.
          https://developers.google.com/tag-platform/security/guides/consent -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag() { dataLayer.push(arguments); }
       window.gtag = gtag;
+      var htdGranted = localStorage.getItem('htd_consent_v1') === 'granted';
       gtag('consent', 'default', {
-        'ad_storage': 'denied',
-        'ad_user_data': 'denied',
-        'ad_personalization': 'denied',
-        'analytics_storage': 'denied',
+        'ad_storage': htdGranted ? 'granted' : 'denied',
+        'ad_user_data': htdGranted ? 'granted' : 'denied',
+        'ad_personalization': htdGranted ? 'granted' : 'denied',
+        'analytics_storage': htdGranted ? 'granted' : 'denied',
         'wait_for_update': 500
       });
-      if (localStorage.getItem('htd_consent_v1') === 'granted') {
-        gtag('consent', 'update', {
-          'ad_storage': 'granted',
-          'ad_user_data': 'granted',
-          'ad_personalization': 'granted',
-          'analytics_storage': 'granted'
-        });
-      }
+      window.adsbygoogle = window.adsbygoogle || [];
+      window.adsbygoogle.push({ google_ad_client: 'ca-pub-6138840929831792', google_restrict_data_processing: !htdGranted });
+
+      // Awin's Publisher MasterTag sets affiliate click/conversion-tracking
+      // cookies, which isn't a Google product Consent Mode covers — gated
+      // separately here, and only injected once consent is granted (either
+      // already stored, or via the Accept button below).
+      window.htdLoadAwin = window.htdLoadAwin || function () {
+        if (window.htdAwinLoaded) return;
+        window.htdAwinLoaded = true;
+        var s = document.createElement('script');
+        s.src = 'https://www.dwin2.com/pub.2991473.min.js';
+        document.head.appendChild(s);
+      };
+      if (htdGranted) { window.htdLoadAwin(); }
     </script>
     <!-- End Consent Mode -->
 
@@ -125,8 +135,9 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6138840929831792"
      crossorigin="anonymous"></script>
 
-    <!-- Awin affiliate tracking (Publisher MasterTag) -->
-    <script src="https://www.dwin2.com/pub.2991473.min.js"></script>
+    <!-- Awin affiliate tracking (Publisher MasterTag) — loaded conditionally
+         by htdLoadAwin() in the Consent Mode script above, not statically
+         here, since it needs to wait on consent like everything else. -->
 
     <style>
       :root {
@@ -230,6 +241,11 @@
         color: var(--accent-text);
         font-weight: 600;
       }
+      .consent-actions {
+        display: flex;
+        flex: 0 0 auto;
+        gap: 10px;
+      }
       .consent-box button {
         flex: 0 0 auto;
         background: var(--accent);
@@ -243,6 +259,36 @@
       }
       .consent-box button:hover {
         opacity: 0.85;
+      }
+      .consent-box .consent-reject-btn {
+        background: transparent;
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+      .consent-box .consent-reject-btn:hover {
+        opacity: 1;
+        background: var(--bg);
+      }
+
+      /* Reopens the cookie banner so a visitor can change their choice
+         later — kept as static markup outside #root (like consent-overlay
+         itself) so it works identically for prerendered/no-JS pages and
+         after the React app mounts. */
+      .cookie-settings-btn {
+        position: fixed;
+        left: 12px;
+        bottom: 12px;
+        z-index: 998;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 11px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        cursor: pointer;
+      }
+      .cookie-settings-btn:hover {
+        color: var(--text);
       }
 
       /* Header network bar */
@@ -750,66 +796,66 @@
       "@type": "ItemList",
       "name": "Best Shoe Deals Today",
       "itemListElement": [
-{ "@type": "ListItem", "position": 1, "name": "adidas Terrex Back to School Shoe Deals for Kids' from $21, adults' from $41 + free shipping", "url": "https://www.hackthedeal.com/deal/4148-adidas-terrex-back-to-school-shoe-deals-for-kids-from-21-adu/" },
-{ "@type": "ListItem", "position": 2, "name": "adidas Men's Swift Run 1 Shoes for $34 + free shipping", "url": "https://www.hackthedeal.com/deal/4149-adidas-men-s-swift-run-1-shoes-for-34-free-shipping/" },
-{ "@type": "ListItem", "position": 3, "name": "HOKA Sale for Extra $20 off $150 + free shipping", "url": "https://www.hackthedeal.com/deal/4150-hoka-sale-for-extra-20-off-150-free-shipping/" },
-{ "@type": "ListItem", "position": 4, "name": "adidas Men's Terrex Rockadia Hiking Shoes for $48 + free shipping", "url": "https://www.hackthedeal.com/deal/4151-adidas-men-s-terrex-rockadia-hiking-shoes-for-48-free-shippi/" },
-{ "@type": "ListItem", "position": 5, "name": "adidas Men's Ultraboost 5X Shoes for $77 + Free shipping", "url": "https://www.hackthedeal.com/deal/4152-adidas-men-s-ultraboost-5x-shoes-for-77-free-shipping/" },
-{ "@type": "ListItem", "position": 6, "name": "Nike Structure Plus Men's Road Running Shoes for $95 + free shipping", "url": "https://www.hackthedeal.com/deal/4153-nike-structure-plus-men-s-road-running-shoes-for-95-free-shi/" },
-{ "@type": "ListItem", "position": 7, "name": "Amazon Essentials Men's Slip Deck Loafers for $11 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4155-amazon-essentials-men-s-slip-deck-loafers-for-11-free-shippi/" },
-{ "@type": "ListItem", "position": 8, "name": "adidas Ultraboost Back to School Deals: Up to 50% off + extra 15% off + free shipping", "url": "https://www.hackthedeal.com/deal/4154-adidas-ultraboost-back-to-school-deals-up-to-50-off-extra-15/" },
-{ "@type": "ListItem", "position": 9, "name": "Nike Women's Legend Essential 3 Next Nature Workout Shoes for $31 + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/4156-nike-women-s-legend-essential-3-next-nature-workout-shoes-fo/" },
-{ "@type": "ListItem", "position": 10, "name": "Nike Women's Air Max Nuaxis Shoes for $55 + free shipping", "url": "https://www.hackthedeal.com/deal/4157-nike-women-s-air-max-nuaxis-shoes-for-55-free-shipping/" },
-{ "@type": "ListItem", "position": 11, "name": "Rocky Boots Back to School Sale: Up to 40% off + free shipping w/ $75", "url": "https://www.hackthedeal.com/deal/4158-rocky-boots-back-to-school-sale-up-to-40-off-free-shipping-w/" },
-{ "@type": "ListItem", "position": 12, "name": "Fruit of the Loom Men's Padded Slippers for $5.00 + free shipping w/ $35", "url": "https://www.hackthedeal.com/deal/4159-fruit-of-the-loom-men-s-padded-slippers-for-5-00-free-shippi/" },
-{ "@type": "ListItem", "position": 13, "name": "Nike Men's or Women's Mercurial Vapor 17 Club FG Soccer Cleats for $52 in cart + free shipping", "url": "https://www.hackthedeal.com/deal/4160-nike-men-s-or-women-s-mercurial-vapor-17-club-fg-soccer-clea/" },
-{ "@type": "ListItem", "position": 14, "name": "Amazon Outlet Men's Shoes Deals: Up to 70% off + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4161-amazon-outlet-men-s-shoes-deals-up-to-70-off-free-shipping-w/" },
-{ "@type": "ListItem", "position": 15, "name": "adidas Men's Cloudfoam Cuxxion Sock Shoes for from $28 + free shipping", "url": "https://www.hackthedeal.com/deal/4162-adidas-men-s-cloudfoam-cuxxion-sock-shoes-for-from-28-free-s/" },
-{ "@type": "ListItem", "position": 16, "name": "Skechers Men\u2019s Zinger 2.0 The Arwen Retro Court Shoes for $40 + free shipping", "url": "https://www.hackthedeal.com/deal/4163-skechers-men-s-zinger-2-0-the-arwen-retro-court-shoes-for-40/" },
-{ "@type": "ListItem", "position": 17, "name": "On Men's Cloudmonster Shoes for $97 in cart + free shipping", "url": "https://www.hackthedeal.com/deal/4164-on-men-s-cloudmonster-shoes-for-97-in-cart-free-shipping/" },
-{ "@type": "ListItem", "position": 18, "name": "adidas Men's Terrex Anylander Rain.Rdy Hiking Shoes for $51 + free shipping", "url": "https://www.hackthedeal.com/deal/4165-adidas-men-s-terrex-anylander-rain-rdy-hiking-shoes-for-51-f/" },
-{ "@type": "ListItem", "position": 19, "name": "adidas Terrex Back to School Deals: Up to 50% off + extra 15% off + free shipping", "url": "https://www.hackthedeal.com/deal/4166-adidas-terrex-back-to-school-deals-up-to-50-off-extra-15-off/" },
-{ "@type": "ListItem", "position": 20, "name": "adidas Women's Ultraboost 5x Shoes for $77 + free shipping", "url": "https://www.hackthedeal.com/deal/4167-adidas-women-s-ultraboost-5x-shoes-for-77-free-shipping/" },
-{ "@type": "ListItem", "position": 21, "name": "adidas Ultraboost Back to School Deals: Up to 50% off + extra 15% off + free shipping", "url": "https://www.hackthedeal.com/deal/4168-adidas-ultraboost-back-to-school-deals-up-to-50-off-extra-15/" },
-{ "@type": "ListItem", "position": 22, "name": "Under Armour Men's UA Charged Edge Training Shoes (Select Sizes) for $30 + free shipping w/ $39", "url": "https://www.hackthedeal.com/deal/3887-under-armour-men-s-ua-charged-edge-training-shoes-select-siz/" },
-{ "@type": "ListItem", "position": 23, "name": "adidas Men's Response Runner Shoes for $30 + free shipping", "url": "https://www.hackthedeal.com/deal/3888-adidas-men-s-response-runner-shoes-for-30-free-shipping/" },
-{ "@type": "ListItem", "position": 24, "name": "adidas Men's Back to School Shoe Deals for From $15, running shoes from $24 + free shipping", "url": "https://www.hackthedeal.com/deal/3889-adidas-men-s-back-to-school-shoe-deals-for-from-15-running-s/" },
-{ "@type": "ListItem", "position": 25, "name": "adidas Men's Ultimashow Running Shoes for $24 + free shipping", "url": "https://www.hackthedeal.com/deal/3890-adidas-men-s-ultimashow-running-shoes-for-24-free-shipping/" },
-{ "@type": "ListItem", "position": 26, "name": "Jordan Shoes Sale at Dick's Sporting Goods: 25% off", "url": "https://www.hackthedeal.com/deal/3891-jordan-shoes-sale-at-dick-s-sporting-goods-25-off/" },
-{ "@type": "ListItem", "position": 27, "name": "Nike Men's or Women's Waffle Debut Shoes for $46 + shipping varies", "url": "https://www.hackthedeal.com/deal/3892-nike-men-s-or-women-s-waffle-debut-shoes-for-46-shipping-var/" },
-{ "@type": "ListItem", "position": 28, "name": "Coostar Men's Lightweight Slip-On Walking Shoes for $32 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3893-coostar-men-s-lightweight-slip-on-walking-shoes-for-32-free/" },
-{ "@type": "ListItem", "position": 29, "name": "Ozark Trail Men's Trek Cross Strap Sandals for $16 + free shipping w/ $35", "url": "https://www.hackthedeal.com/deal/3894-ozark-trail-men-s-trek-cross-strap-sandals-for-16-free-shipp/" },
-{ "@type": "ListItem", "position": 30, "name": "Kenneth Cole Reaction Men's Moore Penny Loafer for $65 + free shipping", "url": "https://www.hackthedeal.com/deal/3895-kenneth-cole-reaction-men-s-moore-penny-loafer-for-65-free-s/" },
-{ "@type": "ListItem", "position": 31, "name": "Nordstrom Anniversary Sale Shoes for All under $100 + free shipping", "url": "https://www.hackthedeal.com/deal/3896-nordstrom-anniversary-sale-shoes-for-all-under-100-free-ship/" },
-{ "@type": "ListItem", "position": 32, "name": "Nike Men's or Women's Book 1 Basketball Shoes for $49 + free shipping", "url": "https://www.hackthedeal.com/deal/3897-nike-men-s-or-women-s-book-1-basketball-shoes-for-49-free-sh/" },
-{ "@type": "ListItem", "position": 33, "name": "Nike Women's In-Season TR 13 Workout Shoes for $38 + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/3898-nike-women-s-in-season-tr-13-workout-shoes-for-38-free-shipp/" },
-{ "@type": "ListItem", "position": 34, "name": "Nike Men's or Women's Air Trainer Huarache Shoes for $95 + free shipping", "url": "https://www.hackthedeal.com/deal/3899-nike-men-s-or-women-s-air-trainer-huarache-shoes-for-95-free/" },
-{ "@type": "ListItem", "position": 35, "name": "Nike Men's Cortez Leather Shoes for $71 + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/3900-nike-men-s-cortez-leather-shoes-for-71-free-shipping-w-50/" },
-{ "@type": "ListItem", "position": 36, "name": "Vans Men's Brooklyn LS Shoes for from $42 + free shipping", "url": "https://www.hackthedeal.com/deal/3901-vans-men-s-brooklyn-ls-shoes-for-from-42-free-shipping/" },
-{ "@type": "ListItem", "position": 37, "name": "Nike Men's Zoom Rival Distance Track Shoes for $40 + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/3902-nike-men-s-zoom-rival-distance-track-shoes-for-40-free-shipp/" },
-{ "@type": "ListItem", "position": 38, "name": "Macy's Summer Weekend Sale Men's Shoes Deals: Up to 60% off + free shipping w/ $39", "url": "https://www.hackthedeal.com/deal/3618-macy-s-summer-weekend-sale-men-s-shoes-deals-up-to-60-off-fr/" },
-{ "@type": "ListItem", "position": 39, "name": "Nike Men's Lunar Force 1 Boots for $95 + free shipping", "url": "https://www.hackthedeal.com/deal/3619-nike-men-s-lunar-force-1-boots-for-95-free-shipping/" },
-{ "@type": "ListItem", "position": 40, "name": "Nike Men's Air Force 1 Low Retro Premium Shoes for $105 + free shipping", "url": "https://www.hackthedeal.com/deal/3620-nike-men-s-air-force-1-low-retro-premium-shoes-for-105-free/" },
-{ "@type": "ListItem", "position": 41, "name": "adidas Men's Adilette Lite Slides for $8.80 + free shipping", "url": "https://www.hackthedeal.com/deal/3621-adidas-men-s-adilette-lite-slides-for-8-80-free-shipping/" },
-{ "@type": "ListItem", "position": 42, "name": "On Running Shoes at Woot: Up to 40% off + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3622-on-running-shoes-at-woot-up-to-40-off-free-shipping-w-prime/" },
-{ "@type": "ListItem", "position": 43, "name": "On Men's Cloud X 5 Training Shoe for $128 + free shipping w/ $75", "url": "https://www.hackthedeal.com/deal/3623-on-men-s-cloud-x-5-training-shoe-for-128-free-shipping-w-75/" },
-{ "@type": "ListItem", "position": 44, "name": "Nike Women's Winflo 12 Road Running Shoes for $67 + free shipping", "url": "https://www.hackthedeal.com/deal/3624-nike-women-s-winflo-12-road-running-shoes-for-67-free-shippi/" },
-{ "@type": "ListItem", "position": 45, "name": "Nike Men's or Women's Revolution 7 Road Running Shoes for $32 + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/3625-nike-men-s-or-women-s-revolution-7-road-running-shoes-for-32/" },
-{ "@type": "ListItem", "position": 46, "name": "Avia Little & Big Kids Bungee Athletic Sneakers (Limited Sizes) for $10 + free shipping w/ $35", "url": "https://www.hackthedeal.com/deal/3626-avia-little-big-kids-bungee-athletic-sneakers-limited-sizes/" },
-{ "@type": "ListItem", "position": 47, "name": "Avia Women's 5000 Performance Sneakers for $11 + free shipping w/ $35", "url": "https://www.hackthedeal.com/deal/3627-avia-women-s-5000-performance-sneakers-for-11-free-shipping/" },
-{ "@type": "ListItem", "position": 48, "name": "On Men's Cloud 4 XD Running Shoes for $110 + free shipping", "url": "https://www.hackthedeal.com/deal/3628-on-men-s-cloud-4-xd-running-shoes-for-110-free-shipping/" },
-{ "@type": "ListItem", "position": 49, "name": "On Last Season Shoes Sale: Up to 40% off + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/3629-on-last-season-shoes-sale-up-to-40-off-free-shipping-w-50/" },
-{ "@type": "ListItem", "position": 50, "name": "Nike Men's Mercurial Vapor 16 Academy Shoes for from $49 + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/3630-nike-men-s-mercurial-vapor-16-academy-shoes-for-from-49-free/" },
-{ "@type": "ListItem", "position": 51, "name": "Nike Men's Air Force 1 '07 Shoes for $67 + free shipping", "url": "https://www.hackthedeal.com/deal/3631-nike-men-s-air-force-1-07-shoes-for-67-free-shipping/" },
-{ "@type": "ListItem", "position": 52, "name": "Skechers Go Walk Flex Ultra Slip-In Shoes for from $29 + free shipping", "url": "https://www.hackthedeal.com/deal/3632-skechers-go-walk-flex-ultra-slip-in-shoes-for-from-29-free-s/" },
-{ "@type": "ListItem", "position": 53, "name": "Birkenstock Shoe Deals at Dick's Sporting Goods: Up to 45% off + free shipping w/ $49", "url": "https://www.hackthedeal.com/deal/3633-birkenstock-shoe-deals-at-dick-s-sporting-goods-up-to-45-off/" },
-{ "@type": "ListItem", "position": 54, "name": "Skechers Men's Hands-Free Swift Fit Sneaker for $33 + free shipping", "url": "https://www.hackthedeal.com/deal/3634-skechers-men-s-hands-free-swift-fit-sneaker-for-33-free-ship/" },
-{ "@type": "ListItem", "position": 55, "name": "adidas Summer Sale Men's Shoes Deals: Up to 40% off + extra 15% off + free shipping", "url": "https://www.hackthedeal.com/deal/3635-adidas-summer-sale-men-s-shoes-deals-up-to-40-off-extra-15-o/" },
-{ "@type": "ListItem", "position": 56, "name": "Michael Kors Shoes Flash Sale at Macy's: 50% to 60% off + free shipping w/ $39", "url": "https://www.hackthedeal.com/deal/3319-michael-kors-shoes-flash-sale-at-macy-s-50-to-60-off-free-sh/" },
-{ "@type": "ListItem", "position": 57, "name": "Kenneth Cole Shoes Flash Sale at Macy's: 50% to 60% off + free shipping w/ $39", "url": "https://www.hackthedeal.com/deal/3320-kenneth-cole-shoes-flash-sale-at-macy-s-50-to-60-off-free-sh/" },
-{ "@type": "ListItem", "position": 58, "name": "DKNY Shoes Flash Sale at Macy's: 50% to 60% off + free shipping w/ $39", "url": "https://www.hackthedeal.com/deal/3321-dkny-shoes-flash-sale-at-macy-s-50-to-60-off-free-shipping-w/" },
-{ "@type": "ListItem", "position": 59, "name": "Clarks Shoes Flash Sale at Macy's: 50% to 60% off + free shipping w/ $39", "url": "https://www.hackthedeal.com/deal/3322-clarks-shoes-flash-sale-at-macy-s-50-to-60-off-free-shipping/" },
-{ "@type": "ListItem", "position": 60, "name": "New Balance Men's 530 Shoes for $55 + free shipping", "url": "https://www.hackthedeal.com/deal/3323-new-balance-men-s-530-shoes-for-55-free-shipping/" }
+{ "@type": "ListItem", "position": 1, "name": "Nike Men's Tennis Classic Shoes for $62 + free shipping", "url": "https://www.hackthedeal.com/deal/4342-nike-men-s-tennis-classic-shoes-for-62-free-shipping/" },
+{ "@type": "ListItem", "position": 2, "name": "Nike Air Jordan Men's or Women's Skyline Low LE Shoes for $79 + free shipping", "url": "https://www.hackthedeal.com/deal/4343-nike-air-jordan-men-s-or-women-s-skyline-low-le-shoes-for-79/" },
+{ "@type": "ListItem", "position": 3, "name": "On 2-Day Flash Deals at Dick's Sporting Goods: Up to 71% off + shipping varies", "url": "https://www.hackthedeal.com/deal/4344-on-2-day-flash-deals-at-dick-s-sporting-goods-up-to-71-off-s/" },
+{ "@type": "ListItem", "position": 4, "name": "Nike Men's Air Monarch IV Workout Shoes for $48 + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/4345-nike-men-s-air-monarch-iv-workout-shoes-for-48-free-shipping/" },
+{ "@type": "ListItem", "position": 5, "name": "Nike Men's Giannis Immortality 4 Basketball Shoes for $47 + free shipping w/ $49", "url": "https://www.hackthedeal.com/deal/4346-nike-men-s-giannis-immortality-4-basketball-shoes-for-47-fre/" },
+{ "@type": "ListItem", "position": 6, "name": "Nike Men's NikeCourt Lite 4 Tennis Shoes for $52 + free shipping", "url": "https://www.hackthedeal.com/deal/4347-nike-men-s-nikecourt-lite-4-tennis-shoes-for-52-free-shippin/" },
+{ "@type": "ListItem", "position": 7, "name": "adidas Terrex Back to School Shoe Deals for Kids' from $21, adults' from $41 + free shipping", "url": "https://www.hackthedeal.com/deal/4148-adidas-terrex-back-to-school-shoe-deals-for-kids-from-21-adu/" },
+{ "@type": "ListItem", "position": 8, "name": "adidas Men's Swift Run 1 Shoes for $34 + free shipping", "url": "https://www.hackthedeal.com/deal/4149-adidas-men-s-swift-run-1-shoes-for-34-free-shipping/" },
+{ "@type": "ListItem", "position": 9, "name": "HOKA Sale for Extra $20 off $150 + free shipping", "url": "https://www.hackthedeal.com/deal/4150-hoka-sale-for-extra-20-off-150-free-shipping/" },
+{ "@type": "ListItem", "position": 10, "name": "adidas Men's Terrex Rockadia Hiking Shoes for $48 + free shipping", "url": "https://www.hackthedeal.com/deal/4151-adidas-men-s-terrex-rockadia-hiking-shoes-for-48-free-shippi/" },
+{ "@type": "ListItem", "position": 11, "name": "adidas Men's Ultraboost 5X Shoes for $77 + Free shipping", "url": "https://www.hackthedeal.com/deal/4152-adidas-men-s-ultraboost-5x-shoes-for-77-free-shipping/" },
+{ "@type": "ListItem", "position": 12, "name": "Nike Structure Plus Men's Road Running Shoes for $95 + free shipping", "url": "https://www.hackthedeal.com/deal/4153-nike-structure-plus-men-s-road-running-shoes-for-95-free-shi/" },
+{ "@type": "ListItem", "position": 13, "name": "Amazon Essentials Men's Slip Deck Loafers for $11 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4155-amazon-essentials-men-s-slip-deck-loafers-for-11-free-shippi/" },
+{ "@type": "ListItem", "position": 14, "name": "adidas Ultraboost Back to School Deals: Up to 50% off + extra 15% off + free shipping", "url": "https://www.hackthedeal.com/deal/4154-adidas-ultraboost-back-to-school-deals-up-to-50-off-extra-15/" },
+{ "@type": "ListItem", "position": 15, "name": "Nike Women's Legend Essential 3 Next Nature Workout Shoes for $31 + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/4156-nike-women-s-legend-essential-3-next-nature-workout-shoes-fo/" },
+{ "@type": "ListItem", "position": 16, "name": "Nike Women's Air Max Nuaxis Shoes for $55 + free shipping", "url": "https://www.hackthedeal.com/deal/4157-nike-women-s-air-max-nuaxis-shoes-for-55-free-shipping/" },
+{ "@type": "ListItem", "position": 17, "name": "Rocky Boots Back to School Sale: Up to 40% off + free shipping w/ $75", "url": "https://www.hackthedeal.com/deal/4158-rocky-boots-back-to-school-sale-up-to-40-off-free-shipping-w/" },
+{ "@type": "ListItem", "position": 18, "name": "Fruit of the Loom Men's Padded Slippers for $5.00 + free shipping w/ $35", "url": "https://www.hackthedeal.com/deal/4159-fruit-of-the-loom-men-s-padded-slippers-for-5-00-free-shippi/" },
+{ "@type": "ListItem", "position": 19, "name": "Nike Men's or Women's Mercurial Vapor 17 Club FG Soccer Cleats for $52 in cart + free shipping", "url": "https://www.hackthedeal.com/deal/4160-nike-men-s-or-women-s-mercurial-vapor-17-club-fg-soccer-clea/" },
+{ "@type": "ListItem", "position": 20, "name": "Amazon Outlet Men's Shoes Deals: Up to 70% off + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4161-amazon-outlet-men-s-shoes-deals-up-to-70-off-free-shipping-w/" },
+{ "@type": "ListItem", "position": 21, "name": "adidas Men's Cloudfoam Cuxxion Sock Shoes for from $28 + free shipping", "url": "https://www.hackthedeal.com/deal/4162-adidas-men-s-cloudfoam-cuxxion-sock-shoes-for-from-28-free-s/" },
+{ "@type": "ListItem", "position": 22, "name": "Skechers Men\u2019s Zinger 2.0 The Arwen Retro Court Shoes for $40 + free shipping", "url": "https://www.hackthedeal.com/deal/4163-skechers-men-s-zinger-2-0-the-arwen-retro-court-shoes-for-40/" },
+{ "@type": "ListItem", "position": 23, "name": "On Men's Cloudmonster Shoes for $97 in cart + free shipping", "url": "https://www.hackthedeal.com/deal/4164-on-men-s-cloudmonster-shoes-for-97-in-cart-free-shipping/" },
+{ "@type": "ListItem", "position": 24, "name": "adidas Men's Terrex Anylander Rain.Rdy Hiking Shoes for $51 + free shipping", "url": "https://www.hackthedeal.com/deal/4165-adidas-men-s-terrex-anylander-rain-rdy-hiking-shoes-for-51-f/" },
+{ "@type": "ListItem", "position": 25, "name": "adidas Terrex Back to School Deals: Up to 50% off + extra 15% off + free shipping", "url": "https://www.hackthedeal.com/deal/4166-adidas-terrex-back-to-school-deals-up-to-50-off-extra-15-off/" },
+{ "@type": "ListItem", "position": 26, "name": "adidas Women's Ultraboost 5x Shoes for $77 + free shipping", "url": "https://www.hackthedeal.com/deal/4167-adidas-women-s-ultraboost-5x-shoes-for-77-free-shipping/" },
+{ "@type": "ListItem", "position": 27, "name": "adidas Ultraboost Back to School Deals: Up to 50% off + extra 15% off + free shipping", "url": "https://www.hackthedeal.com/deal/4168-adidas-ultraboost-back-to-school-deals-up-to-50-off-extra-15/" },
+{ "@type": "ListItem", "position": 28, "name": "Under Armour Men's UA Charged Edge Training Shoes (Select Sizes) for $30 + free shipping w/ $39", "url": "https://www.hackthedeal.com/deal/3887-under-armour-men-s-ua-charged-edge-training-shoes-select-siz/" },
+{ "@type": "ListItem", "position": 29, "name": "adidas Men's Response Runner Shoes for $30 + free shipping", "url": "https://www.hackthedeal.com/deal/3888-adidas-men-s-response-runner-shoes-for-30-free-shipping/" },
+{ "@type": "ListItem", "position": 30, "name": "adidas Men's Back to School Shoe Deals for From $15, running shoes from $24 + free shipping", "url": "https://www.hackthedeal.com/deal/3889-adidas-men-s-back-to-school-shoe-deals-for-from-15-running-s/" },
+{ "@type": "ListItem", "position": 31, "name": "adidas Men's Ultimashow Running Shoes for $24 + free shipping", "url": "https://www.hackthedeal.com/deal/3890-adidas-men-s-ultimashow-running-shoes-for-24-free-shipping/" },
+{ "@type": "ListItem", "position": 32, "name": "Jordan Shoes Sale at Dick's Sporting Goods: 25% off", "url": "https://www.hackthedeal.com/deal/3891-jordan-shoes-sale-at-dick-s-sporting-goods-25-off/" },
+{ "@type": "ListItem", "position": 33, "name": "Nike Men's or Women's Waffle Debut Shoes for $46 + shipping varies", "url": "https://www.hackthedeal.com/deal/3892-nike-men-s-or-women-s-waffle-debut-shoes-for-46-shipping-var/" },
+{ "@type": "ListItem", "position": 34, "name": "Coostar Men's Lightweight Slip-On Walking Shoes for $32 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3893-coostar-men-s-lightweight-slip-on-walking-shoes-for-32-free/" },
+{ "@type": "ListItem", "position": 35, "name": "Ozark Trail Men's Trek Cross Strap Sandals for $16 + free shipping w/ $35", "url": "https://www.hackthedeal.com/deal/3894-ozark-trail-men-s-trek-cross-strap-sandals-for-16-free-shipp/" },
+{ "@type": "ListItem", "position": 36, "name": "Kenneth Cole Reaction Men's Moore Penny Loafer for $65 + free shipping", "url": "https://www.hackthedeal.com/deal/3895-kenneth-cole-reaction-men-s-moore-penny-loafer-for-65-free-s/" },
+{ "@type": "ListItem", "position": 37, "name": "Nordstrom Anniversary Sale Shoes for All under $100 + free shipping", "url": "https://www.hackthedeal.com/deal/3896-nordstrom-anniversary-sale-shoes-for-all-under-100-free-ship/" },
+{ "@type": "ListItem", "position": 38, "name": "Nike Men's or Women's Book 1 Basketball Shoes for $49 + free shipping", "url": "https://www.hackthedeal.com/deal/3897-nike-men-s-or-women-s-book-1-basketball-shoes-for-49-free-sh/" },
+{ "@type": "ListItem", "position": 39, "name": "Nike Women's In-Season TR 13 Workout Shoes for $38 + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/3898-nike-women-s-in-season-tr-13-workout-shoes-for-38-free-shipp/" },
+{ "@type": "ListItem", "position": 40, "name": "Nike Men's or Women's Air Trainer Huarache Shoes for $95 + free shipping", "url": "https://www.hackthedeal.com/deal/3899-nike-men-s-or-women-s-air-trainer-huarache-shoes-for-95-free/" },
+{ "@type": "ListItem", "position": 41, "name": "Nike Men's Cortez Leather Shoes for $71 + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/3900-nike-men-s-cortez-leather-shoes-for-71-free-shipping-w-50/" },
+{ "@type": "ListItem", "position": 42, "name": "Vans Men's Brooklyn LS Shoes for from $42 + free shipping", "url": "https://www.hackthedeal.com/deal/3901-vans-men-s-brooklyn-ls-shoes-for-from-42-free-shipping/" },
+{ "@type": "ListItem", "position": 43, "name": "Nike Men's Zoom Rival Distance Track Shoes for $40 + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/3902-nike-men-s-zoom-rival-distance-track-shoes-for-40-free-shipp/" },
+{ "@type": "ListItem", "position": 44, "name": "Macy's Summer Weekend Sale Men's Shoes Deals: Up to 60% off + free shipping w/ $39", "url": "https://www.hackthedeal.com/deal/3618-macy-s-summer-weekend-sale-men-s-shoes-deals-up-to-60-off-fr/" },
+{ "@type": "ListItem", "position": 45, "name": "Nike Men's Lunar Force 1 Boots for $95 + free shipping", "url": "https://www.hackthedeal.com/deal/3619-nike-men-s-lunar-force-1-boots-for-95-free-shipping/" },
+{ "@type": "ListItem", "position": 46, "name": "Nike Men's Air Force 1 Low Retro Premium Shoes for $105 + free shipping", "url": "https://www.hackthedeal.com/deal/3620-nike-men-s-air-force-1-low-retro-premium-shoes-for-105-free/" },
+{ "@type": "ListItem", "position": 47, "name": "adidas Men's Adilette Lite Slides for $8.80 + free shipping", "url": "https://www.hackthedeal.com/deal/3621-adidas-men-s-adilette-lite-slides-for-8-80-free-shipping/" },
+{ "@type": "ListItem", "position": 48, "name": "On Running Shoes at Woot: Up to 40% off + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3622-on-running-shoes-at-woot-up-to-40-off-free-shipping-w-prime/" },
+{ "@type": "ListItem", "position": 49, "name": "On Men's Cloud X 5 Training Shoe for $128 + free shipping w/ $75", "url": "https://www.hackthedeal.com/deal/3623-on-men-s-cloud-x-5-training-shoe-for-128-free-shipping-w-75/" },
+{ "@type": "ListItem", "position": 50, "name": "Nike Women's Winflo 12 Road Running Shoes for $67 + free shipping", "url": "https://www.hackthedeal.com/deal/3624-nike-women-s-winflo-12-road-running-shoes-for-67-free-shippi/" },
+{ "@type": "ListItem", "position": 51, "name": "Nike Men's or Women's Revolution 7 Road Running Shoes for $32 + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/3625-nike-men-s-or-women-s-revolution-7-road-running-shoes-for-32/" },
+{ "@type": "ListItem", "position": 52, "name": "Avia Little & Big Kids Bungee Athletic Sneakers (Limited Sizes) for $10 + free shipping w/ $35", "url": "https://www.hackthedeal.com/deal/3626-avia-little-big-kids-bungee-athletic-sneakers-limited-sizes/" },
+{ "@type": "ListItem", "position": 53, "name": "Avia Women's 5000 Performance Sneakers for $11 + free shipping w/ $35", "url": "https://www.hackthedeal.com/deal/3627-avia-women-s-5000-performance-sneakers-for-11-free-shipping/" },
+{ "@type": "ListItem", "position": 54, "name": "On Men's Cloud 4 XD Running Shoes for $110 + free shipping", "url": "https://www.hackthedeal.com/deal/3628-on-men-s-cloud-4-xd-running-shoes-for-110-free-shipping/" },
+{ "@type": "ListItem", "position": 55, "name": "On Last Season Shoes Sale: Up to 40% off + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/3629-on-last-season-shoes-sale-up-to-40-off-free-shipping-w-50/" },
+{ "@type": "ListItem", "position": 56, "name": "Nike Men's Mercurial Vapor 16 Academy Shoes for from $49 + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/3630-nike-men-s-mercurial-vapor-16-academy-shoes-for-from-49-free/" },
+{ "@type": "ListItem", "position": 57, "name": "Nike Men's Air Force 1 '07 Shoes for $67 + free shipping", "url": "https://www.hackthedeal.com/deal/3631-nike-men-s-air-force-1-07-shoes-for-67-free-shipping/" },
+{ "@type": "ListItem", "position": 58, "name": "Skechers Go Walk Flex Ultra Slip-In Shoes for from $29 + free shipping", "url": "https://www.hackthedeal.com/deal/3632-skechers-go-walk-flex-ultra-slip-in-shoes-for-from-29-free-s/" },
+{ "@type": "ListItem", "position": 59, "name": "Birkenstock Shoe Deals at Dick's Sporting Goods: Up to 45% off + free shipping w/ $49", "url": "https://www.hackthedeal.com/deal/3633-birkenstock-shoe-deals-at-dick-s-sporting-goods-up-to-45-off/" },
+{ "@type": "ListItem", "position": 60, "name": "Skechers Men's Hands-Free Swift Fit Sneaker for $33 + free shipping", "url": "https://www.hackthedeal.com/deal/3634-skechers-men-s-hands-free-swift-fit-sneaker-for-33-free-ship/" }
       ]
     }
     </script>
@@ -828,35 +874,48 @@
     </div>
 
     <!-- Privacy / cookie consent notice — static markup so it's visible even
-         before React mounts. GTM/GA already loaded in Consent Mode's default
-         "denied" state (see <head>); clicking OK just upgrades the signal. -->
+         before React mounts. GTM/GA/AdSense already loaded in Consent Mode's
+         default state from localStorage (see <head>); Accept/Reject here
+         just update that signal going forward. -->
     <div id="consent-overlay" class="consent-overlay" style="display: none;">
       <div class="consent-box">
         <div class="consent-text">
           <p class="consent-title">🍪 We use cookies</p>
           <p>
-            This site uses cookies to measure site performance and improve your experience.
-            By clicking OK, you accept our use of cookies as described in our
-            <a href="/privacy.html">Privacy Policy</a>.
+            This site uses cookies to measure site performance and improve your experience, and
+            works with Google Analytics and AdSense, which may use cookies for analytics and to
+            show personalized ads. See our <a href="/privacy.html">Privacy Policy</a> for details.
           </p>
         </div>
-        <button id="consent-ok" type="button">OK</button>
+        <div class="consent-actions">
+          <button id="consent-reject" type="button" class="consent-reject-btn">Reject</button>
+          <button id="consent-ok" type="button">Accept</button>
+        </div>
       </div>
     </div>
+    <button id="cookie-settings-btn" type="button" class="cookie-settings-btn">Cookie Settings</button>
     <script>
       (function () {
-        if (localStorage.getItem('htd_consent_v1') !== 'granted') {
-          document.getElementById('consent-overlay').style.display = 'flex';
-        }
-        document.getElementById('consent-ok').addEventListener('click', function () {
-          localStorage.setItem('htd_consent_v1', 'granted');
+        function setConsent(granted) {
+          localStorage.setItem('htd_consent_v1', granted ? 'granted' : 'denied');
           document.getElementById('consent-overlay').style.display = 'none';
           gtag('consent', 'update', {
-            'ad_storage': 'granted',
-            'ad_user_data': 'granted',
-            'ad_personalization': 'granted',
-            'analytics_storage': 'granted'
+            'ad_storage': granted ? 'granted' : 'denied',
+            'ad_user_data': granted ? 'granted' : 'denied',
+            'ad_personalization': granted ? 'granted' : 'denied',
+            'analytics_storage': granted ? 'granted' : 'denied'
           });
+          window.adsbygoogle = window.adsbygoogle || [];
+          window.adsbygoogle.push({ google_ad_client: 'ca-pub-6138840929831792', google_restrict_data_processing: !granted });
+          if (granted && window.htdLoadAwin) { window.htdLoadAwin(); }
+        }
+        if (!localStorage.getItem('htd_consent_v1')) {
+          document.getElementById('consent-overlay').style.display = 'flex';
+        }
+        document.getElementById('consent-ok').addEventListener('click', function () { setConsent(true); });
+        document.getElementById('consent-reject').addEventListener('click', function () { setConsent(false); });
+        document.getElementById('cookie-settings-btn').addEventListener('click', function () {
+          document.getElementById('consent-overlay').style.display = 'flex';
         });
       })();
     </script>
@@ -901,7 +960,103 @@
       </section>
       <main style="max-width:1152px;margin:0 auto;padding:8px 16px 40px">
         <div class="section-title-bar"><span class="section-label">Latest Deals</span></div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px"><a href="/deal/4148-adidas-terrex-back-to-school-shoe-deals-for-kids-from-21-adu/" class="deal-card">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px"><a href="/deal/4342-nike-men-s-tennis-classic-shoes-for-62-free-shipping/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785519282-product-trimmed.png?h=490&amp;w=1024" alt="Nike Men&#x27;s Tennis Classic Shoes for $62 + free shipping" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">shoes</span>
+          
+        </div>
+        <p class="deal-title">Nike Men&#x27;s Tennis Classic Shoes for $62 + free shipping</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$62.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-shoes</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4343-nike-air-jordan-men-s-or-women-s-skyline-low-le-shoes-for-79/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785518498-product-trimmed.png?h=540&amp;w=934" alt="Nike Air Jordan Men&#x27;s or Women&#x27;s Skyline Low LE Shoes for $79 + free shipping" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">shoes</span>
+          
+        </div>
+        <p class="deal-title">Nike Air Jordan Men&#x27;s or Women&#x27;s Skyline Low LE Shoes for $79 + free shipping</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$79.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-shoes</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4344-on-2-day-flash-deals-at-dick-s-sporting-goods-up-to-71-off-s/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785508992-product-trimmed.jpg?h=117&amp;w=248" alt="On 2-Day Flash Deals at Dick&#x27;s Sporting Goods: Up to 71% off + shipping varies" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">shoes</span>
+          <span class="discount-badge">71% off</span>
+        </div>
+        <p class="deal-title">On 2-Day Flash Deals at Dick&#x27;s Sporting Goods: Up to 71% off + shipping varies</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span style="font-size:13px;color:var(--muted)">See deal</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-shoes</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4345-nike-men-s-air-monarch-iv-workout-shoes-for-48-free-shipping/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785507526-product-trimmed.png?h=360&amp;w=692" alt="Nike Men&#x27;s Air Monarch IV Workout Shoes for $48 + free shipping w/ $50" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">shoes</span>
+          <span class="discount-badge">4% off</span>
+        </div>
+        <p class="deal-title">Nike Men&#x27;s Air Monarch IV Workout Shoes for $48 + free shipping w/ $50</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$48.00</span><span class="price-original">$50.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-shoes</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4346-nike-men-s-giannis-immortality-4-basketball-shoes-for-47-fre/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785507261-25nikabaskmmrtlty4jtg_white_black_wolf_grey.webp?h=507&amp;w=1024" alt="Nike Men&#x27;s Giannis Immortality 4 Basketball Shoes for $47 + free shipping w/ $49" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">shoes</span>
+          <span class="discount-badge">4% off</span>
+        </div>
+        <p class="deal-title">Nike Men&#x27;s Giannis Immortality 4 Basketball Shoes for $47 + free shipping w/ $49</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$47.00</span><span class="price-original">$49.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-shoes</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4347-nike-men-s-nikecourt-lite-4-tennis-shoes-for-52-free-shippin/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785506932-product-trimmed.png?h=351&amp;w=711" alt="Nike Men&#x27;s NikeCourt Lite 4 Tennis Shoes for $52 + free shipping" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">shoes</span>
+          
+        </div>
+        <p class="deal-title">Nike Men&#x27;s NikeCourt Lite 4 Tennis Shoes for $52 + free shipping</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$52.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-shoes</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4148-adidas-terrex-back-to-school-shoe-deals-for-kids-from-21-adu/" class="deal-card">
       <div class="deal-card-icon-fallback"></div>
       <div class="deal-card-body">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
@@ -1759,102 +1914,6 @@
         <p class="deal-title">Skechers Men&#x27;s Hands-Free Swift Fit Sneaker for $33 + free shipping</p>
         <div style="display:flex;align-items:baseline;gap:8px">
           <span class="price-current">$33.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-shoes</span>
-          <span>Jul 28, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/3635-adidas-summer-sale-men-s-shoes-deals-up-to-40-off-extra-15-o/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">shoes</span>
-          <span class="discount-badge">40% off</span>
-        </div>
-        <p class="deal-title">adidas Summer Sale Men&#x27;s Shoes Deals: Up to 40% off + extra 15% off + free shipping</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span style="font-size:13px;color:var(--muted)">See deal</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-shoes</span>
-          <span>Jul 28, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/3319-michael-kors-shoes-flash-sale-at-macy-s-50-to-60-off-free-sh/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1785245193-36684476_fpx.webp?h=856&amp;w=700" alt="Michael Kors Shoes Flash Sale at Macy&#x27;s: 50% to 60% off + free shipping w/ $39" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">shoes</span>
-          <span class="discount-badge">60% off</span>
-        </div>
-        <p class="deal-title">Michael Kors Shoes Flash Sale at Macy&#x27;s: 50% to 60% off + free shipping w/ $39</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$39.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-shoes</span>
-          <span>Jul 28, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/3320-kenneth-cole-shoes-flash-sale-at-macy-s-50-to-60-off-free-sh/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1785245026-33268104_fpx.webp?h=856&amp;w=700" alt="Kenneth Cole Shoes Flash Sale at Macy&#x27;s: 50% to 60% off + free shipping w/ $39" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">shoes</span>
-          <span class="discount-badge">60% off</span>
-        </div>
-        <p class="deal-title">Kenneth Cole Shoes Flash Sale at Macy&#x27;s: 50% to 60% off + free shipping w/ $39</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$39.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-shoes</span>
-          <span>Jul 28, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/3321-dkny-shoes-flash-sale-at-macy-s-50-to-60-off-free-shipping-w/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1785244885-35454567_fpx.webp?h=856&amp;w=700" alt="DKNY Shoes Flash Sale at Macy&#x27;s: 50% to 60% off + free shipping w/ $39" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">shoes</span>
-          <span class="discount-badge">60% off</span>
-        </div>
-        <p class="deal-title">DKNY Shoes Flash Sale at Macy&#x27;s: 50% to 60% off + free shipping w/ $39</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$39.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-shoes</span>
-          <span>Jul 28, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/3322-clarks-shoes-flash-sale-at-macy-s-50-to-60-off-free-shipping/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1785244399-16233954_fpx.webp?h=856&amp;w=700" alt="Clarks Shoes Flash Sale at Macy&#x27;s: 50% to 60% off + free shipping w/ $39" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">shoes</span>
-          <span class="discount-badge">60% off</span>
-        </div>
-        <p class="deal-title">Clarks Shoes Flash Sale at Macy&#x27;s: 50% to 60% off + free shipping w/ $39</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$39.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-shoes</span>
-          <span>Jul 28, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/3323-new-balance-men-s-530-shoes-for-55-free-shipping/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1785242735-35461035_fpx.jpeg?h=400&amp;w=328" alt="New Balance Men&#x27;s 530 Shoes for $55 + free shipping" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">shoes</span>
-          
-        </div>
-        <p class="deal-title">New Balance Men&#x27;s 530 Shoes for $55 + free shipping</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$55.00</span>
         </div>
         <div class="deal-meta">
           <span>dealnews-shoes</span>

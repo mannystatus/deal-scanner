@@ -1,31 +1,41 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <!-- Consent Mode v2 — sets default (denied) consent state before any tag
-         below loads, so GTM/gtag still fire on every visit but only send
-         cookieless, anonymized signals until the user accepts the cookie
-         notice further down the page. If they already accepted on a past
-         visit, immediately upgrade to granted from the stored preference.
+    <!-- Consent Mode v2 — sets default consent state (denied unless already
+         granted on a past visit) before any tag below loads, so GTM/GA still
+         fire on every visit but only send cookieless, anonymized signals
+         until the user accepts the cookie notice further down the page.
+         Also puts AdSense into restricted-data-processing mode (non-
+         personalized ads only) by default — required for EEA/UK traffic
+         under Google's EU User Consent Policy.
          https://developers.google.com/tag-platform/security/guides/consent -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag() { dataLayer.push(arguments); }
       window.gtag = gtag;
+      var htdGranted = localStorage.getItem('htd_consent_v1') === 'granted';
       gtag('consent', 'default', {
-        'ad_storage': 'denied',
-        'ad_user_data': 'denied',
-        'ad_personalization': 'denied',
-        'analytics_storage': 'denied',
+        'ad_storage': htdGranted ? 'granted' : 'denied',
+        'ad_user_data': htdGranted ? 'granted' : 'denied',
+        'ad_personalization': htdGranted ? 'granted' : 'denied',
+        'analytics_storage': htdGranted ? 'granted' : 'denied',
         'wait_for_update': 500
       });
-      if (localStorage.getItem('htd_consent_v1') === 'granted') {
-        gtag('consent', 'update', {
-          'ad_storage': 'granted',
-          'ad_user_data': 'granted',
-          'ad_personalization': 'granted',
-          'analytics_storage': 'granted'
-        });
-      }
+      window.adsbygoogle = window.adsbygoogle || [];
+      window.adsbygoogle.push({ google_ad_client: 'ca-pub-6138840929831792', google_restrict_data_processing: !htdGranted });
+
+      // Awin's Publisher MasterTag sets affiliate click/conversion-tracking
+      // cookies, which isn't a Google product Consent Mode covers — gated
+      // separately here, and only injected once consent is granted (either
+      // already stored, or via the Accept button below).
+      window.htdLoadAwin = window.htdLoadAwin || function () {
+        if (window.htdAwinLoaded) return;
+        window.htdAwinLoaded = true;
+        var s = document.createElement('script');
+        s.src = 'https://www.dwin2.com/pub.2991473.min.js';
+        document.head.appendChild(s);
+      };
+      if (htdGranted) { window.htdLoadAwin(); }
     </script>
     <!-- End Consent Mode -->
 
@@ -125,8 +135,9 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6138840929831792"
      crossorigin="anonymous"></script>
 
-    <!-- Awin affiliate tracking (Publisher MasterTag) -->
-    <script src="https://www.dwin2.com/pub.2991473.min.js"></script>
+    <!-- Awin affiliate tracking (Publisher MasterTag) — loaded conditionally
+         by htdLoadAwin() in the Consent Mode script above, not statically
+         here, since it needs to wait on consent like everything else. -->
 
     <style>
       :root {
@@ -230,6 +241,11 @@
         color: var(--accent-text);
         font-weight: 600;
       }
+      .consent-actions {
+        display: flex;
+        flex: 0 0 auto;
+        gap: 10px;
+      }
       .consent-box button {
         flex: 0 0 auto;
         background: var(--accent);
@@ -243,6 +259,36 @@
       }
       .consent-box button:hover {
         opacity: 0.85;
+      }
+      .consent-box .consent-reject-btn {
+        background: transparent;
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+      .consent-box .consent-reject-btn:hover {
+        opacity: 1;
+        background: var(--bg);
+      }
+
+      /* Reopens the cookie banner so a visitor can change their choice
+         later — kept as static markup outside #root (like consent-overlay
+         itself) so it works identically for prerendered/no-JS pages and
+         after the React app mounts. */
+      .cookie-settings-btn {
+        position: fixed;
+        left: 12px;
+        bottom: 12px;
+        z-index: 998;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 11px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        cursor: pointer;
+      }
+      .cookie-settings-btn:hover {
+        color: var(--text);
       }
 
       /* Header network bar */
@@ -750,66 +796,66 @@
       "@type": "ItemList",
       "name": "Best Back to School Deals",
       "itemListElement": [
-{ "@type": "ListItem", "position": 1, "name": "Microsoft\u2019s Surface Laptop/Pro 2-in-1 Copilot+ PCs are starting at $750 with Back to School deals (Up to $450 off)", "url": "https://www.hackthedeal.com/deal/4063-microsoft-s-surface-laptop-pro-2-in-1-copilot-pcs-are-starti/" },
-{ "@type": "ListItem", "position": 2, "name": "adidas Terrex Back to School Shoe Deals for Kids' from $21, adults' from $41 + free shipping", "url": "https://www.hackthedeal.com/deal/4148-adidas-terrex-back-to-school-shoe-deals-for-kids-from-21-adu/" },
-{ "@type": "ListItem", "position": 3, "name": "adidas Terrex Back to School Shoe Deals for Kids' from $21, adults' from $41 + free shipping", "url": "https://www.hackthedeal.com/deal/4114-adidas-terrex-back-to-school-shoe-deals-for-kids-from-21-adu/" },
-{ "@type": "ListItem", "position": 4, "name": "Huge B&H Back to School laptop sale now live: Deals on Windows Copilot+ PCs, MacBooks, and accessories from just $6", "url": "https://www.hackthedeal.com/deal/4069-huge-b-h-back-to-school-laptop-sale-now-live-deals-on-window/" },
-{ "@type": "ListItem", "position": 5, "name": "adidas Back to School Jersey Deals: Up to 50% off + extra 15% off + free shipping", "url": "https://www.hackthedeal.com/deal/4120-adidas-back-to-school-jersey-deals-up-to-50-off-extra-15-off/" },
-{ "@type": "ListItem", "position": 6, "name": "adidas Men's Back to School Deals: Up to 40% off + extra 15% off + free shipping", "url": "https://www.hackthedeal.com/deal/4123-adidas-men-s-back-to-school-deals-up-to-40-off-extra-15-off/" },
-{ "@type": "ListItem", "position": 7, "name": "adidas Ultraboost Back to School Deals: Up to 50% off + extra 15% off + free shipping", "url": "https://www.hackthedeal.com/deal/4112-adidas-ultraboost-back-to-school-deals-up-to-50-off-extra-15/" },
-{ "@type": "ListItem", "position": 8, "name": "adidas Ultraboost Back to School Deals: Up to 50% off + extra 15% off + free shipping", "url": "https://www.hackthedeal.com/deal/4154-adidas-ultraboost-back-to-school-deals-up-to-50-off-extra-15/" },
-{ "@type": "ListItem", "position": 9, "name": "Rocky Boots Back to School Sale: Up to 40% off + free shipping w/ $75", "url": "https://www.hackthedeal.com/deal/4158-rocky-boots-back-to-school-sale-up-to-40-off-free-shipping-w/" },
-{ "@type": "ListItem", "position": 10, "name": "Vibrant Nike Back to School top picks from $21: Shoes, shirts, hats, jackets, more up to 43% off", "url": "https://www.hackthedeal.com/deal/4094-vibrant-nike-back-to-school-top-picks-from-21-shoes-shirts-h/" },
-{ "@type": "ListItem", "position": 11, "name": "Newegg Back to School Sale: Up to 75% off + free shipping", "url": "https://www.hackthedeal.com/deal/4056-newegg-back-to-school-sale-up-to-75-off-free-shipping/" },
-{ "@type": "ListItem", "position": 12, "name": "adidas Terrex Back to School Deals: Up to 50% off + extra 15% off + free shipping", "url": "https://www.hackthedeal.com/deal/4166-adidas-terrex-back-to-school-deals-up-to-50-off-extra-15-off/" },
-{ "@type": "ListItem", "position": 13, "name": "adidas Ultraboost Back to School Deals: Up to 50% off + extra 15% off + free shipping", "url": "https://www.hackthedeal.com/deal/4168-adidas-ultraboost-back-to-school-deals-up-to-50-off-extra-15/" },
-{ "@type": "ListItem", "position": 14, "name": "adidas Men's Back to School Shoe Deals for From $15, running shoes from $24 + free shipping", "url": "https://www.hackthedeal.com/deal/3889-adidas-men-s-back-to-school-shoe-deals-for-from-15-running-s/" },
+{ "@type": "ListItem", "position": 1, "name": "Segway Back to School EV Sale offers hundreds in savings on e-scooters, e-bikes, more \u2013 all starting from $160", "url": "https://www.hackthedeal.com/deal/4294-segway-back-to-school-ev-sale-offers-hundreds-in-savings-on/" },
+{ "@type": "ListItem", "position": 2, "name": "Microsoft\u2019s Surface Laptop/Pro 2-in-1 Copilot+ PCs are starting at $750 with Back to School deals (Up to $450 off)", "url": "https://www.hackthedeal.com/deal/4063-microsoft-s-surface-laptop-pro-2-in-1-copilot-pcs-are-starti/" },
+{ "@type": "ListItem", "position": 3, "name": "adidas Terrex Back to School Shoe Deals for Kids' from $21, adults' from $41 + free shipping", "url": "https://www.hackthedeal.com/deal/4148-adidas-terrex-back-to-school-shoe-deals-for-kids-from-21-adu/" },
+{ "@type": "ListItem", "position": 4, "name": "adidas Terrex Back to School Shoe Deals for Kids' from $21, adults' from $41 + free shipping", "url": "https://www.hackthedeal.com/deal/4114-adidas-terrex-back-to-school-shoe-deals-for-kids-from-21-adu/" },
+{ "@type": "ListItem", "position": 5, "name": "Huge B&H Back to School laptop sale now live: Deals on Windows Copilot+ PCs, MacBooks, and accessories from just $6", "url": "https://www.hackthedeal.com/deal/4069-huge-b-h-back-to-school-laptop-sale-now-live-deals-on-window/" },
+{ "@type": "ListItem", "position": 6, "name": "adidas Back to School Jersey Deals: Up to 50% off + extra 15% off + free shipping", "url": "https://www.hackthedeal.com/deal/4120-adidas-back-to-school-jersey-deals-up-to-50-off-extra-15-off/" },
+{ "@type": "ListItem", "position": 7, "name": "adidas Men's Back to School Deals: Up to 40% off + extra 15% off + free shipping", "url": "https://www.hackthedeal.com/deal/4123-adidas-men-s-back-to-school-deals-up-to-40-off-extra-15-off/" },
+{ "@type": "ListItem", "position": 8, "name": "adidas Ultraboost Back to School Deals: Up to 50% off + extra 15% off + free shipping", "url": "https://www.hackthedeal.com/deal/4112-adidas-ultraboost-back-to-school-deals-up-to-50-off-extra-15/" },
+{ "@type": "ListItem", "position": 9, "name": "adidas Ultraboost Back to School Deals: Up to 50% off + extra 15% off + free shipping", "url": "https://www.hackthedeal.com/deal/4154-adidas-ultraboost-back-to-school-deals-up-to-50-off-extra-15/" },
+{ "@type": "ListItem", "position": 10, "name": "Rocky Boots Back to School Sale: Up to 40% off + free shipping w/ $75", "url": "https://www.hackthedeal.com/deal/4158-rocky-boots-back-to-school-sale-up-to-40-off-free-shipping-w/" },
+{ "@type": "ListItem", "position": 11, "name": "Vibrant Nike Back to School top picks from $21: Shoes, shirts, hats, jackets, more up to 43% off", "url": "https://www.hackthedeal.com/deal/4094-vibrant-nike-back-to-school-top-picks-from-21-shoes-shirts-h/" },
+{ "@type": "ListItem", "position": 12, "name": "Newegg Back to School Sale: Up to 75% off + free shipping", "url": "https://www.hackthedeal.com/deal/4056-newegg-back-to-school-sale-up-to-75-off-free-shipping/" },
+{ "@type": "ListItem", "position": 13, "name": "adidas Terrex Back to School Deals: Up to 50% off + extra 15% off + free shipping", "url": "https://www.hackthedeal.com/deal/4166-adidas-terrex-back-to-school-deals-up-to-50-off-extra-15-off/" },
+{ "@type": "ListItem", "position": 14, "name": "adidas Ultraboost Back to School Deals: Up to 50% off + extra 15% off + free shipping", "url": "https://www.hackthedeal.com/deal/4168-adidas-ultraboost-back-to-school-deals-up-to-50-off-extra-15/" },
 { "@type": "ListItem", "position": 15, "name": "adidas Men's Back to School Shoe Deals for From $15, running shoes from $24 + free shipping", "url": "https://www.hackthedeal.com/deal/3856-adidas-men-s-back-to-school-shoe-deals-for-from-15-running-s/" },
-{ "@type": "ListItem", "position": 16, "name": "adidas Back to School Deals: Up to 40% off + extra 15% off + free shipping", "url": "https://www.hackthedeal.com/deal/3850-adidas-back-to-school-deals-up-to-40-off-extra-15-off-free-s/" },
-{ "@type": "ListItem", "position": 17, "name": "adidas Back to School Sale: Up to 40% off + extra 15% off + free shipping", "url": "https://www.hackthedeal.com/deal/3858-adidas-back-to-school-sale-up-to-40-off-extra-15-off-free-sh/" },
-{ "@type": "ListItem", "position": 18, "name": "Best Buy has one of the best Back to School deals: 50% off HP\u2019s 2026 X Flip touchscreen 2-in-1 Copilot+ PC at $650 (All-time low)", "url": "https://www.hackthedeal.com/deal/3823-best-buy-has-one-of-the-best-back-to-school-deals-50-off-hp/" },
-{ "@type": "ListItem", "position": 19, "name": "School Supplies Sale: 12-Ct Crayola Colored Pencils $1, 24-Ct Crayola Crayons $0.50 & More + Free Pickup", "url": "https://www.hackthedeal.com/deal/3444-school-supplies-sale-12-ct-crayola-colored-pencils-1-24-ct-c/" },
-{ "@type": "ListItem", "position": 20, "name": "Nike Back to School sale slashes bags, wallets, more as low as $17 with this promo code", "url": "https://www.hackthedeal.com/deal/3570-nike-back-to-school-sale-slashes-bags-wallets-more-as-low-as/" },
-{ "@type": "ListItem", "position": 21, "name": "eBay Back to School Fashion Sale: Up to 70% off + extra 20% off + free shipping", "url": "https://www.hackthedeal.com/deal/3300-ebay-back-to-school-fashion-sale-up-to-70-off-extra-20-off-f/" },
-{ "@type": "ListItem", "position": 22, "name": "ASUS\u2019 16GB/256GB ExpertBook CX54 Chromebook Plus is a great back-to-school alternative to MacBook Neo at $600 low today", "url": "https://www.hackthedeal.com/deal/3263-asus-16gb-256gb-expertbook-cx54-chromebook-plus-is-a-great-b/" },
-{ "@type": "ListItem", "position": 23, "name": "Staples Back to School Headphones Deals: Up to 37% off + free shipping w/$35", "url": "https://www.hackthedeal.com/deal/3234-staples-back-to-school-headphones-deals-up-to-37-off-free-sh/" },
-{ "@type": "ListItem", "position": 24, "name": "Staples Back to School Tablets & iPads Deals: Up to 54% off + free shipping", "url": "https://www.hackthedeal.com/deal/3249-staples-back-to-school-tablets-ipads-deals-up-to-54-off-free/" },
-{ "@type": "ListItem", "position": 25, "name": "Staples Back to School Laptop Deals for From $250 + free next-day delivery", "url": "https://www.hackthedeal.com/deal/3251-staples-back-to-school-laptop-deals-for-from-250-free-next-d/" },
-{ "@type": "ListItem", "position": 26, "name": "Scheels Back to School Sale : Up to 50% off  + free shipping w/ $25 today only", "url": "https://www.hackthedeal.com/deal/3063-scheels-back-to-school-sale-up-to-50-off-free-shipping-w-25/" },
-{ "@type": "ListItem", "position": 27, "name": "Amazon back to school kids tech deals up to 40% off: Fire tablets from $70, Echo speakers, Kindle, more from $30", "url": "https://www.hackthedeal.com/deal/3049-amazon-back-to-school-kids-tech-deals-up-to-40-off-fire-tabl/" },
-{ "@type": "ListItem", "position": 28, "name": "Best Buy Back to School TV & Home Theater Deals: Up to 55% off + free shipping", "url": "https://www.hackthedeal.com/deal/3019-best-buy-back-to-school-tv-home-theater-deals-up-to-55-off-f/" },
-{ "@type": "ListItem", "position": 29, "name": "Best Buy Back to School PC Gaming Deals: Up to 85% off + free shipping", "url": "https://www.hackthedeal.com/deal/3029-best-buy-back-to-school-pc-gaming-deals-up-to-85-off-free-sh/" },
-{ "@type": "ListItem", "position": 30, "name": "Best Buy\u2019s back-to-school sale takes up to $730 off Copilot+ PCs and gaming laptops with deals from $330", "url": "https://www.hackthedeal.com/deal/3054-best-buy-s-back-to-school-sale-takes-up-to-730-off-copilot-p/" },
-{ "@type": "ListItem", "position": 31, "name": "Apple Back to School Deals at Best Buy: Up to 80% off + free shipping", "url": "https://www.hackthedeal.com/deal/3031-apple-back-to-school-deals-at-best-buy-up-to-80-off-free-shi/" },
-{ "@type": "ListItem", "position": 32, "name": "Best Buy Back to School College Tech Deals for Under $150 + free shipping", "url": "https://www.hackthedeal.com/deal/3020-best-buy-back-to-school-college-tech-deals-for-under-150-fre/" },
-{ "@type": "ListItem", "position": 33, "name": "Best Buy Back to School Sale: Up to 60% off + free shipping", "url": "https://www.hackthedeal.com/deal/3032-best-buy-back-to-school-sale-up-to-60-off-free-shipping/" },
-{ "@type": "ListItem", "position": 34, "name": "Best Buy 2026 Back to School sale: College Tech under $150, Phone deals, TVs from $70, printers, routers, more", "url": "https://www.hackthedeal.com/deal/3058-best-buy-2026-back-to-school-sale-college-tech-under-150-pho/" },
-{ "@type": "ListItem", "position": 35, "name": "lululemon Back to School Event for From $14 + free shipping", "url": "https://www.hackthedeal.com/deal/2905-lululemon-back-to-school-event-for-from-14-free-shipping/" },
-{ "@type": "ListItem", "position": 36, "name": "9to5Toys Fashion Weekly \u2013 Nike Back to School sale, Levi\u2019s Amazon sale up to 48% off, Alex Vando Navy Sail polo $13.50, more", "url": "https://www.hackthedeal.com/deal/2724-9to5toys-fashion-weekly-nike-back-to-school-sale-levi-s-amaz/" },
-{ "@type": "ListItem", "position": 37, "name": "Nike Back to School Sale: Up to 50% off + extra 25% off + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/2775-nike-back-to-school-sale-up-to-50-off-extra-25-off-free-ship/" },
-{ "@type": "ListItem", "position": 38, "name": "Nike Back to School sale top picks include Air Force 1, ACG, Vomero, Jordan 1, Alphafly, more from $60", "url": "https://www.hackthedeal.com/deal/2749-nike-back-to-school-sale-top-picks-include-air-force-1-acg-v/" },
-{ "@type": "ListItem", "position": 39, "name": "Lenovo Back to School Doorbuster Deals: Up to 55% off + free shipping", "url": "https://www.hackthedeal.com/deal/2718-lenovo-back-to-school-doorbuster-deals-up-to-55-off-free-shi/" },
-{ "@type": "ListItem", "position": 40, "name": "adidas Back to School Bag & Backpack Deals: Up to 50% off + extra 15% off + free shipping", "url": "https://www.hackthedeal.com/deal/2528-adidas-back-to-school-bag-backpack-deals-up-to-50-off-extra/" },
-{ "@type": "ListItem", "position": 41, "name": "U.S. Polo Assn Back to School Savings: Up to 73% off + Extra 25% off + free shipping", "url": "https://www.hackthedeal.com/deal/2537-u-s-polo-assn-back-to-school-savings-up-to-73-off-extra-25-o/" },
-{ "@type": "ListItem", "position": 42, "name": "Dell Back to School Desktop Deals: Up to $1,500 off + free shipping", "url": "https://www.hackthedeal.com/deal/2469-dell-back-to-school-desktop-deals-up-to-1-500-off-free-shipp/" },
-{ "@type": "ListItem", "position": 43, "name": "adidas Back to School Kids' Sneaker Deals for From $17 + free shipping", "url": "https://www.hackthedeal.com/deal/2354-adidas-back-to-school-kids-sneaker-deals-for-from-17-free-sh/" },
-{ "@type": "ListItem", "position": 44, "name": "adidas Back to School Kids' Sneaker Deals for From $17 + free shipping", "url": "https://www.hackthedeal.com/deal/2308-adidas-back-to-school-kids-sneaker-deals-for-from-17-free-sh/" },
-{ "@type": "ListItem", "position": 45, "name": "adidas Back to School Kids' Deals: Up to 50% off + extra 15% off + free shipping", "url": "https://www.hackthedeal.com/deal/2314-adidas-back-to-school-kids-deals-up-to-50-off-extra-15-off-f/" },
-{ "@type": "ListItem", "position": 46, "name": "Nike Back to School Accessories & Equipment Deals: Up to 29% off + Extra 25% off + free shipping w/$50", "url": "https://www.hackthedeal.com/deal/2311-nike-back-to-school-accessories-equipment-deals-up-to-29-off/" },
-{ "@type": "ListItem", "position": 47, "name": "Nike Back to School Hoodies & Pullovers Deals: Up to 44% off + Extra 25% off + free shipping w/$50", "url": "https://www.hackthedeal.com/deal/2313-nike-back-to-school-hoodies-pullovers-deals-up-to-44-off-ext/" },
-{ "@type": "ListItem", "position": 48, "name": "Nike Back to School ACG Shoe Deals: Up to 29% off + Extra 25% off + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/2355-nike-back-to-school-acg-shoe-deals-up-to-29-off-extra-25-off/" },
-{ "@type": "ListItem", "position": 49, "name": "Nike Back to School ACG Shoe Deals: Up to 29% off + Extra 25% off + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/2315-nike-back-to-school-acg-shoe-deals-up-to-29-off-extra-25-off/" },
-{ "@type": "ListItem", "position": 50, "name": "Lenovo\u2019s 2026 Chromebook m with Google Gemini and MediaTek Kompanio 540 is a back-to-school steal at $220 (Nearly 50% off)", "url": "https://www.hackthedeal.com/deal/2274-lenovo-s-2026-chromebook-m-with-google-gemini-and-mediatek-k/" },
-{ "@type": "ListItem", "position": 51, "name": "Nike Back to School Pegasus Deals: Up to 33% off + Extra 25% off + free shipping w/$50", "url": "https://www.hackthedeal.com/deal/2317-nike-back-to-school-pegasus-deals-up-to-33-off-extra-25-off/" },
-{ "@type": "ListItem", "position": 52, "name": "Nike Back to School Pegasus Deals: Up to 33% off + Extra 25% off + free shipping w/$50", "url": "https://www.hackthedeal.com/deal/2356-nike-back-to-school-pegasus-deals-up-to-33-off-extra-25-off/" },
-{ "@type": "ListItem", "position": 53, "name": "Nike Back to School Air Force 1 Deals: Up to 30% off + Extra 25% off + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/2318-nike-back-to-school-air-force-1-deals-up-to-30-off-extra-25/" },
-{ "@type": "ListItem", "position": 54, "name": "Nike Back to School Air Force 1 Deals: Up to 30% off + Extra 25% off + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/2357-nike-back-to-school-air-force-1-deals-up-to-30-off-extra-25/" },
-{ "@type": "ListItem", "position": 55, "name": "Nike Back to School  Air Max Deals: Up to 50% off + extra 25% off + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/2358-nike-back-to-school-air-max-deals-up-to-50-off-extra-25-off/" },
-{ "@type": "ListItem", "position": 56, "name": "Nike Back to School  Air Max Deals: Up to 50% off + extra 25% off + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/2322-nike-back-to-school-air-max-deals-up-to-50-off-extra-25-off/" },
-{ "@type": "ListItem", "position": 57, "name": "Head back to school with this 14-inch ASUS Chromebook Plus Google AI laptop while it\u2019s down to $399 (Today only, $200 off)", "url": "https://www.hackthedeal.com/deal/2279-head-back-to-school-with-this-14-inch-asus-chromebook-plus-g/" },
-{ "@type": "ListItem", "position": 58, "name": "Nike Back to School Sale Men's Shoe Deals: Up to 50% off + extra 25% off + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/2359-nike-back-to-school-sale-men-s-shoe-deals-up-to-50-off-extra/" },
-{ "@type": "ListItem", "position": 59, "name": "Nike Back to School Sale Men's Shoe Deals: Up to 50% off + extra 25% off + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/2325-nike-back-to-school-sale-men-s-shoe-deals-up-to-50-off-extra/" },
-{ "@type": "ListItem", "position": 60, "name": "Nike Back to School Sale: Up to 50% off + extra 25% off + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/2326-nike-back-to-school-sale-up-to-50-off-extra-25-off-free-ship/" }
+{ "@type": "ListItem", "position": 16, "name": "adidas Men's Back to School Shoe Deals for From $15, running shoes from $24 + free shipping", "url": "https://www.hackthedeal.com/deal/3889-adidas-men-s-back-to-school-shoe-deals-for-from-15-running-s/" },
+{ "@type": "ListItem", "position": 17, "name": "adidas Back to School Deals: Up to 40% off + extra 15% off + free shipping", "url": "https://www.hackthedeal.com/deal/3850-adidas-back-to-school-deals-up-to-40-off-extra-15-off-free-s/" },
+{ "@type": "ListItem", "position": 18, "name": "adidas Back to School Sale: Up to 40% off + extra 15% off + free shipping", "url": "https://www.hackthedeal.com/deal/3858-adidas-back-to-school-sale-up-to-40-off-extra-15-off-free-sh/" },
+{ "@type": "ListItem", "position": 19, "name": "Best Buy has one of the best Back to School deals: 50% off HP\u2019s 2026 X Flip touchscreen 2-in-1 Copilot+ PC at $650 (All-time low)", "url": "https://www.hackthedeal.com/deal/3823-best-buy-has-one-of-the-best-back-to-school-deals-50-off-hp/" },
+{ "@type": "ListItem", "position": 20, "name": "School Supplies Sale: 12-Ct Crayola Colored Pencils $1, 24-Ct Crayola Crayons $0.50 & More + Free Pickup", "url": "https://www.hackthedeal.com/deal/3444-school-supplies-sale-12-ct-crayola-colored-pencils-1-24-ct-c/" },
+{ "@type": "ListItem", "position": 21, "name": "Nike Back to School sale slashes bags, wallets, more as low as $17 with this promo code", "url": "https://www.hackthedeal.com/deal/3570-nike-back-to-school-sale-slashes-bags-wallets-more-as-low-as/" },
+{ "@type": "ListItem", "position": 22, "name": "eBay Back to School Fashion Sale: Up to 70% off + extra 20% off + free shipping", "url": "https://www.hackthedeal.com/deal/3300-ebay-back-to-school-fashion-sale-up-to-70-off-extra-20-off-f/" },
+{ "@type": "ListItem", "position": 23, "name": "ASUS\u2019 16GB/256GB ExpertBook CX54 Chromebook Plus is a great back-to-school alternative to MacBook Neo at $600 low today", "url": "https://www.hackthedeal.com/deal/3263-asus-16gb-256gb-expertbook-cx54-chromebook-plus-is-a-great-b/" },
+{ "@type": "ListItem", "position": 24, "name": "Staples Back to School Headphones Deals: Up to 37% off + free shipping w/$35", "url": "https://www.hackthedeal.com/deal/3234-staples-back-to-school-headphones-deals-up-to-37-off-free-sh/" },
+{ "@type": "ListItem", "position": 25, "name": "Staples Back to School Tablets & iPads Deals: Up to 54% off + free shipping", "url": "https://www.hackthedeal.com/deal/3249-staples-back-to-school-tablets-ipads-deals-up-to-54-off-free/" },
+{ "@type": "ListItem", "position": 26, "name": "Staples Back to School Laptop Deals for From $250 + free next-day delivery", "url": "https://www.hackthedeal.com/deal/3251-staples-back-to-school-laptop-deals-for-from-250-free-next-d/" },
+{ "@type": "ListItem", "position": 27, "name": "Scheels Back to School Sale : Up to 50% off  + free shipping w/ $25 today only", "url": "https://www.hackthedeal.com/deal/3063-scheels-back-to-school-sale-up-to-50-off-free-shipping-w-25/" },
+{ "@type": "ListItem", "position": 28, "name": "Amazon back to school kids tech deals up to 40% off: Fire tablets from $70, Echo speakers, Kindle, more from $30", "url": "https://www.hackthedeal.com/deal/3049-amazon-back-to-school-kids-tech-deals-up-to-40-off-fire-tabl/" },
+{ "@type": "ListItem", "position": 29, "name": "Best Buy Back to School TV & Home Theater Deals: Up to 55% off + free shipping", "url": "https://www.hackthedeal.com/deal/3019-best-buy-back-to-school-tv-home-theater-deals-up-to-55-off-f/" },
+{ "@type": "ListItem", "position": 30, "name": "Best Buy Back to School PC Gaming Deals: Up to 85% off + free shipping", "url": "https://www.hackthedeal.com/deal/3029-best-buy-back-to-school-pc-gaming-deals-up-to-85-off-free-sh/" },
+{ "@type": "ListItem", "position": 31, "name": "Best Buy\u2019s back-to-school sale takes up to $730 off Copilot+ PCs and gaming laptops with deals from $330", "url": "https://www.hackthedeal.com/deal/3054-best-buy-s-back-to-school-sale-takes-up-to-730-off-copilot-p/" },
+{ "@type": "ListItem", "position": 32, "name": "Apple Back to School Deals at Best Buy: Up to 80% off + free shipping", "url": "https://www.hackthedeal.com/deal/3031-apple-back-to-school-deals-at-best-buy-up-to-80-off-free-shi/" },
+{ "@type": "ListItem", "position": 33, "name": "Best Buy Back to School College Tech Deals for Under $150 + free shipping", "url": "https://www.hackthedeal.com/deal/3020-best-buy-back-to-school-college-tech-deals-for-under-150-fre/" },
+{ "@type": "ListItem", "position": 34, "name": "Best Buy Back to School Sale: Up to 60% off + free shipping", "url": "https://www.hackthedeal.com/deal/3032-best-buy-back-to-school-sale-up-to-60-off-free-shipping/" },
+{ "@type": "ListItem", "position": 35, "name": "Best Buy 2026 Back to School sale: College Tech under $150, Phone deals, TVs from $70, printers, routers, more", "url": "https://www.hackthedeal.com/deal/3058-best-buy-2026-back-to-school-sale-college-tech-under-150-pho/" },
+{ "@type": "ListItem", "position": 36, "name": "lululemon Back to School Event for From $14 + free shipping", "url": "https://www.hackthedeal.com/deal/2905-lululemon-back-to-school-event-for-from-14-free-shipping/" },
+{ "@type": "ListItem", "position": 37, "name": "9to5Toys Fashion Weekly \u2013 Nike Back to School sale, Levi\u2019s Amazon sale up to 48% off, Alex Vando Navy Sail polo $13.50, more", "url": "https://www.hackthedeal.com/deal/2724-9to5toys-fashion-weekly-nike-back-to-school-sale-levi-s-amaz/" },
+{ "@type": "ListItem", "position": 38, "name": "Nike Back to School Sale: Up to 50% off + extra 25% off + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/2775-nike-back-to-school-sale-up-to-50-off-extra-25-off-free-ship/" },
+{ "@type": "ListItem", "position": 39, "name": "Nike Back to School sale top picks include Air Force 1, ACG, Vomero, Jordan 1, Alphafly, more from $60", "url": "https://www.hackthedeal.com/deal/2749-nike-back-to-school-sale-top-picks-include-air-force-1-acg-v/" },
+{ "@type": "ListItem", "position": 40, "name": "Lenovo Back to School Doorbuster Deals: Up to 55% off + free shipping", "url": "https://www.hackthedeal.com/deal/2718-lenovo-back-to-school-doorbuster-deals-up-to-55-off-free-shi/" },
+{ "@type": "ListItem", "position": 41, "name": "adidas Back to School Bag & Backpack Deals: Up to 50% off + extra 15% off + free shipping", "url": "https://www.hackthedeal.com/deal/2528-adidas-back-to-school-bag-backpack-deals-up-to-50-off-extra/" },
+{ "@type": "ListItem", "position": 42, "name": "U.S. Polo Assn Back to School Savings: Up to 73% off + Extra 25% off + free shipping", "url": "https://www.hackthedeal.com/deal/2537-u-s-polo-assn-back-to-school-savings-up-to-73-off-extra-25-o/" },
+{ "@type": "ListItem", "position": 43, "name": "Dell Back to School Desktop Deals: Up to $1,500 off + free shipping", "url": "https://www.hackthedeal.com/deal/2469-dell-back-to-school-desktop-deals-up-to-1-500-off-free-shipp/" },
+{ "@type": "ListItem", "position": 44, "name": "adidas Back to School Kids' Sneaker Deals for From $17 + free shipping", "url": "https://www.hackthedeal.com/deal/2354-adidas-back-to-school-kids-sneaker-deals-for-from-17-free-sh/" },
+{ "@type": "ListItem", "position": 45, "name": "adidas Back to School Kids' Sneaker Deals for From $17 + free shipping", "url": "https://www.hackthedeal.com/deal/2308-adidas-back-to-school-kids-sneaker-deals-for-from-17-free-sh/" },
+{ "@type": "ListItem", "position": 46, "name": "adidas Back to School Kids' Deals: Up to 50% off + extra 15% off + free shipping", "url": "https://www.hackthedeal.com/deal/2314-adidas-back-to-school-kids-deals-up-to-50-off-extra-15-off-f/" },
+{ "@type": "ListItem", "position": 47, "name": "Nike Back to School Accessories & Equipment Deals: Up to 29% off + Extra 25% off + free shipping w/$50", "url": "https://www.hackthedeal.com/deal/2311-nike-back-to-school-accessories-equipment-deals-up-to-29-off/" },
+{ "@type": "ListItem", "position": 48, "name": "Nike Back to School Hoodies & Pullovers Deals: Up to 44% off + Extra 25% off + free shipping w/$50", "url": "https://www.hackthedeal.com/deal/2313-nike-back-to-school-hoodies-pullovers-deals-up-to-44-off-ext/" },
+{ "@type": "ListItem", "position": 49, "name": "Nike Back to School ACG Shoe Deals: Up to 29% off + Extra 25% off + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/2355-nike-back-to-school-acg-shoe-deals-up-to-29-off-extra-25-off/" },
+{ "@type": "ListItem", "position": 50, "name": "Nike Back to School ACG Shoe Deals: Up to 29% off + Extra 25% off + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/2315-nike-back-to-school-acg-shoe-deals-up-to-29-off-extra-25-off/" },
+{ "@type": "ListItem", "position": 51, "name": "Lenovo\u2019s 2026 Chromebook m with Google Gemini and MediaTek Kompanio 540 is a back-to-school steal at $220 (Nearly 50% off)", "url": "https://www.hackthedeal.com/deal/2274-lenovo-s-2026-chromebook-m-with-google-gemini-and-mediatek-k/" },
+{ "@type": "ListItem", "position": 52, "name": "Nike Back to School Pegasus Deals: Up to 33% off + Extra 25% off + free shipping w/$50", "url": "https://www.hackthedeal.com/deal/2317-nike-back-to-school-pegasus-deals-up-to-33-off-extra-25-off/" },
+{ "@type": "ListItem", "position": 53, "name": "Nike Back to School Pegasus Deals: Up to 33% off + Extra 25% off + free shipping w/$50", "url": "https://www.hackthedeal.com/deal/2356-nike-back-to-school-pegasus-deals-up-to-33-off-extra-25-off/" },
+{ "@type": "ListItem", "position": 54, "name": "Nike Back to School Air Force 1 Deals: Up to 30% off + Extra 25% off + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/2318-nike-back-to-school-air-force-1-deals-up-to-30-off-extra-25/" },
+{ "@type": "ListItem", "position": 55, "name": "Nike Back to School Air Force 1 Deals: Up to 30% off + Extra 25% off + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/2357-nike-back-to-school-air-force-1-deals-up-to-30-off-extra-25/" },
+{ "@type": "ListItem", "position": 56, "name": "Nike Back to School  Air Max Deals: Up to 50% off + extra 25% off + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/2358-nike-back-to-school-air-max-deals-up-to-50-off-extra-25-off/" },
+{ "@type": "ListItem", "position": 57, "name": "Nike Back to School  Air Max Deals: Up to 50% off + extra 25% off + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/2322-nike-back-to-school-air-max-deals-up-to-50-off-extra-25-off/" },
+{ "@type": "ListItem", "position": 58, "name": "Head back to school with this 14-inch ASUS Chromebook Plus Google AI laptop while it\u2019s down to $399 (Today only, $200 off)", "url": "https://www.hackthedeal.com/deal/2279-head-back-to-school-with-this-14-inch-asus-chromebook-plus-g/" },
+{ "@type": "ListItem", "position": 59, "name": "Nike Back to School Sale Men's Shoe Deals: Up to 50% off + extra 25% off + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/2359-nike-back-to-school-sale-men-s-shoe-deals-up-to-50-off-extra/" },
+{ "@type": "ListItem", "position": 60, "name": "Nike Back to School Sale Men's Shoe Deals: Up to 50% off + extra 25% off + free shipping w/ $50", "url": "https://www.hackthedeal.com/deal/2325-nike-back-to-school-sale-men-s-shoe-deals-up-to-50-off-extra/" }
       ]
     }
     </script>
@@ -828,35 +874,48 @@
     </div>
 
     <!-- Privacy / cookie consent notice — static markup so it's visible even
-         before React mounts. GTM/GA already loaded in Consent Mode's default
-         "denied" state (see <head>); clicking OK just upgrades the signal. -->
+         before React mounts. GTM/GA/AdSense already loaded in Consent Mode's
+         default state from localStorage (see <head>); Accept/Reject here
+         just update that signal going forward. -->
     <div id="consent-overlay" class="consent-overlay" style="display: none;">
       <div class="consent-box">
         <div class="consent-text">
           <p class="consent-title">🍪 We use cookies</p>
           <p>
-            This site uses cookies to measure site performance and improve your experience.
-            By clicking OK, you accept our use of cookies as described in our
-            <a href="/privacy.html">Privacy Policy</a>.
+            This site uses cookies to measure site performance and improve your experience, and
+            works with Google Analytics and AdSense, which may use cookies for analytics and to
+            show personalized ads. See our <a href="/privacy.html">Privacy Policy</a> for details.
           </p>
         </div>
-        <button id="consent-ok" type="button">OK</button>
+        <div class="consent-actions">
+          <button id="consent-reject" type="button" class="consent-reject-btn">Reject</button>
+          <button id="consent-ok" type="button">Accept</button>
+        </div>
       </div>
     </div>
+    <button id="cookie-settings-btn" type="button" class="cookie-settings-btn">Cookie Settings</button>
     <script>
       (function () {
-        if (localStorage.getItem('htd_consent_v1') !== 'granted') {
-          document.getElementById('consent-overlay').style.display = 'flex';
-        }
-        document.getElementById('consent-ok').addEventListener('click', function () {
-          localStorage.setItem('htd_consent_v1', 'granted');
+        function setConsent(granted) {
+          localStorage.setItem('htd_consent_v1', granted ? 'granted' : 'denied');
           document.getElementById('consent-overlay').style.display = 'none';
           gtag('consent', 'update', {
-            'ad_storage': 'granted',
-            'ad_user_data': 'granted',
-            'ad_personalization': 'granted',
-            'analytics_storage': 'granted'
+            'ad_storage': granted ? 'granted' : 'denied',
+            'ad_user_data': granted ? 'granted' : 'denied',
+            'ad_personalization': granted ? 'granted' : 'denied',
+            'analytics_storage': granted ? 'granted' : 'denied'
           });
+          window.adsbygoogle = window.adsbygoogle || [];
+          window.adsbygoogle.push({ google_ad_client: 'ca-pub-6138840929831792', google_restrict_data_processing: !granted });
+          if (granted && window.htdLoadAwin) { window.htdLoadAwin(); }
+        }
+        if (!localStorage.getItem('htd_consent_v1')) {
+          document.getElementById('consent-overlay').style.display = 'flex';
+        }
+        document.getElementById('consent-ok').addEventListener('click', function () { setConsent(true); });
+        document.getElementById('consent-reject').addEventListener('click', function () { setConsent(false); });
+        document.getElementById('cookie-settings-btn').addEventListener('click', function () {
+          document.getElementById('consent-overlay').style.display = 'flex';
         });
       })();
     </script>
@@ -901,7 +960,23 @@
       </section>
       <main style="max-width:1152px;margin:0 auto;padding:8px 16px 40px">
         <div class="section-title-bar"><span class="section-label">Latest Deals</span></div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px"><a href="/deal/4063-microsoft-s-surface-laptop-pro-2-in-1-copilot-pcs-are-starti/" class="deal-card">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px"><a href="/deal/4294-segway-back-to-school-ev-sale-offers-hundreds-in-savings-on/" class="deal-card">
+      <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/07/Segway-Back-to-School-EV-Sale-FI-July-to-August-2026.jpg?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="Segway Back to School EV Sale offers hundreds in savings on e-scooters, e-bikes, more – all starting from $160" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">gaming</span>
+          
+        </div>
+        <p class="deal-title">Segway Back to School EV Sale offers hundreds in savings on e-scooters, e-bikes, more – all starting from $160</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$160.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>9to5toys</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4063-microsoft-s-surface-laptop-pro-2-in-1-copilot-pcs-are-starti/" class="deal-card">
       <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/07/Surface-Laptop-2026.jpg?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="Microsoft’s Surface Laptop/Pro 2-in-1 Copilot+ PCs are starting at $750 with Back to School deals (Up to $450 off)" loading="lazy" />
       <div class="deal-card-body">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
@@ -1109,22 +1184,6 @@
           <span>Jul 30, 2026</span>
         </div>
       </div>
-    </a><a href="/deal/3889-adidas-men-s-back-to-school-shoe-deals-for-from-15-running-s/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">shoes</span>
-          <span class="discount-badge">38% off</span>
-        </div>
-        <p class="deal-title">adidas Men&#x27;s Back to School Shoe Deals for From $15, running shoes from $24 + free shipping</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$15.00</span><span class="price-original">$24.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-shoes</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
     </a><a href="/deal/3856-adidas-men-s-back-to-school-shoe-deals-for-from-15-running-s/" class="deal-card">
       <img src="https://d.dlnws.com/64599/1785415219-product-trimmed.png?h=374&amp;w=668" alt="adidas Men&#x27;s Back to School Shoe Deals for From $15, running shoes from $24 + free shipping" loading="lazy" />
       <div class="deal-card-body">
@@ -1138,6 +1197,22 @@
         </div>
         <div class="deal-meta">
           <span>dealnews-fashion</span>
+          <span>Jul 30, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/3889-adidas-men-s-back-to-school-shoe-deals-for-from-15-running-s/" class="deal-card">
+      <div class="deal-card-icon-fallback"></div>
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">shoes</span>
+          <span class="discount-badge">38% off</span>
+        </div>
+        <p class="deal-title">adidas Men&#x27;s Back to School Shoe Deals for From $15, running shoes from $24 + free shipping</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$15.00</span><span class="price-original">$24.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-shoes</span>
           <span>Jul 30, 2026</span>
         </div>
       </div>
@@ -1837,22 +1912,6 @@
           <span class="discount-badge">50% off</span>
         </div>
         <p class="deal-title">Nike Back to School Sale Men&#x27;s Shoe Deals: Up to 50% off + extra 25% off + free shipping w/ $50</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$50.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-fashion</span>
-          <span>Jul 23, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/2326-nike-back-to-school-sale-up-to-50-off-extra-25-off-free-ship/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">fashion</span>
-          <span class="discount-badge">50% off</span>
-        </div>
-        <p class="deal-title">Nike Back to School Sale: Up to 50% off + extra 25% off + free shipping w/ $50</p>
         <div style="display:flex;align-items:baseline;gap:8px">
           <span class="price-current">$50.00</span>
         </div>

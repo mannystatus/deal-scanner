@@ -1,31 +1,41 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <!-- Consent Mode v2 — sets default (denied) consent state before any tag
-         below loads, so GTM/gtag still fire on every visit but only send
-         cookieless, anonymized signals until the user accepts the cookie
-         notice further down the page. If they already accepted on a past
-         visit, immediately upgrade to granted from the stored preference.
+    <!-- Consent Mode v2 — sets default consent state (denied unless already
+         granted on a past visit) before any tag below loads, so GTM/GA still
+         fire on every visit but only send cookieless, anonymized signals
+         until the user accepts the cookie notice further down the page.
+         Also puts AdSense into restricted-data-processing mode (non-
+         personalized ads only) by default — required for EEA/UK traffic
+         under Google's EU User Consent Policy.
          https://developers.google.com/tag-platform/security/guides/consent -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag() { dataLayer.push(arguments); }
       window.gtag = gtag;
+      var htdGranted = localStorage.getItem('htd_consent_v1') === 'granted';
       gtag('consent', 'default', {
-        'ad_storage': 'denied',
-        'ad_user_data': 'denied',
-        'ad_personalization': 'denied',
-        'analytics_storage': 'denied',
+        'ad_storage': htdGranted ? 'granted' : 'denied',
+        'ad_user_data': htdGranted ? 'granted' : 'denied',
+        'ad_personalization': htdGranted ? 'granted' : 'denied',
+        'analytics_storage': htdGranted ? 'granted' : 'denied',
         'wait_for_update': 500
       });
-      if (localStorage.getItem('htd_consent_v1') === 'granted') {
-        gtag('consent', 'update', {
-          'ad_storage': 'granted',
-          'ad_user_data': 'granted',
-          'ad_personalization': 'granted',
-          'analytics_storage': 'granted'
-        });
-      }
+      window.adsbygoogle = window.adsbygoogle || [];
+      window.adsbygoogle.push({ google_ad_client: 'ca-pub-6138840929831792', google_restrict_data_processing: !htdGranted });
+
+      // Awin's Publisher MasterTag sets affiliate click/conversion-tracking
+      // cookies, which isn't a Google product Consent Mode covers — gated
+      // separately here, and only injected once consent is granted (either
+      // already stored, or via the Accept button below).
+      window.htdLoadAwin = window.htdLoadAwin || function () {
+        if (window.htdAwinLoaded) return;
+        window.htdAwinLoaded = true;
+        var s = document.createElement('script');
+        s.src = 'https://www.dwin2.com/pub.2991473.min.js';
+        document.head.appendChild(s);
+      };
+      if (htdGranted) { window.htdLoadAwin(); }
     </script>
     <!-- End Consent Mode -->
 
@@ -125,8 +135,9 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6138840929831792"
      crossorigin="anonymous"></script>
 
-    <!-- Awin affiliate tracking (Publisher MasterTag) -->
-    <script src="https://www.dwin2.com/pub.2991473.min.js"></script>
+    <!-- Awin affiliate tracking (Publisher MasterTag) — loaded conditionally
+         by htdLoadAwin() in the Consent Mode script above, not statically
+         here, since it needs to wait on consent like everything else. -->
 
     <style>
       :root {
@@ -230,6 +241,11 @@
         color: var(--accent-text);
         font-weight: 600;
       }
+      .consent-actions {
+        display: flex;
+        flex: 0 0 auto;
+        gap: 10px;
+      }
       .consent-box button {
         flex: 0 0 auto;
         background: var(--accent);
@@ -243,6 +259,36 @@
       }
       .consent-box button:hover {
         opacity: 0.85;
+      }
+      .consent-box .consent-reject-btn {
+        background: transparent;
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+      .consent-box .consent-reject-btn:hover {
+        opacity: 1;
+        background: var(--bg);
+      }
+
+      /* Reopens the cookie banner so a visitor can change their choice
+         later — kept as static markup outside #root (like consent-overlay
+         itself) so it works identically for prerendered/no-JS pages and
+         after the React app mounts. */
+      .cookie-settings-btn {
+        position: fixed;
+        left: 12px;
+        bottom: 12px;
+        z-index: 998;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 11px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        cursor: pointer;
+      }
+      .cookie-settings-btn:hover {
+        color: var(--text);
       }
 
       /* Header network bar */
@@ -750,66 +796,66 @@
       "@type": "ItemList",
       "name": "Best Computer & Laptop Deals Today",
       "itemListElement": [
-{ "@type": "ListItem", "position": 1, "name": "Vintage Belt-Driven 3-Speed Turntable w/ Speakers for $28 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4018-vintage-belt-driven-3-speed-turntable-w-speakers-for-28-free/" },
-{ "@type": "ListItem", "position": 2, "name": "Raspberry Pi 400 4GB RAM Computer Kit for $50 + in stores only", "url": "https://www.hackthedeal.com/deal/4037-raspberry-pi-400-4gb-ram-computer-kit-for-50-in-stores-only/" },
-{ "@type": "ListItem", "position": 3, "name": "Kasa Outdoor Smart Plug for $13 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4019-kasa-outdoor-smart-plug-for-13-free-shipping-w-prime/" },
-{ "@type": "ListItem", "position": 4, "name": "Google Fi Unlimited Phone Plan Deals: 75% off + free shipping", "url": "https://www.hackthedeal.com/deal/4020-google-fi-unlimited-phone-plan-deals-75-off-free-shipping/" },
-{ "@type": "ListItem", "position": 5, "name": "Granicell 1,100mAh AAA NiMH Rechargeable Batteries 16-Pack for $6 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4021-granicell-1-100mah-aaa-nimh-rechargeable-batteries-16-pack-f/" },
-{ "@type": "ListItem", "position": 6, "name": "MSI GeForce RTX 5060 8G VENTUS 3X OC 8GB Graphics Card for $370 + free shipping", "url": "https://www.hackthedeal.com/deal/4038-msi-geforce-rtx-5060-8g-ventus-3x-oc-8gb-graphics-card-for-3/" },
-{ "@type": "ListItem", "position": 7, "name": "MSI GeForce RTX 5070 Ti 16G Gaming Trio OC 16GB Graphics Card for $1,050 + free shipping", "url": "https://www.hackthedeal.com/deal/4039-msi-geforce-rtx-5070-ti-16g-gaming-trio-oc-16gb-graphics-car/" },
-{ "@type": "ListItem", "position": 8, "name": "Corsair Vengeance 32GB (2x16GB) DDR4 3200MHz Laptop Memory for $200 + free shipping", "url": "https://www.hackthedeal.com/deal/4040-corsair-vengeance-32gb-2x16gb-ddr4-3200mhz-laptop-memory-for/" },
-{ "@type": "ListItem", "position": 9, "name": "Alienware Ryzen 5 15.3\" Gaming Laptop w/ RTX 5060 for $1,350 + free shipping", "url": "https://www.hackthedeal.com/deal/4041-alienware-ryzen-5-15-3-gaming-laptop-w-rtx-5060-for-1-350-fr/" },
-{ "@type": "ListItem", "position": 10, "name": "Refurb HP ProDesk 600 G3 Mini Desktop PC for From $165 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4042-refurb-hp-prodesk-600-g3-mini-desktop-pc-for-from-165-free-s/" },
-{ "@type": "ListItem", "position": 11, "name": "Samsung 27\" 1080p Curved 100Hz Monitor for $100 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4043-samsung-27-1080p-curved-100hz-monitor-for-100-free-shipping/" },
-{ "@type": "ListItem", "position": 12, "name": "ESET NOD32 Antivirus 2026 for 10-Devices for 1 Year for $28 + free shipping", "url": "https://www.hackthedeal.com/deal/4044-eset-nod32-antivirus-2026-for-10-devices-for-1-year-for-28-f/" },
-{ "@type": "ListItem", "position": 13, "name": "Refurb HP EliteBook 840 G5 Core i5 14\" Laptop for $165 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4045-refurb-hp-elitebook-840-g5-core-i5-14-laptop-for-165-free-sh/" },
-{ "@type": "ListItem", "position": 14, "name": "Yawyore Ryzen 7 5700X Gaming PC w/ NVIDIA Geforce RTX 5060 8GB GPU for $1,048 + free shipping", "url": "https://www.hackthedeal.com/deal/4046-yawyore-ryzen-7-5700x-gaming-pc-w-nvidia-geforce-rtx-5060-8g/" },
-{ "@type": "ListItem", "position": 15, "name": "Dell Plus Core Ultra 7 256V 16\" 2-in-1 Touch Laptop w/ 1TB SSD for $700 + free shipping", "url": "https://www.hackthedeal.com/deal/4047-dell-plus-core-ultra-7-256v-16-2-in-1-touch-laptop-w-1tb-ssd/" },
-{ "@type": "ListItem", "position": 16, "name": "Pioneer 40\" 1080p LED Smart Roku TV for $100 + free shipping", "url": "https://www.hackthedeal.com/deal/4022-pioneer-40-1080p-led-smart-roku-tv-for-100-free-shipping/" },
-{ "@type": "ListItem", "position": 17, "name": "Panasonic LUMIX S9 Full Frame Mirrorless Camera w/ 18-40mm F4.5-6.3 Lens for $1,330 + free shipping", "url": "https://www.hackthedeal.com/deal/4023-panasonic-lumix-s9-full-frame-mirrorless-camera-w-18-40mm-f4/" },
-{ "@type": "ListItem", "position": 18, "name": "Dell 13th-Gen. i7 15.6\" 2K Touch Laptop w/ 16GB RAM for $630 + free shipping", "url": "https://www.hackthedeal.com/deal/4048-dell-13th-gen-i7-15-6-2k-touch-laptop-w-16gb-ram-for-630-fre/" },
-{ "@type": "ListItem", "position": 19, "name": "Ingnok 15.6\" Digital Calendar for $110 w/ Prime + free shipping", "url": "https://www.hackthedeal.com/deal/4024-ingnok-15-6-digital-calendar-for-110-w-prime-free-shipping/" },
-{ "@type": "ListItem", "position": 20, "name": "Meifigno 360\u00b0 Rotating MagSafe Car Mount for $10 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4025-meifigno-360-rotating-magsafe-car-mount-for-10-free-shipping/" },
-{ "@type": "ListItem", "position": 21, "name": "Home Depot Smart Home & Security Daily Deals: Up to 50% off + free shipping", "url": "https://www.hackthedeal.com/deal/4026-home-depot-smart-home-security-daily-deals-up-to-50-off-free/" },
-{ "@type": "ListItem", "position": 22, "name": "Refurb Amazon Fire HD 10 32GB 10.1\" Tablet for From $22 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4049-refurb-amazon-fire-hd-10-32gb-10-1-tablet-for-from-22-free-s/" },
-{ "@type": "ListItem", "position": 23, "name": "Refurb 3rd-Gen. Echo Show 8 for $80 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4027-refurb-3rd-gen-echo-show-8-for-80-free-shipping-w-prime/" },
-{ "@type": "ListItem", "position": 24, "name": "Klein Tools Bluetooth Jobsite Speaker for $28 + free shipping", "url": "https://www.hackthedeal.com/deal/4028-klein-tools-bluetooth-jobsite-speaker-for-28-free-shipping/" },
-{ "@type": "ListItem", "position": 25, "name": "Anker 341 7-in-1 USB-C Hub for $26 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4050-anker-341-7-in-1-usb-c-hub-for-26-free-shipping-w-prime/" },
-{ "@type": "ListItem", "position": 26, "name": "Anker Power Expand 8-in-1 USB-C Hub for $40 + free shipping", "url": "https://www.hackthedeal.com/deal/4051-anker-power-expand-8-in-1-usb-c-hub-for-40-free-shipping/" },
-{ "@type": "ListItem", "position": 27, "name": "ASUS Vivobook 15 Core 7 350 15.6\" Laptop for $680 + free shipping", "url": "https://www.hackthedeal.com/deal/4052-asus-vivobook-15-core-7-350-15-6-laptop-for-680-free-shippin/" },
-{ "@type": "ListItem", "position": 28, "name": "Walgreens Photo Sale: 50% off Everything Photo + free same-day pickup", "url": "https://www.hackthedeal.com/deal/4029-walgreens-photo-sale-50-off-everything-photo-free-same-day-p/" },
-{ "@type": "ListItem", "position": 29, "name": "SeaSonic Focus GX ATX 3.1 750W 80 PLUS Gold Modular Power Supply for $90 + free next day shipping", "url": "https://www.hackthedeal.com/deal/4053-seasonic-focus-gx-atx-3-1-750w-80-plus-gold-modular-power-su/" },
-{ "@type": "ListItem", "position": 30, "name": "Sennheiser HD 569 Headphones & 4.4mm Balanced Audio Cable Set for $150 + free shipping", "url": "https://www.hackthedeal.com/deal/4030-sennheiser-hd-569-headphones-4-4mm-balanced-audio-cable-set/" },
-{ "@type": "ListItem", "position": 31, "name": "Lenovo USB-C Dual Display 7-Port Travel Dock for $60 + free shipping", "url": "https://www.hackthedeal.com/deal/4054-lenovo-usb-c-dual-display-7-port-travel-dock-for-60-free-shi/" },
-{ "@type": "ListItem", "position": 32, "name": "Sennheiser HD600 Open-Back Audiophile Headphones for $272 + free shipping", "url": "https://www.hackthedeal.com/deal/4031-sennheiser-hd600-open-back-audiophile-headphones-for-272-fre/" },
-{ "@type": "ListItem", "position": 33, "name": "Sennheiser Accentum Plus Wireless Headphones for $130 + free shipping", "url": "https://www.hackthedeal.com/deal/4032-sennheiser-accentum-plus-wireless-headphones-for-130-free-sh/" },
-{ "@type": "ListItem", "position": 34, "name": "Sennheiser Headphones Limited Time Offers for From $60 + shipping varies", "url": "https://www.hackthedeal.com/deal/4033-sennheiser-headphones-limited-time-offers-for-from-60-shippi/" },
-{ "@type": "ListItem", "position": 35, "name": "ASUS Vivobook Go 15 N150 15.6\" Laptop for $210 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4055-asus-vivobook-go-15-n150-15-6-laptop-for-210-free-shipping-w/" },
-{ "@type": "ListItem", "position": 36, "name": "Newegg Back to School Sale: Up to 75% off + free shipping", "url": "https://www.hackthedeal.com/deal/4056-newegg-back-to-school-sale-up-to-75-off-free-shipping/" },
-{ "@type": "ListItem", "position": 37, "name": "Monoprice Alpha 3-Way Carbon Fiber 6.5\" In-Wall Speaker Pair for $77 + free shipping", "url": "https://www.hackthedeal.com/deal/4034-monoprice-alpha-3-way-carbon-fiber-6-5-in-wall-speaker-pair/" },
-{ "@type": "ListItem", "position": 38, "name": "LG 77\" M3 4K OLED evo Smart TV   for $1,609.99  +  free shipping", "url": "https://www.hackthedeal.com/deal/4035-lg-77-m3-4k-oled-evo-smart-tv-for-1-609-99-free-shipping/" },
-{ "@type": "ListItem", "position": 39, "name": "Refurb Apple MacBook Pro M1 Pro 16\" Laptop w/ 32GB RAM & 1TB SSD for $925 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4057-refurb-apple-macbook-pro-m1-pro-16-laptop-w-32gb-ram-1tb-ssd/" },
-{ "@type": "ListItem", "position": 40, "name": "Apple iPad Air M2 11\" 256GB WiFi & Cellular Tablet for $705 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4058-apple-ipad-air-m2-11-256gb-wifi-cellular-tablet-for-705-free/" },
-{ "@type": "ListItem", "position": 41, "name": "Granicell AA Lithium Batteries 12-Pack for $12 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4036-granicell-aa-lithium-batteries-12-pack-for-12-free-shipping/" },
-{ "@type": "ListItem", "position": 42, "name": "Smiseacow 15.6\" 1080p IPS Double Portable Laptop Monitor for $156 + free shipping", "url": "https://www.hackthedeal.com/deal/3777-smiseacow-15-6-1080p-ips-double-portable-laptop-monitor-for/" },
-{ "@type": "ListItem", "position": 43, "name": "Nikon Z8 Mirrorless Camera w/ Basic Bundle for $3,497 + free shipping", "url": "https://www.hackthedeal.com/deal/3760-nikon-z8-mirrorless-camera-w-basic-bundle-for-3-497-free-shi/" },
-{ "@type": "ListItem", "position": 44, "name": "Refurb 8th-Gen. Apple iPad 10.2\" 128GB WiFi & Cellular Tablet for $162 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3778-refurb-8th-gen-apple-ipad-10-2-128gb-wifi-cellular-tablet-fo/" },
-{ "@type": "ListItem", "position": 45, "name": "Apple AirPods Max Wireless Over-Ear USB-C Headphones for $429 + shipping varies", "url": "https://www.hackthedeal.com/deal/3761-apple-airpods-max-wireless-over-ear-usb-c-headphones-for-429/" },
-{ "@type": "ListItem", "position": 46, "name": "Epson Printer Deals at Best Buy: Up to 50% off + free shipping", "url": "https://www.hackthedeal.com/deal/3779-epson-printer-deals-at-best-buy-up-to-50-off-free-shipping/" },
-{ "@type": "ListItem", "position": 47, "name": "JLab Talk Pro USB Microphone for $35 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3763-jlab-talk-pro-usb-microphone-for-35-free-shipping-w-prime/" },
-{ "@type": "ListItem", "position": 48, "name": "Gigabyte Aero X16 Ryzen AI 7 350 16\" Laptop PC w/ RTX 5060 & 32GB RAM for $1,200 + free shipping", "url": "https://www.hackthedeal.com/deal/3780-gigabyte-aero-x16-ryzen-ai-7-350-16-laptop-pc-w-rtx-5060-32g/" },
-{ "@type": "ListItem", "position": 49, "name": "Mini USB Light 2-Pack for $1 + free shipping w/ $25", "url": "https://www.hackthedeal.com/deal/3781-mini-usb-light-2-pack-for-1-free-shipping-w-25/" },
-{ "@type": "ListItem", "position": 50, "name": "Acer Swift Go 16 AI Core Ultra 5 322 16\" Touch Laptop for $700 + free shipping", "url": "https://www.hackthedeal.com/deal/3782-acer-swift-go-16-ai-core-ultra-5-322-16-touch-laptop-for-700/" },
-{ "@type": "ListItem", "position": 51, "name": "Razer BlackWidow V4 Low Pro TKL HyperSpeed Wireless Gaming Keyboard for $100 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3784-razer-blackwidow-v4-low-pro-tkl-hyperspeed-wireless-gaming-k/" },
-{ "@type": "ListItem", "position": 52, "name": "T-Mobile 5G Home Internet Plans: 1 month free + up to $200 prepaid Mastercard", "url": "https://www.hackthedeal.com/deal/3785-t-mobile-5g-home-internet-plans-1-month-free-up-to-200-prepa/" },
-{ "@type": "ListItem", "position": 53, "name": "Samsung Galaxy Buds Core ANC Wireless Earbuds for $40 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3765-samsung-galaxy-buds-core-anc-wireless-earbuds-for-40-free-sh/" },
-{ "@type": "ListItem", "position": 54, "name": "TerraMaster F2-425 2-Bay NAS Diskless Storage Server for $240 + free shipping", "url": "https://www.hackthedeal.com/deal/3786-terramaster-f2-425-2-bay-nas-diskless-storage-server-for-240/" },
-{ "@type": "ListItem", "position": 55, "name": "Prime PC Clearout Deals at Woot: Up to 22% off + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/3787-prime-pc-clearout-deals-at-woot-up-to-22-off-free-shipping-w/" },
-{ "@type": "ListItem", "position": 56, "name": "Adobe Creative Cloud Pro for $35 / month for 3 months", "url": "https://www.hackthedeal.com/deal/3783-adobe-creative-cloud-pro-for-35-month-for-3-months/" },
-{ "@type": "ListItem", "position": 57, "name": "MSI 49\" Ultrawide 1440p HDR Curved 144Hz OLED Gaming Monitor for $599 for members + free shipping w/ $50 for Plus members", "url": "https://www.hackthedeal.com/deal/3788-msi-49-ultrawide-1440p-hdr-curved-144hz-oled-gaming-monitor/" },
-{ "@type": "ListItem", "position": 58, "name": "Meross Smart WiFi Garden Hose Water Timer for $60 + free shipping", "url": "https://www.hackthedeal.com/deal/3766-meross-smart-wifi-garden-hose-water-timer-for-60-free-shippi/" },
-{ "@type": "ListItem", "position": 59, "name": "MSI PRO A850PL PCIe5 850W 80+ Platinum Fully Modular Power Supply for $100 + free shipping", "url": "https://www.hackthedeal.com/deal/3789-msi-pro-a850pl-pcie5-850w-80-platinum-fully-modular-power-su/" },
-{ "@type": "ListItem", "position": 60, "name": "Bluetti AC50B 700W 448Wh Portable Power Station for $232 + free shipping", "url": "https://www.hackthedeal.com/deal/3767-bluetti-ac50b-700w-448wh-portable-power-station-for-232-free/" }
+{ "@type": "ListItem", "position": 1, "name": "AMD Ryzen 7 7800X3D 8-Core 4.2 GHz Socket AM5 Desktop Processor for $339 + free shipping", "url": "https://www.hackthedeal.com/deal/4270-amd-ryzen-7-7800x3d-8-core-4-2-ghz-socket-am5-desktop-proces/" },
+{ "@type": "ListItem", "position": 2, "name": "TCL S-Series 55\" 4K HDR LED UHD Smart TV for $200 + free shipping", "url": "https://www.hackthedeal.com/deal/4261-tcl-s-series-55-4k-hdr-led-uhd-smart-tv-for-200-free-shippin/" },
+{ "@type": "ListItem", "position": 3, "name": "Unlocked Samsung Galaxy Z Fold8 Ultra Foldable Android Smartphone: Up to $1,900 off preorders + free shipping", "url": "https://www.hackthedeal.com/deal/4262-unlocked-samsung-galaxy-z-fold8-ultra-foldable-android-smart/" },
+{ "@type": "ListItem", "position": 4, "name": "Dell XPS 13 Core 5 13.4\" Touch Laptop for $600 for students or teachers +  free shipping", "url": "https://www.hackthedeal.com/deal/4271-dell-xps-13-core-5-13-4-touch-laptop-for-600-for-students-or/" },
+{ "@type": "ListItem", "position": 5, "name": "HP OmniBook 5 Core Ultra 5 325 16\" Laptop for $630 + free shipping", "url": "https://www.hackthedeal.com/deal/4274-hp-omnibook-5-core-ultra-5-325-16-laptop-for-630-free-shippi/" },
+{ "@type": "ListItem", "position": 6, "name": "HP 15t-fd000 Core i5 15.6\" Laptop for $420 + free shipping", "url": "https://www.hackthedeal.com/deal/4275-hp-15t-fd000-core-i5-15-6-laptop-for-420-free-shipping/" },
+{ "@type": "ListItem", "position": 7, "name": "Makita 18V LXT 4.0Ah Battery & Charger Starter Pack for $99 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4263-makita-18v-lxt-4-0ah-battery-charger-starter-pack-for-99-fre/" },
+{ "@type": "ListItem", "position": 8, "name": "Temu Summer Sale: Up to 90% off + shipping varies", "url": "https://www.hackthedeal.com/deal/4264-temu-summer-sale-up-to-90-off-shipping-varies/" },
+{ "@type": "ListItem", "position": 9, "name": "Fanttik B10 Pro Electric Air Duster for $34 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4276-fanttik-b10-pro-electric-air-duster-for-34-free-shipping-w-p/" },
+{ "@type": "ListItem", "position": 10, "name": "Apple Trade-Up Event at Best Buy: Up to $1,100 off + free shipping", "url": "https://www.hackthedeal.com/deal/4277-apple-trade-up-event-at-best-buy-up-to-1-100-off-free-shippi/" },
+{ "@type": "ListItem", "position": 11, "name": "Apple AirPods Max Over-Ear Headphones for $430 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4265-apple-airpods-max-over-ear-headphones-for-430-free-shipping/" },
+{ "@type": "ListItem", "position": 12, "name": "Panasonic Lumix S9 18-40mm Full-Frame Mirrorless Camera for $1,328 + free shipping", "url": "https://www.hackthedeal.com/deal/4266-panasonic-lumix-s9-18-40mm-full-frame-mirrorless-camera-for/" },
+{ "@type": "ListItem", "position": 13, "name": "DJI Osmo Pocket 3 Creator Combo Vlogging Camera for $549 + free shipping", "url": "https://www.hackthedeal.com/deal/4267-dji-osmo-pocket-3-creator-combo-vlogging-camera-for-549-free/" },
+{ "@type": "ListItem", "position": 14, "name": "Wegear 100W GaN 3-Port USB-C Foldable Wall Charger for $20 w/ Prime + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4268-wegear-100w-gan-3-port-usb-c-foldable-wall-charger-for-20-w/" },
+{ "@type": "ListItem", "position": 15, "name": "Acer Nitro 60 Intel Core Ultra 5 RTX 5060 Gaming Desktop for $1,155 + free shipping", "url": "https://www.hackthedeal.com/deal/4278-acer-nitro-60-intel-core-ultra-5-rtx-5060-gaming-desktop-for/" },
+{ "@type": "ListItem", "position": 16, "name": "Apple MacBook Pro M4 Pro 14\" Laptop w/ 48GB & 2TB for $2,999 + free shipping", "url": "https://www.hackthedeal.com/deal/4279-apple-macbook-pro-m4-pro-14-laptop-w-48gb-2tb-for-2-999-free/" },
+{ "@type": "ListItem", "position": 17, "name": "Acer 5-in-1 USB-C to HDMI Hub Adapter for $16 w/ Prime + free shipping", "url": "https://www.hackthedeal.com/deal/4280-acer-5-in-1-usb-c-to-hdmi-hub-adapter-for-16-w-prime-free-sh/" },
+{ "@type": "ListItem", "position": 18, "name": "Acer USB-C Dual-Slot SD & MicroSD Card Reader for $10 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4281-acer-usb-c-dual-slot-sd-microsd-card-reader-for-10-free-ship/" },
+{ "@type": "ListItem", "position": 19, "name": "Vintage Belt-Driven 3-Speed Turntable w/ Speakers for $28 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4018-vintage-belt-driven-3-speed-turntable-w-speakers-for-28-free/" },
+{ "@type": "ListItem", "position": 20, "name": "Raspberry Pi 400 4GB RAM Computer Kit for $50 + in stores only", "url": "https://www.hackthedeal.com/deal/4037-raspberry-pi-400-4gb-ram-computer-kit-for-50-in-stores-only/" },
+{ "@type": "ListItem", "position": 21, "name": "Kasa Outdoor Smart Plug for $13 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4019-kasa-outdoor-smart-plug-for-13-free-shipping-w-prime/" },
+{ "@type": "ListItem", "position": 22, "name": "Google Fi Unlimited Phone Plan Deals: 75% off + free shipping", "url": "https://www.hackthedeal.com/deal/4020-google-fi-unlimited-phone-plan-deals-75-off-free-shipping/" },
+{ "@type": "ListItem", "position": 23, "name": "Granicell 1,100mAh AAA NiMH Rechargeable Batteries 16-Pack for $6 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4021-granicell-1-100mah-aaa-nimh-rechargeable-batteries-16-pack-f/" },
+{ "@type": "ListItem", "position": 24, "name": "MSI GeForce RTX 5060 8G VENTUS 3X OC 8GB Graphics Card for $370 + free shipping", "url": "https://www.hackthedeal.com/deal/4038-msi-geforce-rtx-5060-8g-ventus-3x-oc-8gb-graphics-card-for-3/" },
+{ "@type": "ListItem", "position": 25, "name": "MSI GeForce RTX 5070 Ti 16G Gaming Trio OC 16GB Graphics Card for $1,050 + free shipping", "url": "https://www.hackthedeal.com/deal/4039-msi-geforce-rtx-5070-ti-16g-gaming-trio-oc-16gb-graphics-car/" },
+{ "@type": "ListItem", "position": 26, "name": "Corsair Vengeance 32GB (2x16GB) DDR4 3200MHz Laptop Memory for $200 + free shipping", "url": "https://www.hackthedeal.com/deal/4040-corsair-vengeance-32gb-2x16gb-ddr4-3200mhz-laptop-memory-for/" },
+{ "@type": "ListItem", "position": 27, "name": "Alienware Ryzen 5 15.3\" Gaming Laptop w/ RTX 5060 for $1,350 + free shipping", "url": "https://www.hackthedeal.com/deal/4041-alienware-ryzen-5-15-3-gaming-laptop-w-rtx-5060-for-1-350-fr/" },
+{ "@type": "ListItem", "position": 28, "name": "Refurb HP ProDesk 600 G3 Mini Desktop PC for From $165 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4042-refurb-hp-prodesk-600-g3-mini-desktop-pc-for-from-165-free-s/" },
+{ "@type": "ListItem", "position": 29, "name": "Samsung 27\" 1080p Curved 100Hz Monitor for $100 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4043-samsung-27-1080p-curved-100hz-monitor-for-100-free-shipping/" },
+{ "@type": "ListItem", "position": 30, "name": "ESET NOD32 Antivirus 2026 for 10-Devices for 1 Year for $28 + free shipping", "url": "https://www.hackthedeal.com/deal/4044-eset-nod32-antivirus-2026-for-10-devices-for-1-year-for-28-f/" },
+{ "@type": "ListItem", "position": 31, "name": "Refurb HP EliteBook 840 G5 Core i5 14\" Laptop for $165 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4045-refurb-hp-elitebook-840-g5-core-i5-14-laptop-for-165-free-sh/" },
+{ "@type": "ListItem", "position": 32, "name": "Yawyore Ryzen 7 5700X Gaming PC w/ NVIDIA Geforce RTX 5060 8GB GPU for $1,048 + free shipping", "url": "https://www.hackthedeal.com/deal/4046-yawyore-ryzen-7-5700x-gaming-pc-w-nvidia-geforce-rtx-5060-8g/" },
+{ "@type": "ListItem", "position": 33, "name": "Dell Plus Core Ultra 7 256V 16\" 2-in-1 Touch Laptop w/ 1TB SSD for $700 + free shipping", "url": "https://www.hackthedeal.com/deal/4047-dell-plus-core-ultra-7-256v-16-2-in-1-touch-laptop-w-1tb-ssd/" },
+{ "@type": "ListItem", "position": 34, "name": "Pioneer 40\" 1080p LED Smart Roku TV for $100 + free shipping", "url": "https://www.hackthedeal.com/deal/4022-pioneer-40-1080p-led-smart-roku-tv-for-100-free-shipping/" },
+{ "@type": "ListItem", "position": 35, "name": "Panasonic LUMIX S9 Full Frame Mirrorless Camera w/ 18-40mm F4.5-6.3 Lens for $1,330 + free shipping", "url": "https://www.hackthedeal.com/deal/4023-panasonic-lumix-s9-full-frame-mirrorless-camera-w-18-40mm-f4/" },
+{ "@type": "ListItem", "position": 36, "name": "Dell 13th-Gen. i7 15.6\" 2K Touch Laptop w/ 16GB RAM for $630 + free shipping", "url": "https://www.hackthedeal.com/deal/4048-dell-13th-gen-i7-15-6-2k-touch-laptop-w-16gb-ram-for-630-fre/" },
+{ "@type": "ListItem", "position": 37, "name": "Ingnok 15.6\" Digital Calendar for $110 w/ Prime + free shipping", "url": "https://www.hackthedeal.com/deal/4024-ingnok-15-6-digital-calendar-for-110-w-prime-free-shipping/" },
+{ "@type": "ListItem", "position": 38, "name": "Meifigno 360\u00b0 Rotating MagSafe Car Mount for $10 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4025-meifigno-360-rotating-magsafe-car-mount-for-10-free-shipping/" },
+{ "@type": "ListItem", "position": 39, "name": "Home Depot Smart Home & Security Daily Deals: Up to 50% off + free shipping", "url": "https://www.hackthedeal.com/deal/4026-home-depot-smart-home-security-daily-deals-up-to-50-off-free/" },
+{ "@type": "ListItem", "position": 40, "name": "Refurb Amazon Fire HD 10 32GB 10.1\" Tablet for From $22 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4049-refurb-amazon-fire-hd-10-32gb-10-1-tablet-for-from-22-free-s/" },
+{ "@type": "ListItem", "position": 41, "name": "Refurb 3rd-Gen. Echo Show 8 for $80 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4027-refurb-3rd-gen-echo-show-8-for-80-free-shipping-w-prime/" },
+{ "@type": "ListItem", "position": 42, "name": "Klein Tools Bluetooth Jobsite Speaker for $28 + free shipping", "url": "https://www.hackthedeal.com/deal/4028-klein-tools-bluetooth-jobsite-speaker-for-28-free-shipping/" },
+{ "@type": "ListItem", "position": 43, "name": "Anker 341 7-in-1 USB-C Hub for $26 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4050-anker-341-7-in-1-usb-c-hub-for-26-free-shipping-w-prime/" },
+{ "@type": "ListItem", "position": 44, "name": "Anker Power Expand 8-in-1 USB-C Hub for $40 + free shipping", "url": "https://www.hackthedeal.com/deal/4051-anker-power-expand-8-in-1-usb-c-hub-for-40-free-shipping/" },
+{ "@type": "ListItem", "position": 45, "name": "ASUS Vivobook 15 Core 7 350 15.6\" Laptop for $680 + free shipping", "url": "https://www.hackthedeal.com/deal/4052-asus-vivobook-15-core-7-350-15-6-laptop-for-680-free-shippin/" },
+{ "@type": "ListItem", "position": 46, "name": "Walgreens Photo Sale: 50% off Everything Photo + free same-day pickup", "url": "https://www.hackthedeal.com/deal/4029-walgreens-photo-sale-50-off-everything-photo-free-same-day-p/" },
+{ "@type": "ListItem", "position": 47, "name": "SeaSonic Focus GX ATX 3.1 750W 80 PLUS Gold Modular Power Supply for $90 + free next day shipping", "url": "https://www.hackthedeal.com/deal/4053-seasonic-focus-gx-atx-3-1-750w-80-plus-gold-modular-power-su/" },
+{ "@type": "ListItem", "position": 48, "name": "Sennheiser HD 569 Headphones & 4.4mm Balanced Audio Cable Set for $150 + free shipping", "url": "https://www.hackthedeal.com/deal/4030-sennheiser-hd-569-headphones-4-4mm-balanced-audio-cable-set/" },
+{ "@type": "ListItem", "position": 49, "name": "Lenovo USB-C Dual Display 7-Port Travel Dock for $60 + free shipping", "url": "https://www.hackthedeal.com/deal/4054-lenovo-usb-c-dual-display-7-port-travel-dock-for-60-free-shi/" },
+{ "@type": "ListItem", "position": 50, "name": "Sennheiser HD600 Open-Back Audiophile Headphones for $272 + free shipping", "url": "https://www.hackthedeal.com/deal/4031-sennheiser-hd600-open-back-audiophile-headphones-for-272-fre/" },
+{ "@type": "ListItem", "position": 51, "name": "Sennheiser Accentum Plus Wireless Headphones for $130 + free shipping", "url": "https://www.hackthedeal.com/deal/4032-sennheiser-accentum-plus-wireless-headphones-for-130-free-sh/" },
+{ "@type": "ListItem", "position": 52, "name": "Sennheiser Headphones Limited Time Offers for From $60 + shipping varies", "url": "https://www.hackthedeal.com/deal/4033-sennheiser-headphones-limited-time-offers-for-from-60-shippi/" },
+{ "@type": "ListItem", "position": 53, "name": "ASUS Vivobook Go 15 N150 15.6\" Laptop for $210 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4055-asus-vivobook-go-15-n150-15-6-laptop-for-210-free-shipping-w/" },
+{ "@type": "ListItem", "position": 54, "name": "Newegg Back to School Sale: Up to 75% off + free shipping", "url": "https://www.hackthedeal.com/deal/4056-newegg-back-to-school-sale-up-to-75-off-free-shipping/" },
+{ "@type": "ListItem", "position": 55, "name": "Monoprice Alpha 3-Way Carbon Fiber 6.5\" In-Wall Speaker Pair for $77 + free shipping", "url": "https://www.hackthedeal.com/deal/4034-monoprice-alpha-3-way-carbon-fiber-6-5-in-wall-speaker-pair/" },
+{ "@type": "ListItem", "position": 56, "name": "LG 77\" M3 4K OLED evo Smart TV   for $1,609.99  +  free shipping", "url": "https://www.hackthedeal.com/deal/4035-lg-77-m3-4k-oled-evo-smart-tv-for-1-609-99-free-shipping/" },
+{ "@type": "ListItem", "position": 57, "name": "Refurb Apple MacBook Pro M1 Pro 16\" Laptop w/ 32GB RAM & 1TB SSD for $925 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4057-refurb-apple-macbook-pro-m1-pro-16-laptop-w-32gb-ram-1tb-ssd/" },
+{ "@type": "ListItem", "position": 58, "name": "Apple iPad Air M2 11\" 256GB WiFi & Cellular Tablet for $705 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4058-apple-ipad-air-m2-11-256gb-wifi-cellular-tablet-for-705-free/" },
+{ "@type": "ListItem", "position": 59, "name": "Granicell AA Lithium Batteries 12-Pack for $12 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4036-granicell-aa-lithium-batteries-12-pack-for-12-free-shipping/" },
+{ "@type": "ListItem", "position": 60, "name": "Smiseacow 15.6\" 1080p IPS Double Portable Laptop Monitor for $156 + free shipping", "url": "https://www.hackthedeal.com/deal/3777-smiseacow-15-6-1080p-ips-double-portable-laptop-monitor-for/" }
       ]
     }
     </script>
@@ -828,35 +874,48 @@
     </div>
 
     <!-- Privacy / cookie consent notice — static markup so it's visible even
-         before React mounts. GTM/GA already loaded in Consent Mode's default
-         "denied" state (see <head>); clicking OK just upgrades the signal. -->
+         before React mounts. GTM/GA/AdSense already loaded in Consent Mode's
+         default state from localStorage (see <head>); Accept/Reject here
+         just update that signal going forward. -->
     <div id="consent-overlay" class="consent-overlay" style="display: none;">
       <div class="consent-box">
         <div class="consent-text">
           <p class="consent-title">🍪 We use cookies</p>
           <p>
-            This site uses cookies to measure site performance and improve your experience.
-            By clicking OK, you accept our use of cookies as described in our
-            <a href="/privacy.html">Privacy Policy</a>.
+            This site uses cookies to measure site performance and improve your experience, and
+            works with Google Analytics and AdSense, which may use cookies for analytics and to
+            show personalized ads. See our <a href="/privacy.html">Privacy Policy</a> for details.
           </p>
         </div>
-        <button id="consent-ok" type="button">OK</button>
+        <div class="consent-actions">
+          <button id="consent-reject" type="button" class="consent-reject-btn">Reject</button>
+          <button id="consent-ok" type="button">Accept</button>
+        </div>
       </div>
     </div>
+    <button id="cookie-settings-btn" type="button" class="cookie-settings-btn">Cookie Settings</button>
     <script>
       (function () {
-        if (localStorage.getItem('htd_consent_v1') !== 'granted') {
-          document.getElementById('consent-overlay').style.display = 'flex';
-        }
-        document.getElementById('consent-ok').addEventListener('click', function () {
-          localStorage.setItem('htd_consent_v1', 'granted');
+        function setConsent(granted) {
+          localStorage.setItem('htd_consent_v1', granted ? 'granted' : 'denied');
           document.getElementById('consent-overlay').style.display = 'none';
           gtag('consent', 'update', {
-            'ad_storage': 'granted',
-            'ad_user_data': 'granted',
-            'ad_personalization': 'granted',
-            'analytics_storage': 'granted'
+            'ad_storage': granted ? 'granted' : 'denied',
+            'ad_user_data': granted ? 'granted' : 'denied',
+            'ad_personalization': granted ? 'granted' : 'denied',
+            'analytics_storage': granted ? 'granted' : 'denied'
           });
+          window.adsbygoogle = window.adsbygoogle || [];
+          window.adsbygoogle.push({ google_ad_client: 'ca-pub-6138840929831792', google_restrict_data_processing: !granted });
+          if (granted && window.htdLoadAwin) { window.htdLoadAwin(); }
+        }
+        if (!localStorage.getItem('htd_consent_v1')) {
+          document.getElementById('consent-overlay').style.display = 'flex';
+        }
+        document.getElementById('consent-ok').addEventListener('click', function () { setConsent(true); });
+        document.getElementById('consent-reject').addEventListener('click', function () { setConsent(false); });
+        document.getElementById('cookie-settings-btn').addEventListener('click', function () {
+          document.getElementById('consent-overlay').style.display = 'flex';
         });
       })();
     </script>
@@ -901,7 +960,295 @@
       </section>
       <main style="max-width:1152px;margin:0 auto;padding:8px 16px 40px">
         <div class="section-title-bar"><span class="section-label">Latest Deals</span></div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px"><a href="/deal/4018-vintage-belt-driven-3-speed-turntable-w-speakers-for-28-free/" class="deal-card">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px"><a href="/deal/4270-amd-ryzen-7-7800x3d-8-core-4-2-ghz-socket-am5-desktop-proces/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785545687-19-113-793-03.webp?h=968&amp;w=1024" alt="AMD Ryzen 7 7800X3D 8-Core 4.2 GHz Socket AM5 Desktop Processor for $339 + free shipping" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">computers</span>
+          
+        </div>
+        <p class="deal-title">AMD Ryzen 7 7800X3D 8-Core 4.2 GHz Socket AM5 Desktop Processor for $339 + free shipping</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$339.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews</span>
+          <span>Aug 1, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4261-tcl-s-series-55-4k-hdr-led-uhd-smart-tv-for-200-free-shippin/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785544104-0812f7c0-7e57-4840-aea6-e626f3895b72.webp?h=559&amp;w=900" alt="TCL S-Series 55&quot; 4K HDR LED UHD Smart TV for $200 + free shipping" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">computers</span>
+          
+        </div>
+        <p class="deal-title">TCL S-Series 55&quot; 4K HDR LED UHD Smart TV for $200 + free shipping</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$200.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews</span>
+          <span>Aug 1, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4262-unlocked-samsung-galaxy-z-fold8-ultra-foldable-android-smart/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1784734604-us-galaxy-z-fold8-ultra-f976-600251-sm-f976uzvaxaa-553839126.webp?h=683&amp;w=1024" alt="Unlocked Samsung Galaxy Z Fold8 Ultra Foldable Android Smartphone: Up to $1,900 off preorders + free shipping" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">computers</span>
+          
+        </div>
+        <p class="deal-title">Unlocked Samsung Galaxy Z Fold8 Ultra Foldable Android Smartphone: Up to $1,900 off preorders + free shipping</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$1.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4271-dell-xps-13-core-5-13-4-touch-laptop-for-600-for-students-or/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1781898010-2026-06-19_15-39-24.png?h=454&amp;w=590" alt="Dell XPS 13 Core 5 13.4&quot; Touch Laptop for $600 for students or teachers +  free shipping" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">computers</span>
+          
+        </div>
+        <p class="deal-title">Dell XPS 13 Core 5 13.4&quot; Touch Laptop for $600 for students or teachers +  free shipping</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$600.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4274-hp-omnibook-5-core-ultra-5-325-16-laptop-for-630-free-shippi/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785267504-ksbciexabv.webp?h=430&amp;w=573" alt="HP OmniBook 5 Core Ultra 5 325 16&quot; Laptop for $630 + free shipping" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">computers</span>
+          
+        </div>
+        <p class="deal-title">HP OmniBook 5 Core Ultra 5 325 16&quot; Laptop for $630 + free shipping</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$630.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4275-hp-15t-fd000-core-i5-15-6-laptop-for-420-free-shipping/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785524988-xrfmzzssxz.webp?h=430&amp;w=573" alt="HP 15t-fd000 Core i5 15.6&quot; Laptop for $420 + free shipping" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">computers</span>
+          
+        </div>
+        <p class="deal-title">HP 15t-fd000 Core i5 15.6&quot; Laptop for $420 + free shipping</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$420.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4263-makita-18v-lxt-4-0ah-battery-charger-starter-pack-for-99-fre/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785524674-71cirt-adll.jpg?h=1024&amp;w=1024" alt="Makita 18V LXT 4.0Ah Battery &amp; Charger Starter Pack for $99 + free shipping w/ Prime" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">computers</span>
+          
+        </div>
+        <p class="deal-title">Makita 18V LXT 4.0Ah Battery &amp; Charger Starter Pack for $99 + free shipping w/ Prime</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$99.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4264-temu-summer-sale-up-to-90-off-shipping-varies/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785524527-avif.avif?h=800&amp;w=800" alt="Temu Summer Sale: Up to 90% off + shipping varies" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">computers</span>
+          <span class="discount-badge">90% off</span>
+        </div>
+        <p class="deal-title">Temu Summer Sale: Up to 90% off + shipping varies</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span style="font-size:13px;color:var(--muted)">See deal</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4276-fanttik-b10-pro-electric-air-duster-for-34-free-shipping-w-p/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785524128-61pelfafitl.jpg?h=1024&amp;w=1024" alt="Fanttik B10 Pro Electric Air Duster for $34 + free shipping w/ Prime" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">computers</span>
+          
+        </div>
+        <p class="deal-title">Fanttik B10 Pro Electric Air Duster for $34 + free shipping w/ Prime</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$34.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4277-apple-trade-up-event-at-best-buy-up-to-1-100-off-free-shippi/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785520671-pm-6302843-fy27-appletradeupclp-603d8675-78e8-4b50-af87-46f86172f2fa.webp?h=238&amp;w=500" alt="Apple Trade-Up Event at Best Buy: Up to $1,100 off + free shipping" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">computers</span>
+          
+        </div>
+        <p class="deal-title">Apple Trade-Up Event at Best Buy: Up to $1,100 off + free shipping</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$1.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4265-apple-airpods-max-over-ear-headphones-for-430-free-shipping/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1773763087-71a1cxkhsfl-ac_sl1500.jpg?h=1024&amp;w=926" alt="Apple AirPods Max Over-Ear Headphones for $430 + free shipping w/ Prime" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">computers</span>
+          
+        </div>
+        <p class="deal-title">Apple AirPods Max Over-Ear Headphones for $430 + free shipping w/ Prime</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$430.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4266-panasonic-lumix-s9-18-40mm-full-frame-mirrorless-camera-for/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785512317-panasonic_dc_s9nk9_lumix_s9_mirrorless_camera_1767780545_1936325.jpg?h=500&amp;w=500" alt="Panasonic Lumix S9 18-40mm Full-Frame Mirrorless Camera for $1,328 + free shipping" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">computers</span>
+          
+        </div>
+        <p class="deal-title">Panasonic Lumix S9 18-40mm Full-Frame Mirrorless Camera for $1,328 + free shipping</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$1.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4267-dji-osmo-pocket-3-creator-combo-vlogging-camera-for-549-free/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785509607-51d4esi79-l.jpg?h=1024&amp;w=570" alt="DJI Osmo Pocket 3 Creator Combo Vlogging Camera for $549 + free shipping" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">computers</span>
+          
+        </div>
+        <p class="deal-title">DJI Osmo Pocket 3 Creator Combo Vlogging Camera for $549 + free shipping</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$549.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4268-wegear-100w-gan-3-port-usb-c-foldable-wall-charger-for-20-w/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785509584-product-trimmed.jpg?h=356&amp;w=310" alt="Wegear 100W GaN 3-Port USB-C Foldable Wall Charger for $20 w/ Prime + free shipping w/ Prime" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">computers</span>
+          
+        </div>
+        <p class="deal-title">Wegear 100W GaN 3-Port USB-C Foldable Wall Charger for $20 w/ Prime + free shipping w/ Prime</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$20.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4278-acer-nitro-60-intel-core-ultra-5-rtx-5060-gaming-desktop-for/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785509413-acer-nitro-60-desktop-intel-core-ultra-5-225f-nvidia-geforce-rtx-5060-614-ai-tops-8-gb-gddr7-video-m.avif?h=117&amp;w=117" alt="Acer Nitro 60 Intel Core Ultra 5 RTX 5060 Gaming Desktop for $1,155 + free shipping" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">computers</span>
+          
+        </div>
+        <p class="deal-title">Acer Nitro 60 Intel Core Ultra 5 RTX 5060 Gaming Desktop for $1,155 + free shipping</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$1.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4279-apple-macbook-pro-m4-pro-14-laptop-w-48gb-2tb-for-2-999-free/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785508693-8659517d-00e9-47d7-b6ab-5179838201f2.webp?h=547&amp;w=900" alt="Apple MacBook Pro M4 Pro 14&quot; Laptop w/ 48GB &amp; 2TB for $2,999 + free shipping" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">computers</span>
+          
+        </div>
+        <p class="deal-title">Apple MacBook Pro M4 Pro 14&quot; Laptop w/ 48GB &amp; 2TB for $2,999 + free shipping</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$2.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4280-acer-5-in-1-usb-c-to-hdmi-hub-adapter-for-16-w-prime-free-sh/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785508480-813so7mvs6l.jpg?h=1024&amp;w=1024" alt="Acer 5-in-1 USB-C to HDMI Hub Adapter for $16 w/ Prime + free shipping" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">computers</span>
+          
+        </div>
+        <p class="deal-title">Acer 5-in-1 USB-C to HDMI Hub Adapter for $16 w/ Prime + free shipping</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$16.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4281-acer-usb-c-dual-slot-sd-microsd-card-reader-for-10-free-ship/" class="deal-card">
+      <img src="https://d.dlnws.com/64599/1785508186-61qt3xfvtzl.jpg?h=1024&amp;w=1024" alt="Acer USB-C Dual-Slot SD &amp; MicroSD Card Reader for $10 + free shipping w/ Prime" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">computers</span>
+          
+        </div>
+        <p class="deal-title">Acer USB-C Dual-Slot SD &amp; MicroSD Card Reader for $10 + free shipping w/ Prime</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$10.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4018-vintage-belt-driven-3-speed-turntable-w-speakers-for-28-free/" class="deal-card">
       <img src="https://d.dlnws.com/64599/1785507806-71lvtfx1xql.jpg?h=921&amp;w=1024" alt="Vintage Belt-Driven 3-Speed Turntable w/ Speakers for $28 + free shipping w/ Prime" loading="lazy" />
       <div class="deal-card-body">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
@@ -1567,294 +1914,6 @@
         <p class="deal-title">Smiseacow 15.6&quot; 1080p IPS Double Portable Laptop Monitor for $156 + free shipping</p>
         <div style="display:flex;align-items:baseline;gap:8px">
           <span class="price-current">$156.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/3760-nikon-z8-mirrorless-camera-w-basic-bundle-for-3-497-free-shi/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1785419418-nikon_z8_mirrorless_camera_1778915719_1781431.jpg?h=500&amp;w=500" alt="Nikon Z8 Mirrorless Camera w/ Basic Bundle for $3,497 + free shipping" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">computers</span>
-          
-        </div>
-        <p class="deal-title">Nikon Z8 Mirrorless Camera w/ Basic Bundle for $3,497 + free shipping</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$3.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/3778-refurb-8th-gen-apple-ipad-10-2-128gb-wifi-cellular-tablet-fo/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1785418324-product-trimmed.jpg?h=406&amp;w=346" alt="Refurb 8th-Gen. Apple iPad 10.2&quot; 128GB WiFi &amp; Cellular Tablet for $162 + free shipping w/ Prime" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">computers</span>
-          
-        </div>
-        <p class="deal-title">Refurb 8th-Gen. Apple iPad 10.2&quot; 128GB WiFi &amp; Cellular Tablet for $162 + free shipping w/ Prime</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$162.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/3761-apple-airpods-max-wireless-over-ear-usb-c-headphones-for-429/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1785416347-apple_mww73am_a_airpods_max_orange_1725969035_1852451.jpg?h=500&amp;w=500" alt="Apple AirPods Max Wireless Over-Ear USB-C Headphones for $429 + shipping varies" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">computers</span>
-          
-        </div>
-        <p class="deal-title">Apple AirPods Max Wireless Over-Ear USB-C Headphones for $429 + shipping varies</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$429.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/3779-epson-printer-deals-at-best-buy-up-to-50-off-free-shipping/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1785414646-3673ccc6-56da-4b3d-8709-6ec786faf140.webp?h=900&amp;w=900" alt="Epson Printer Deals at Best Buy: Up to 50% off + free shipping" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">computers</span>
-          <span class="discount-badge">50% off</span>
-        </div>
-        <p class="deal-title">Epson Printer Deals at Best Buy: Up to 50% off + free shipping</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span style="font-size:13px;color:var(--muted)">See deal</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/3763-jlab-talk-pro-usb-microphone-for-35-free-shipping-w-prime/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1785413373-product-trimmed.jpg?h=439&amp;w=293" alt="JLab Talk Pro USB Microphone for $35 + free shipping w/ Prime" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">computers</span>
-          
-        </div>
-        <p class="deal-title">JLab Talk Pro USB Microphone for $35 + free shipping w/ Prime</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$35.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/3780-gigabyte-aero-x16-ryzen-ai-7-350-16-laptop-pc-w-rtx-5060-32g/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1785411128-product-trimmed.jpg?h=439&amp;w=770" alt="Gigabyte Aero X16 Ryzen AI 7 350 16&quot; Laptop PC w/ RTX 5060 &amp; 32GB RAM for $1,200 + free shipping" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">computers</span>
-          
-        </div>
-        <p class="deal-title">Gigabyte Aero X16 Ryzen AI 7 350 16&quot; Laptop PC w/ RTX 5060 &amp; 32GB RAM for $1,200 + free shipping</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$1.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/3781-mini-usb-light-2-pack-for-1-free-shipping-w-25/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1785411090-61d_j9kokkl.jpg?h=1024&amp;w=1024" alt="Mini USB Light 2-Pack for $1 + free shipping w/ $25" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">computers</span>
-          <span class="discount-badge">96% off</span>
-        </div>
-        <p class="deal-title">Mini USB Light 2-Pack for $1 + free shipping w/ $25</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$1.00</span><span class="price-original">$25.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/3782-acer-swift-go-16-ai-core-ultra-5-322-16-touch-laptop-for-700/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1785409973-product-trimmed.jpg?h=651&amp;w=819" alt="Acer Swift Go 16 AI Core Ultra 5 322 16&quot; Touch Laptop for $700 + free shipping" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">computers</span>
-          
-        </div>
-        <p class="deal-title">Acer Swift Go 16 AI Core Ultra 5 322 16&quot; Touch Laptop for $700 + free shipping</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$700.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/3784-razer-blackwidow-v4-low-pro-tkl-hyperspeed-wireless-gaming-k/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1785408844-product-trimmed.jpg?h=227&amp;w=500" alt="Razer BlackWidow V4 Low Pro TKL HyperSpeed Wireless Gaming Keyboard for $100 + free shipping w/ Prime" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">computers</span>
-          
-        </div>
-        <p class="deal-title">Razer BlackWidow V4 Low Pro TKL HyperSpeed Wireless Gaming Keyboard for $100 + free shipping w/ Prime</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$100.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/3785-t-mobile-5g-home-internet-plans-1-month-free-up-to-200-prepa/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1785407365-plans-v5-all-in-mesh.avif?h=900&amp;w=900" alt="T-Mobile 5G Home Internet Plans: 1 month free + up to $200 prepaid Mastercard" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">computers</span>
-          
-        </div>
-        <p class="deal-title">T-Mobile 5G Home Internet Plans: 1 month free + up to $200 prepaid Mastercard</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$200.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/3765-samsung-galaxy-buds-core-anc-wireless-earbuds-for-40-free-sh/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1785406812-product-trimmed.jpg?h=422&amp;w=332" alt="Samsung Galaxy Buds Core ANC Wireless Earbuds for $40 + free shipping w/ Prime" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">computers</span>
-          
-        </div>
-        <p class="deal-title">Samsung Galaxy Buds Core ANC Wireless Earbuds for $40 + free shipping w/ Prime</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$40.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/3786-terramaster-f2-425-2-bay-nas-diskless-storage-server-for-240/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1785405182-pwbfooy.png?h=702&amp;w=1024" alt="TerraMaster F2-425 2-Bay NAS Diskless Storage Server for $240 + free shipping" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">computers</span>
-          
-        </div>
-        <p class="deal-title">TerraMaster F2-425 2-Bay NAS Diskless Storage Server for $240 + free shipping</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$240.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/3787-prime-pc-clearout-deals-at-woot-up-to-22-off-free-shipping-w/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1785405113-product-trimmed.jpg?h=438&amp;w=276" alt="Prime PC Clearout Deals at Woot: Up to 22% off + free shipping w/ Prime" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">computers</span>
-          <span class="discount-badge">22% off</span>
-        </div>
-        <p class="deal-title">Prime PC Clearout Deals at Woot: Up to 22% off + free shipping w/ Prime</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span style="font-size:13px;color:var(--muted)">See deal</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/3783-adobe-creative-cloud-pro-for-35-month-for-3-months/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1785404755-29bc8bc2-3124-5db3-813a-895e84f20c0e.jpg?h=300&amp;w=300" alt="Adobe Creative Cloud Pro for $35 / month for 3 months" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">computers</span>
-          
-        </div>
-        <p class="deal-title">Adobe Creative Cloud Pro for $35 / month for 3 months</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$35.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/3788-msi-49-ultrawide-1440p-hdr-curved-144hz-oled-gaming-monitor/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1785403563-product-trimmed.jpg?h=252&amp;w=640" alt="MSI 49&quot; Ultrawide 1440p HDR Curved 144Hz OLED Gaming Monitor for $599 for members + free shipping w/ $50 for Plus members" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">computers</span>
-          <span class="discount-badge">92% off</span>
-        </div>
-        <p class="deal-title">MSI 49&quot; Ultrawide 1440p HDR Curved 144Hz OLED Gaming Monitor for $599 for members + free shipping w/ $50 for Plus members</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$50.00</span><span class="price-original">$599.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/3766-meross-smart-wifi-garden-hose-water-timer-for-60-free-shippi/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1785401240-61hxch9tfll.jpg?h=1024&amp;w=1024" alt="Meross Smart WiFi Garden Hose Water Timer for $60 + free shipping" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">computers</span>
-          
-        </div>
-        <p class="deal-title">Meross Smart WiFi Garden Hose Water Timer for $60 + free shipping</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$60.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/3789-msi-pro-a850pl-pcie5-850w-80-platinum-fully-modular-power-su/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1785400714-el0d09e.png?h=685&amp;w=1024" alt="MSI PRO A850PL PCIe5 850W 80+ Platinum Fully Modular Power Supply for $100 + free shipping" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">computers</span>
-          
-        </div>
-        <p class="deal-title">MSI PRO A850PL PCIe5 850W 80+ Platinum Fully Modular Power Supply for $100 + free shipping</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$100.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews</span>
-          <span>Jul 30, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/3767-bluetti-ac50b-700w-448wh-portable-power-station-for-232-free/" class="deal-card">
-      <img src="https://d.dlnws.com/64599/1785399835-product-trimmed.png?h=773&amp;w=1024" alt="Bluetti AC50B 700W 448Wh Portable Power Station for $232 + free shipping" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">computers</span>
-          
-        </div>
-        <p class="deal-title">Bluetti AC50B 700W 448Wh Portable Power Station for $232 + free shipping</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$232.00</span>
         </div>
         <div class="deal-meta">
           <span>dealnews</span>

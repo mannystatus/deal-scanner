@@ -1,31 +1,41 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <!-- Consent Mode v2 — sets default (denied) consent state before any tag
-         below loads, so GTM/gtag still fire on every visit but only send
-         cookieless, anonymized signals until the user accepts the cookie
-         notice further down the page. If they already accepted on a past
-         visit, immediately upgrade to granted from the stored preference.
+    <!-- Consent Mode v2 — sets default consent state (denied unless already
+         granted on a past visit) before any tag below loads, so GTM/GA still
+         fire on every visit but only send cookieless, anonymized signals
+         until the user accepts the cookie notice further down the page.
+         Also puts AdSense into restricted-data-processing mode (non-
+         personalized ads only) by default — required for EEA/UK traffic
+         under Google's EU User Consent Policy.
          https://developers.google.com/tag-platform/security/guides/consent -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag() { dataLayer.push(arguments); }
       window.gtag = gtag;
+      var htdGranted = localStorage.getItem('htd_consent_v1') === 'granted';
       gtag('consent', 'default', {
-        'ad_storage': 'denied',
-        'ad_user_data': 'denied',
-        'ad_personalization': 'denied',
-        'analytics_storage': 'denied',
+        'ad_storage': htdGranted ? 'granted' : 'denied',
+        'ad_user_data': htdGranted ? 'granted' : 'denied',
+        'ad_personalization': htdGranted ? 'granted' : 'denied',
+        'analytics_storage': htdGranted ? 'granted' : 'denied',
         'wait_for_update': 500
       });
-      if (localStorage.getItem('htd_consent_v1') === 'granted') {
-        gtag('consent', 'update', {
-          'ad_storage': 'granted',
-          'ad_user_data': 'granted',
-          'ad_personalization': 'granted',
-          'analytics_storage': 'granted'
-        });
-      }
+      window.adsbygoogle = window.adsbygoogle || [];
+      window.adsbygoogle.push({ google_ad_client: 'ca-pub-6138840929831792', google_restrict_data_processing: !htdGranted });
+
+      // Awin's Publisher MasterTag sets affiliate click/conversion-tracking
+      // cookies, which isn't a Google product Consent Mode covers — gated
+      // separately here, and only injected once consent is granted (either
+      // already stored, or via the Accept button below).
+      window.htdLoadAwin = window.htdLoadAwin || function () {
+        if (window.htdAwinLoaded) return;
+        window.htdAwinLoaded = true;
+        var s = document.createElement('script');
+        s.src = 'https://www.dwin2.com/pub.2991473.min.js';
+        document.head.appendChild(s);
+      };
+      if (htdGranted) { window.htdLoadAwin(); }
     </script>
     <!-- End Consent Mode -->
 
@@ -125,8 +135,9 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6138840929831792"
      crossorigin="anonymous"></script>
 
-    <!-- Awin affiliate tracking (Publisher MasterTag) -->
-    <script src="https://www.dwin2.com/pub.2991473.min.js"></script>
+    <!-- Awin affiliate tracking (Publisher MasterTag) — loaded conditionally
+         by htdLoadAwin() in the Consent Mode script above, not statically
+         here, since it needs to wait on consent like everything else. -->
 
     <style>
       :root {
@@ -230,6 +241,11 @@
         color: var(--accent-text);
         font-weight: 600;
       }
+      .consent-actions {
+        display: flex;
+        flex: 0 0 auto;
+        gap: 10px;
+      }
       .consent-box button {
         flex: 0 0 auto;
         background: var(--accent);
@@ -243,6 +259,36 @@
       }
       .consent-box button:hover {
         opacity: 0.85;
+      }
+      .consent-box .consent-reject-btn {
+        background: transparent;
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+      .consent-box .consent-reject-btn:hover {
+        opacity: 1;
+        background: var(--bg);
+      }
+
+      /* Reopens the cookie banner so a visitor can change their choice
+         later — kept as static markup outside #root (like consent-overlay
+         itself) so it works identically for prerendered/no-JS pages and
+         after the React app mounts. */
+      .cookie-settings-btn {
+        position: fixed;
+        left: 12px;
+        bottom: 12px;
+        z-index: 998;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 11px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        cursor: pointer;
+      }
+      .cookie-settings-btn:hover {
+        color: var(--text);
       }
 
       /* Header network bar */
@@ -750,66 +796,66 @@
       "@type": "ItemList",
       "name": "Best Drone & FPV Parts Deals Today",
       "itemListElement": [
-{ "@type": "ListItem", "position": 1, "name": "DJI Mavic 2 Pro Fly More Kit (OPEN BOX KIT) Drone, Batteries, Case - $399.00", "url": "https://www.hackthedeal.com/deal/4208-dji-mavic-2-pro-fly-more-kit-open-box-kit-drone-batteries-ca/" },
-{ "@type": "ListItem", "position": 2, "name": "Autel Robotics EVO II Pro 6K Rugged Bundle, V2 (OPEN BOX KIT) Drone, Batteries, Case - $999.00", "url": "https://www.hackthedeal.com/deal/4209-autel-robotics-evo-ii-pro-6k-rugged-bundle-v2-open-box-kit-d/" },
-{ "@type": "ListItem", "position": 3, "name": "RobopowerUA 15000mah 6S Li-Ion Battery - XT60 - $275.00", "url": "https://www.hackthedeal.com/deal/3964-robopowerua-15000mah-6s-li-ion-battery-xt60-275-00/" },
-{ "@type": "ListItem", "position": 4, "name": "Skyzone SKY02O 640*400 OLED 5.8GHz FPV Goggles w/ SteadyView Diversity Rx - $415.99", "url": "https://www.hackthedeal.com/deal/3951-skyzone-sky02o-640-400-oled-5-8ghz-fpv-goggles-w-steadyview/" },
-{ "@type": "ListItem", "position": 5, "name": "SanDisk Extreme\u00ae microSD\u2122 UHS-I Memory Card 256GB - $62.99", "url": "https://www.hackthedeal.com/deal/3965-sandisk-extreme-microsd-uhs-i-memory-card-256gb-62-99/" },
-{ "@type": "ListItem", "position": 6, "name": "HQProp DP 6x3x3 V1S Propeller (Set of 4) - Light Blue - $5.49", "url": "https://www.hackthedeal.com/deal/3411-hqprop-dp-6x3x3-v1s-propeller-set-of-4-light-blue-5-49/" },
-{ "@type": "ListItem", "position": 7, "name": "HQProp FlowerPig R29V4 3-Blade Propeller (Set of 4) - Pink - $2.99", "url": "https://www.hackthedeal.com/deal/3412-hqprop-flowerpig-r29v4-3-blade-propeller-set-of-4-pink-2-99/" },
-{ "@type": "ListItem", "position": 8, "name": "HQProp Juicy Prop J35 3-Blade Propeller (Set of 4) - $3.49", "url": "https://www.hackthedeal.com/deal/3413-hqprop-juicy-prop-j35-3-blade-propeller-set-of-4-3-49/" },
-{ "@type": "ListItem", "position": 9, "name": "RCINPOWER GTS V3 1203 11500kv Plus 2-3 inch Cinewhoop Micro Motor - Choose Color - $18.99", "url": "https://www.hackthedeal.com/deal/3952-rcinpower-gts-v3-1203-11500kv-plus-2-3-inch-cinewhoop-micro/" },
-{ "@type": "ListItem", "position": 10, "name": "RCINPOWER GTS V3 1203 6000kv Plus 2-3 inch Cinewhoop Micro Motor - Choose Color - $18.99", "url": "https://www.hackthedeal.com/deal/3953-rcinpower-gts-v3-1203-6000kv-plus-2-3-inch-cinewhoop-micro-m/" },
-{ "@type": "ListItem", "position": 11, "name": "TrueRC CORE 5.8GHz Antenna - SMA - 80mm RHCP - $20.99", "url": "https://www.hackthedeal.com/deal/3414-truerc-core-5-8ghz-antenna-sma-80mm-rhcp-20-99/" },
-{ "@type": "ListItem", "position": 12, "name": "Walksnail Avatar Goggles X Replacement Heat Sink Kit - $2.99", "url": "https://www.hackthedeal.com/deal/3415-walksnail-avatar-goggles-x-replacement-heat-sink-kit-2-99/" },
-{ "@type": "ListItem", "position": 13, "name": "Axisflying Manta 5 SE V2 Front Arm - $6.49", "url": "https://www.hackthedeal.com/deal/3416-axisflying-manta-5-se-v2-front-arm-6-49/" },
-{ "@type": "ListItem", "position": 14, "name": "FPVStoreRC STB5 5 Inch FPV Racing Frame Kit - $67.99", "url": "https://www.hackthedeal.com/deal/3954-fpvstorerc-stb5-5-inch-fpv-racing-frame-kit-67-99/" },
-{ "@type": "ListItem", "position": 15, "name": "FPVStoreRC STB5 Frame Replacement Arm - $9.99", "url": "https://www.hackthedeal.com/deal/3955-fpvstorerc-stb5-frame-replacement-arm-9-99/" },
-{ "@type": "ListItem", "position": 16, "name": "FPVStoreRC STB5 Frame Replacement Top Plate - $4.99", "url": "https://www.hackthedeal.com/deal/3956-fpvstorerc-stb5-frame-replacement-top-plate-4-99/" },
-{ "@type": "ListItem", "position": 17, "name": "FPVStoreRC STB5 Frame Replacement Base Plate - $5.99", "url": "https://www.hackthedeal.com/deal/3957-fpvstorerc-stb5-frame-replacement-base-plate-5-99/" },
-{ "@type": "ListItem", "position": 18, "name": "FPVStoreRC Evo 0702 33800KV 1S Brushless Motor for FPV - Orange & Purple - $23.99", "url": "https://www.hackthedeal.com/deal/3958-fpvstorerc-evo-0702-33800kv-1s-brushless-motor-for-fpv-orang/" },
-{ "@type": "ListItem", "position": 19, "name": "DJI Manifold 3 Accessory Kit (Matrice 400) - $80.00", "url": "https://www.hackthedeal.com/deal/3421-dji-manifold-3-accessory-kit-matrice-400-80-00/" },
-{ "@type": "ListItem", "position": 20, "name": "HQProp X-Class 13X9X3 V2 Glass Fiber Nylon Propeller (Set of 2) - $20.49", "url": "https://www.hackthedeal.com/deal/3417-hqprop-x-class-13x9x3-v2-glass-fiber-nylon-propeller-set-of/" },
-{ "@type": "ListItem", "position": 21, "name": "HQProp 8x4x3 3-Blade Propeller (Set of 4) - $11.99", "url": "https://www.hackthedeal.com/deal/3418-hqprop-8x4x3-3-blade-propeller-set-of-4-11-99/" },
-{ "@type": "ListItem", "position": 22, "name": "HQProp MacroQuad 9x5x3 3-Blade Propeller (Set of 4) - $23.49", "url": "https://www.hackthedeal.com/deal/3419-hqprop-macroquad-9x5x3-3-blade-propeller-set-of-4-23-49/" },
-{ "@type": "ListItem", "position": 23, "name": "ToolkitRC U3 V2 3A 38W 2-3S USB-C Balance LiPo Charger - $14.99", "url": "https://www.hackthedeal.com/deal/3420-toolkitrc-u3-v2-3a-38w-2-3s-usb-c-balance-lipo-charger-14-99/" },
-{ "@type": "ListItem", "position": 24, "name": "MicoAir H743 V2 2-6S Flight Controller with Bluetooth and pre-loaded with Ardupilot - 30\u00d730mm - $72.99", "url": "https://www.hackthedeal.com/deal/3959-micoair-h743-v2-2-6s-flight-controller-with-bluetooth-and-pr/" },
-{ "@type": "ListItem", "position": 25, "name": "BetaFPV Air Camera 16:9 Analog FPV camera - $15.99", "url": "https://www.hackthedeal.com/deal/3960-betafpv-air-camera-16-9-analog-fpv-camera-15-99/" },
-{ "@type": "ListItem", "position": 26, "name": "BetaFPV Air Camera 4:3 Analog FPV camera - $14.99", "url": "https://www.hackthedeal.com/deal/3961-betafpv-air-camera-4-3-analog-fpv-camera-14-99/" },
-{ "@type": "ListItem", "position": 27, "name": "ISDT D2 Mark II 200W 20A AC Dual Channel Smart Balance Charger - $168.99", "url": "https://www.hackthedeal.com/deal/3962-isdt-d2-mark-ii-200w-20a-ac-dual-channel-smart-balance-charg/" },
-{ "@type": "ListItem", "position": 28, "name": "Freefly Tattu TA3200 Dual-Channel Smart Charger (Alta X Gen2) - $795.00", "url": "https://www.hackthedeal.com/deal/3422-freefly-tattu-ta3200-dual-channel-smart-charger-alta-x-gen2/" },
-{ "@type": "ListItem", "position": 29, "name": "Freefly Alta X Gen2 12S Flight Battery (AS150U) - $725.00", "url": "https://www.hackthedeal.com/deal/3423-freefly-alta-x-gen2-12s-flight-battery-as150u-725-00/" },
-{ "@type": "ListItem", "position": 30, "name": "Freefly SL8 Travel Case - $595.00", "url": "https://www.hackthedeal.com/deal/3424-freefly-sl8-travel-case-595-00/" },
-{ "@type": "ListItem", "position": 31, "name": "Freefly Smart Dovetail Receiver - $345.00", "url": "https://www.hackthedeal.com/deal/3425-freefly-smart-dovetail-receiver-345-00/" },
-{ "@type": "ListItem", "position": 32, "name": "Pyrodrone Kevlar XXL Strap W/ Woven Rubber Grip & Metal Buckle - 711x25mm - $5.99", "url": "https://www.hackthedeal.com/deal/3963-pyrodrone-kevlar-xxl-strap-w-woven-rubber-grip-metal-buckle/" },
-{ "@type": "ListItem", "position": 33, "name": "FrSky 2.4G Spare Antenna (150mm) - $1.59 (was $2.49)", "url": "https://www.hackthedeal.com/deal/1325-frsky-2-4g-spare-antenna-150mm-1-59-was-2-49/" },
-{ "@type": "ListItem", "position": 34, "name": "HQProp DP 5X4.5X3V1S 5\u2033 Props \u2013 Black - $3.99 (was $4.49)", "url": "https://www.hackthedeal.com/deal/1324-hqprop-dp-5x4-5x3v1s-5-props-black-3-99-was-4-49/" },
-{ "@type": "ListItem", "position": 35, "name": "HQProp DP 5X4.8X3V1S 5\u2033 Props \u2013 Black - $3.99 (was $4.49)", "url": "https://www.hackthedeal.com/deal/1323-hqprop-dp-5x4-8x3v1s-5-props-black-3-99-was-4-49/" },
-{ "@type": "ListItem", "position": 36, "name": "HQProp DP 5X4.3X3V1S 5\u2033 Props \u2013 Black - $3.99 (was $4.49)", "url": "https://www.hackthedeal.com/deal/1322-hqprop-dp-5x4-3x3v1s-5-props-black-3-99-was-4-49/" },
-{ "@type": "ListItem", "position": 37, "name": "Armattan Mongoose 5 Inch Spare Arm Replacement (3mm) - $5.59 (was $6.29)", "url": "https://www.hackthedeal.com/deal/1321-armattan-mongoose-5-inch-spare-arm-replacement-3mm-5-59-was/" },
-{ "@type": "ListItem", "position": 38, "name": "Rooster Front Top Plate - $1.69 (was $1.99)", "url": "https://www.hackthedeal.com/deal/1320-rooster-front-top-plate-1-69-was-1-99/" },
-{ "@type": "ListItem", "position": 39, "name": "EMAX RSII 2306 Race Spec Brushless Motor (3-4S) 2400Kv - $22.99 (was $30.99)", "url": "https://www.hackthedeal.com/deal/1319-emax-rsii-2306-race-spec-brushless-motor-3-4s-2400kv-22-99-w/" },
-{ "@type": "ListItem", "position": 40, "name": "ASSORTED ZIP TIES BY COLOR AND SIZE BUNDLE PACK - $14.59 (was $15.99)", "url": "https://www.hackthedeal.com/deal/1318-assorted-zip-ties-by-color-and-size-bundle-pack-14-59-was-15/" },
-{ "@type": "ListItem", "position": 41, "name": "WIRE STRIPPER AND CUTTER - $8.39 (was $8.99)", "url": "https://www.hackthedeal.com/deal/1317-wire-stripper-and-cutter-8-39-was-8-99/" },
-{ "@type": "ListItem", "position": 42, "name": "Long Needle Nose Pliers - $7.89 (was $8.99)", "url": "https://www.hackthedeal.com/deal/1316-long-needle-nose-pliers-7-89-was-8-99/" },
-{ "@type": "ListItem", "position": 43, "name": "Hot Glue Sticks (6-Pack) - $1.29 (was $1.99)", "url": "https://www.hackthedeal.com/deal/1315-hot-glue-sticks-6-pack-1-29-was-1-99/" },
-{ "@type": "ListItem", "position": 44, "name": "100 Pack 4\u2033 Zip Ties - $1.89 (was $1.99)", "url": "https://www.hackthedeal.com/deal/1314-100-pack-4-zip-ties-1-89-was-1-99/" },
-{ "@type": "ListItem", "position": 45, "name": "CYCLONE T6040C Longe Range Props \u2013 Blue - $2.49 (was $3.99)", "url": "https://www.hackthedeal.com/deal/1313-cyclone-t6040c-longe-range-props-blue-2-49-was-3-99/" },
-{ "@type": "ListItem", "position": 46, "name": "CYCLONE T6040C Longe Range Props \u2013 Purple - $2.49 (was $3.99)", "url": "https://www.hackthedeal.com/deal/1312-cyclone-t6040c-longe-range-props-purple-2-49-was-3-99/" },
-{ "@type": "ListItem", "position": 47, "name": "Dalprop Cyclone T5051C 5\u2033 Racing Propeller \u2013 Red - $2.40 (was $3.99)", "url": "https://www.hackthedeal.com/deal/1311-dalprop-cyclone-t5051c-5-racing-propeller-red-2-40-was-3-99/" },
-{ "@type": "ListItem", "position": 48, "name": "Dalprop Cyclone T5051C 5\u2033 Racing Propeller \u2013 Blue - $2.40 (was $3.99)", "url": "https://www.hackthedeal.com/deal/1310-dalprop-cyclone-t5051c-5-racing-propeller-blue-2-40-was-3-99/" },
-{ "@type": "ListItem", "position": 49, "name": "WIRE CUTTER 6-1/2\u2033 - $7.89 (was $8.99)", "url": "https://www.hackthedeal.com/deal/1309-wire-cutter-6-1-2-7-89-was-8-99/" },
-{ "@type": "ListItem", "position": 50, "name": "SUPER GLUE (2 PACK) - $2.59 (was $2.99)", "url": "https://www.hackthedeal.com/deal/1308-super-glue-2-pack-2-59-was-2-99/" },
-{ "@type": "ListItem", "position": 51, "name": "Multi Charging Cable JST to Banana Connector - $11.19 (was $11.99)", "url": "https://www.hackthedeal.com/deal/1307-multi-charging-cable-jst-to-banana-connector-11-19-was-11-99/" },
-{ "@type": "ListItem", "position": 52, "name": "Silicone Wire 16awg 2 Feet Red & Black - $1.79 (was $1.99)", "url": "https://www.hackthedeal.com/deal/1306-silicone-wire-16awg-2-feet-red-black-1-79-was-1-99/" },
-{ "@type": "ListItem", "position": 53, "name": "Silicone Wire 18awg 2 Feet Red & Black - $1.49 (was $1.99)", "url": "https://www.hackthedeal.com/deal/1305-silicone-wire-18awg-2-feet-red-black-1-49-was-1-99/" },
-{ "@type": "ListItem", "position": 54, "name": "XT30 Charging Cable - $2.99 (was $3.99)", "url": "https://www.hackthedeal.com/deal/1304-xt30-charging-cable-2-99-was-3-99/" },
-{ "@type": "ListItem", "position": 55, "name": "XT60 Charging Cable - $3.09 (was $3.99)", "url": "https://www.hackthedeal.com/deal/1303-xt60-charging-cable-3-09-was-3-99/" },
-{ "@type": "ListItem", "position": 56, "name": "RP-SMA 90 Degree Male to Female Adapter - $1.49 (was $1.99)", "url": "https://www.hackthedeal.com/deal/1302-rp-sma-90-degree-male-to-female-adapter-1-49-was-1-99/" },
-{ "@type": "ListItem", "position": 57, "name": "Skinny Kid \u2013 5.5\u2033 Beef Cake Replacement Arm 2 Pack - $8.19 (was $11.99)", "url": "https://www.hackthedeal.com/deal/1301-skinny-kid-5-5-beef-cake-replacement-arm-2-pack-8-19-was-11/" },
-{ "@type": "ListItem", "position": 58, "name": "BrotherHobby R5 Returner 2306 2650Kv Motor \u2013 \u201cRedHulk\u201d - $19.99 (was $31.99)", "url": "https://www.hackthedeal.com/deal/1300-brotherhobby-r5-returner-2306-2650kv-motor-redhulk-19-99-was/" },
-{ "@type": "ListItem", "position": 59, "name": "BrotherHobby R5 Returner 2306 2450Kv Motor \u2013 \u201cDeadPool\u201d - $21.69 (was $31.99)", "url": "https://www.hackthedeal.com/deal/1299-brotherhobby-r5-returner-2306-2450kv-motor-deadpool-21-69-wa/" },
-{ "@type": "ListItem", "position": 60, "name": "DALPROP Cyclone T5047C Propeller 6 Pair Bundle POPO \u2013 Black - $8.69 (was $10.99)", "url": "https://www.hackthedeal.com/deal/1298-dalprop-cyclone-t5047c-propeller-6-pair-bundle-popo-black-8/" }
+{ "@type": "ListItem", "position": 1, "name": "DJI Phantom 4 Part 22 Craft Only (no remote, battery, camera, or charger) (Open Box) - $199.00", "url": "https://www.hackthedeal.com/deal/4373-dji-phantom-4-part-22-craft-only-no-remote-battery-camera-or/" },
+{ "@type": "ListItem", "position": 2, "name": "XREAL One Pro M AR Glasses (Medium) (OPEN BOX) - $599.00", "url": "https://www.hackthedeal.com/deal/4374-xreal-one-pro-m-ar-glasses-medium-open-box-599-00/" },
+{ "@type": "ListItem", "position": 3, "name": "DJI RS 4 Mini Combo (OPEN BOX) - $369.00", "url": "https://www.hackthedeal.com/deal/4375-dji-rs-4-mini-combo-open-box-369-00/" },
+{ "@type": "ListItem", "position": 4, "name": "DJI RS 4 Mini (Open Box) - $0.00", "url": "https://www.hackthedeal.com/deal/4376-dji-rs-4-mini-open-box-0-00/" },
+{ "@type": "ListItem", "position": 5, "name": "DJI Mic Mini Transmitter (Arctic White) (Open Box) - $0.00", "url": "https://www.hackthedeal.com/deal/4377-dji-mic-mini-transmitter-arctic-white-open-box-0-00/" },
+{ "@type": "ListItem", "position": 6, "name": "DJI RS 4 (OPEN BOX) - $0.00", "url": "https://www.hackthedeal.com/deal/4378-dji-rs-4-open-box-0-00/" },
+{ "@type": "ListItem", "position": 7, "name": "DJI Osmo Action 6 Standard Combo (OPEN BOX) - $436.00", "url": "https://www.hackthedeal.com/deal/4379-dji-osmo-action-6-standard-combo-open-box-436-00/" },
+{ "@type": "ListItem", "position": 8, "name": "DJI Goggles (OPEN BOX) - $276.99", "url": "https://www.hackthedeal.com/deal/4380-dji-goggles-open-box-276-99/" },
+{ "@type": "ListItem", "position": 9, "name": "DJI RS 3 Combo (Open Box) - $609.00", "url": "https://www.hackthedeal.com/deal/4381-dji-rs-3-combo-open-box-609-00/" },
+{ "@type": "ListItem", "position": 10, "name": "DJI Osmo Action 5 Pro Standard Combo (Open Box) - $0.00", "url": "https://www.hackthedeal.com/deal/4382-dji-osmo-action-5-pro-standard-combo-open-box-0-00/" },
+{ "@type": "ListItem", "position": 11, "name": "DJI Osmo Mobile SE (Open Box) - $0.00", "url": "https://www.hackthedeal.com/deal/4383-dji-osmo-mobile-se-open-box-0-00/" },
+{ "@type": "ListItem", "position": 12, "name": "DJI Mini 4 Pro Fly More Combo Plus (DJI RC 2) (GL) (Open Box) - $1159.00", "url": "https://www.hackthedeal.com/deal/4384-dji-mini-4-pro-fly-more-combo-plus-dji-rc-2-gl-open-box-1159/" },
+{ "@type": "ListItem", "position": 13, "name": "DJI Mini 4K Fly Drone (GL) (OPEN BOX) - $299.00", "url": "https://www.hackthedeal.com/deal/4385-dji-mini-4k-fly-drone-gl-open-box-299-00/" },
+{ "@type": "ListItem", "position": 14, "name": "DJI Mini 3 Fly More Combo (GL) Open Box - $589.00", "url": "https://www.hackthedeal.com/deal/4386-dji-mini-3-fly-more-combo-gl-open-box-589-00/" },
+{ "@type": "ListItem", "position": 15, "name": "DJI Mavic 3 Classic With Standard Remote (Open Box) - $1279.00", "url": "https://www.hackthedeal.com/deal/4387-dji-mavic-3-classic-with-standard-remote-open-box-1279-00/" },
+{ "@type": "ListItem", "position": 16, "name": "DJI Mavic 3 OPEN BOX - $0.00", "url": "https://www.hackthedeal.com/deal/4388-dji-mavic-3-open-box-0-00/" },
+{ "@type": "ListItem", "position": 17, "name": "DJI Mini 3 Pro Fly More Kit (Open Box) - $189.00", "url": "https://www.hackthedeal.com/deal/4389-dji-mini-3-pro-fly-more-kit-open-box-189-00/" },
+{ "@type": "ListItem", "position": 18, "name": "DJI Mini SE Drone | 30 Minute Flight Time, 2.7K Camera (Open Box Resealed) - $279.00", "url": "https://www.hackthedeal.com/deal/4390-dji-mini-se-drone-30-minute-flight-time-2-7k-camera-open-box/" },
+{ "@type": "ListItem", "position": 19, "name": "DJI Mini 2 Fly More Combo (NA) (Open Box) - $599.00", "url": "https://www.hackthedeal.com/deal/4391-dji-mini-2-fly-more-combo-na-open-box-599-00/" },
+{ "@type": "ListItem", "position": 20, "name": "DJI Mavic Mini Fly More Combo (OPEN BOX) - $439.00", "url": "https://www.hackthedeal.com/deal/4392-dji-mavic-mini-fly-more-combo-open-box-439-00/" },
+{ "@type": "ListItem", "position": 21, "name": "Potensic ATOM FLY MORE COMBO (OPEN BOX) - $0.00", "url": "https://www.hackthedeal.com/deal/4393-potensic-atom-fly-more-combo-open-box-0-00/" },
+{ "@type": "ListItem", "position": 22, "name": "Potensic ATOM 2 FLY MORE COMBO OPEN BOX - $399.99", "url": "https://www.hackthedeal.com/deal/4394-potensic-atom-2-fly-more-combo-open-box-399-99/" },
+{ "@type": "ListItem", "position": 23, "name": "Potensic ATOM SE EXPANSION KIT (Open Box) - $229.99", "url": "https://www.hackthedeal.com/deal/4395-potensic-atom-se-expansion-kit-open-box-229-99/" },
+{ "@type": "ListItem", "position": 24, "name": "MicoAir H743 v2 AIO Flight Controller & 35A 2-6S 4in1 ESC - 25\u00d725mm - $87.99", "url": "https://www.hackthedeal.com/deal/4371-micoair-h743-v2-aio-flight-controller-35a-2-6s-4in1-esc-25-2/" },
+{ "@type": "ListItem", "position": 25, "name": "Tattu R-Line Version 6.0 1600mAh 6S 22.2V 160C SQ Lipo Battery Pack - XT60 - $46.99", "url": "https://www.hackthedeal.com/deal/4372-tattu-r-line-version-6-0-1600mah-6s-22-2v-160c-sq-lipo-batte/" },
+{ "@type": "ListItem", "position": 26, "name": "Peak Pro Solution Suite Cleaning Trailer - ABZ C10 Drone with Trailer - $99999.00", "url": "https://www.hackthedeal.com/deal/4396-peak-pro-solution-suite-cleaning-trailer-abz-c10-drone-with/" },
+{ "@type": "ListItem", "position": 27, "name": "Apex Pro Solution Suite Cleaning Van Skid - ABZ C10 Drone with Van Skid - $99999.00", "url": "https://www.hackthedeal.com/deal/4397-apex-pro-solution-suite-cleaning-van-skid-abz-c10-drone-with/" },
+{ "@type": "ListItem", "position": 28, "name": "DJI Mavic 2 Pro Fly More Kit (OPEN BOX KIT) Drone, Batteries, Case - $399.00", "url": "https://www.hackthedeal.com/deal/4208-dji-mavic-2-pro-fly-more-kit-open-box-kit-drone-batteries-ca/" },
+{ "@type": "ListItem", "position": 29, "name": "Autel Robotics EVO II Pro 6K Rugged Bundle, V2 (OPEN BOX KIT) Drone, Batteries, Case - $999.00", "url": "https://www.hackthedeal.com/deal/4209-autel-robotics-evo-ii-pro-6k-rugged-bundle-v2-open-box-kit-d/" },
+{ "@type": "ListItem", "position": 30, "name": "RobopowerUA 15000mah 6S Li-Ion Battery - XT60 - $275.00", "url": "https://www.hackthedeal.com/deal/3964-robopowerua-15000mah-6s-li-ion-battery-xt60-275-00/" },
+{ "@type": "ListItem", "position": 31, "name": "Skyzone SKY02O 640*400 OLED 5.8GHz FPV Goggles w/ SteadyView Diversity Rx - $415.99", "url": "https://www.hackthedeal.com/deal/3951-skyzone-sky02o-640-400-oled-5-8ghz-fpv-goggles-w-steadyview/" },
+{ "@type": "ListItem", "position": 32, "name": "SanDisk Extreme\u00ae microSD\u2122 UHS-I Memory Card 256GB - $62.99", "url": "https://www.hackthedeal.com/deal/3965-sandisk-extreme-microsd-uhs-i-memory-card-256gb-62-99/" },
+{ "@type": "ListItem", "position": 33, "name": "HQProp DP 6x3x3 V1S Propeller (Set of 4) - Light Blue - $5.49", "url": "https://www.hackthedeal.com/deal/3411-hqprop-dp-6x3x3-v1s-propeller-set-of-4-light-blue-5-49/" },
+{ "@type": "ListItem", "position": 34, "name": "HQProp FlowerPig R29V4 3-Blade Propeller (Set of 4) - Pink - $2.99", "url": "https://www.hackthedeal.com/deal/3412-hqprop-flowerpig-r29v4-3-blade-propeller-set-of-4-pink-2-99/" },
+{ "@type": "ListItem", "position": 35, "name": "HQProp Juicy Prop J35 3-Blade Propeller (Set of 4) - $3.49", "url": "https://www.hackthedeal.com/deal/3413-hqprop-juicy-prop-j35-3-blade-propeller-set-of-4-3-49/" },
+{ "@type": "ListItem", "position": 36, "name": "RCINPOWER GTS V3 1203 11500kv Plus 2-3 inch Cinewhoop Micro Motor - Choose Color - $18.99", "url": "https://www.hackthedeal.com/deal/3952-rcinpower-gts-v3-1203-11500kv-plus-2-3-inch-cinewhoop-micro/" },
+{ "@type": "ListItem", "position": 37, "name": "RCINPOWER GTS V3 1203 6000kv Plus 2-3 inch Cinewhoop Micro Motor - Choose Color - $18.99", "url": "https://www.hackthedeal.com/deal/3953-rcinpower-gts-v3-1203-6000kv-plus-2-3-inch-cinewhoop-micro-m/" },
+{ "@type": "ListItem", "position": 38, "name": "TrueRC CORE 5.8GHz Antenna - SMA - 80mm RHCP - $20.99", "url": "https://www.hackthedeal.com/deal/3414-truerc-core-5-8ghz-antenna-sma-80mm-rhcp-20-99/" },
+{ "@type": "ListItem", "position": 39, "name": "Walksnail Avatar Goggles X Replacement Heat Sink Kit - $2.99", "url": "https://www.hackthedeal.com/deal/3415-walksnail-avatar-goggles-x-replacement-heat-sink-kit-2-99/" },
+{ "@type": "ListItem", "position": 40, "name": "Axisflying Manta 5 SE V2 Front Arm - $6.49", "url": "https://www.hackthedeal.com/deal/3416-axisflying-manta-5-se-v2-front-arm-6-49/" },
+{ "@type": "ListItem", "position": 41, "name": "FPVStoreRC STB5 5 Inch FPV Racing Frame Kit - $67.99", "url": "https://www.hackthedeal.com/deal/3954-fpvstorerc-stb5-5-inch-fpv-racing-frame-kit-67-99/" },
+{ "@type": "ListItem", "position": 42, "name": "FPVStoreRC STB5 Frame Replacement Arm - $9.99", "url": "https://www.hackthedeal.com/deal/3955-fpvstorerc-stb5-frame-replacement-arm-9-99/" },
+{ "@type": "ListItem", "position": 43, "name": "FPVStoreRC STB5 Frame Replacement Top Plate - $4.99", "url": "https://www.hackthedeal.com/deal/3956-fpvstorerc-stb5-frame-replacement-top-plate-4-99/" },
+{ "@type": "ListItem", "position": 44, "name": "FPVStoreRC STB5 Frame Replacement Base Plate - $5.99", "url": "https://www.hackthedeal.com/deal/3957-fpvstorerc-stb5-frame-replacement-base-plate-5-99/" },
+{ "@type": "ListItem", "position": 45, "name": "FPVStoreRC Evo 0702 33800KV 1S Brushless Motor for FPV - Orange & Purple - $23.99", "url": "https://www.hackthedeal.com/deal/3958-fpvstorerc-evo-0702-33800kv-1s-brushless-motor-for-fpv-orang/" },
+{ "@type": "ListItem", "position": 46, "name": "DJI Manifold 3 Accessory Kit (Matrice 400) - $80.00", "url": "https://www.hackthedeal.com/deal/3421-dji-manifold-3-accessory-kit-matrice-400-80-00/" },
+{ "@type": "ListItem", "position": 47, "name": "HQProp X-Class 13X9X3 V2 Glass Fiber Nylon Propeller (Set of 2) - $20.49", "url": "https://www.hackthedeal.com/deal/3417-hqprop-x-class-13x9x3-v2-glass-fiber-nylon-propeller-set-of/" },
+{ "@type": "ListItem", "position": 48, "name": "HQProp 8x4x3 3-Blade Propeller (Set of 4) - $11.99", "url": "https://www.hackthedeal.com/deal/3418-hqprop-8x4x3-3-blade-propeller-set-of-4-11-99/" },
+{ "@type": "ListItem", "position": 49, "name": "HQProp MacroQuad 9x5x3 3-Blade Propeller (Set of 4) - $23.49", "url": "https://www.hackthedeal.com/deal/3419-hqprop-macroquad-9x5x3-3-blade-propeller-set-of-4-23-49/" },
+{ "@type": "ListItem", "position": 50, "name": "ToolkitRC U3 V2 3A 38W 2-3S USB-C Balance LiPo Charger - $14.99", "url": "https://www.hackthedeal.com/deal/3420-toolkitrc-u3-v2-3a-38w-2-3s-usb-c-balance-lipo-charger-14-99/" },
+{ "@type": "ListItem", "position": 51, "name": "MicoAir H743 V2 2-6S Flight Controller with Bluetooth and pre-loaded with Ardupilot - 30\u00d730mm - $72.99", "url": "https://www.hackthedeal.com/deal/3959-micoair-h743-v2-2-6s-flight-controller-with-bluetooth-and-pr/" },
+{ "@type": "ListItem", "position": 52, "name": "BetaFPV Air Camera 16:9 Analog FPV camera - $15.99", "url": "https://www.hackthedeal.com/deal/3960-betafpv-air-camera-16-9-analog-fpv-camera-15-99/" },
+{ "@type": "ListItem", "position": 53, "name": "BetaFPV Air Camera 4:3 Analog FPV camera - $14.99", "url": "https://www.hackthedeal.com/deal/3961-betafpv-air-camera-4-3-analog-fpv-camera-14-99/" },
+{ "@type": "ListItem", "position": 54, "name": "ISDT D2 Mark II 200W 20A AC Dual Channel Smart Balance Charger - $168.99", "url": "https://www.hackthedeal.com/deal/3962-isdt-d2-mark-ii-200w-20a-ac-dual-channel-smart-balance-charg/" },
+{ "@type": "ListItem", "position": 55, "name": "Freefly Tattu TA3200 Dual-Channel Smart Charger (Alta X Gen2) - $795.00", "url": "https://www.hackthedeal.com/deal/3422-freefly-tattu-ta3200-dual-channel-smart-charger-alta-x-gen2/" },
+{ "@type": "ListItem", "position": 56, "name": "Freefly Alta X Gen2 12S Flight Battery (AS150U) - $725.00", "url": "https://www.hackthedeal.com/deal/3423-freefly-alta-x-gen2-12s-flight-battery-as150u-725-00/" },
+{ "@type": "ListItem", "position": 57, "name": "Freefly SL8 Travel Case - $595.00", "url": "https://www.hackthedeal.com/deal/3424-freefly-sl8-travel-case-595-00/" },
+{ "@type": "ListItem", "position": 58, "name": "Freefly Smart Dovetail Receiver - $345.00", "url": "https://www.hackthedeal.com/deal/3425-freefly-smart-dovetail-receiver-345-00/" },
+{ "@type": "ListItem", "position": 59, "name": "Pyrodrone Kevlar XXL Strap W/ Woven Rubber Grip & Metal Buckle - 711x25mm - $5.99", "url": "https://www.hackthedeal.com/deal/3963-pyrodrone-kevlar-xxl-strap-w-woven-rubber-grip-metal-buckle/" },
+{ "@type": "ListItem", "position": 60, "name": "FrSky 2.4G Spare Antenna (150mm) - $1.59 (was $2.49)", "url": "https://www.hackthedeal.com/deal/1325-frsky-2-4g-spare-antenna-150mm-1-59-was-2-49/" }
       ]
     }
     </script>
@@ -828,35 +874,48 @@
     </div>
 
     <!-- Privacy / cookie consent notice — static markup so it's visible even
-         before React mounts. GTM/GA already loaded in Consent Mode's default
-         "denied" state (see <head>); clicking OK just upgrades the signal. -->
+         before React mounts. GTM/GA/AdSense already loaded in Consent Mode's
+         default state from localStorage (see <head>); Accept/Reject here
+         just update that signal going forward. -->
     <div id="consent-overlay" class="consent-overlay" style="display: none;">
       <div class="consent-box">
         <div class="consent-text">
           <p class="consent-title">🍪 We use cookies</p>
           <p>
-            This site uses cookies to measure site performance and improve your experience.
-            By clicking OK, you accept our use of cookies as described in our
-            <a href="/privacy.html">Privacy Policy</a>.
+            This site uses cookies to measure site performance and improve your experience, and
+            works with Google Analytics and AdSense, which may use cookies for analytics and to
+            show personalized ads. See our <a href="/privacy.html">Privacy Policy</a> for details.
           </p>
         </div>
-        <button id="consent-ok" type="button">OK</button>
+        <div class="consent-actions">
+          <button id="consent-reject" type="button" class="consent-reject-btn">Reject</button>
+          <button id="consent-ok" type="button">Accept</button>
+        </div>
       </div>
     </div>
+    <button id="cookie-settings-btn" type="button" class="cookie-settings-btn">Cookie Settings</button>
     <script>
       (function () {
-        if (localStorage.getItem('htd_consent_v1') !== 'granted') {
-          document.getElementById('consent-overlay').style.display = 'flex';
-        }
-        document.getElementById('consent-ok').addEventListener('click', function () {
-          localStorage.setItem('htd_consent_v1', 'granted');
+        function setConsent(granted) {
+          localStorage.setItem('htd_consent_v1', granted ? 'granted' : 'denied');
           document.getElementById('consent-overlay').style.display = 'none';
           gtag('consent', 'update', {
-            'ad_storage': 'granted',
-            'ad_user_data': 'granted',
-            'ad_personalization': 'granted',
-            'analytics_storage': 'granted'
+            'ad_storage': granted ? 'granted' : 'denied',
+            'ad_user_data': granted ? 'granted' : 'denied',
+            'ad_personalization': granted ? 'granted' : 'denied',
+            'analytics_storage': granted ? 'granted' : 'denied'
           });
+          window.adsbygoogle = window.adsbygoogle || [];
+          window.adsbygoogle.push({ google_ad_client: 'ca-pub-6138840929831792', google_restrict_data_processing: !granted });
+          if (granted && window.htdLoadAwin) { window.htdLoadAwin(); }
+        }
+        if (!localStorage.getItem('htd_consent_v1')) {
+          document.getElementById('consent-overlay').style.display = 'flex';
+        }
+        document.getElementById('consent-ok').addEventListener('click', function () { setConsent(true); });
+        document.getElementById('consent-reject').addEventListener('click', function () { setConsent(false); });
+        document.getElementById('cookie-settings-btn').addEventListener('click', function () {
+          document.getElementById('consent-overlay').style.display = 'flex';
         });
       })();
     </script>
@@ -901,7 +960,439 @@
       </section>
       <main style="max-width:1152px;margin:0 auto;padding:8px 16px 40px">
         <div class="section-title-bar"><span class="section-label">Latest Deals</span></div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px"><a href="/deal/4208-dji-mavic-2-pro-fly-more-kit-open-box-kit-drone-batteries-ca/" class="deal-card">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px"><a href="/deal/4373-dji-phantom-4-part-22-craft-only-no-remote-battery-camera-or/" class="deal-card">
+      <img src="http://www.dronenerds.com/cdn/shop/files/socialimaghe.jpg?v=1770743914" alt="DJI Phantom 4 Part 22 Craft Only (no remote, battery, camera, or charger) (Open Box) - $199.00" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">DJI Phantom 4 Part 22 Craft Only (no remote, battery, camera, or charger) (Open Box) - $199.00</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$199.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dronenerds</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4374-xreal-one-pro-m-ar-glasses-medium-open-box-599-00/" class="deal-card">
+      <img src="http://www.dronenerds.com/cdn/shop/files/socialimaghe.jpg?v=1770743914" alt="XREAL One Pro M AR Glasses (Medium) (OPEN BOX) - $599.00" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">XREAL One Pro M AR Glasses (Medium) (OPEN BOX) - $599.00</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$599.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dronenerds</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4375-dji-rs-4-mini-combo-open-box-369-00/" class="deal-card">
+      <img src="http://www.dronenerds.com/cdn/shop/files/socialimaghe.jpg?v=1770743914" alt="DJI RS 4 Mini Combo (OPEN BOX) - $369.00" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">DJI RS 4 Mini Combo (OPEN BOX) - $369.00</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$369.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dronenerds</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4376-dji-rs-4-mini-open-box-0-00/" class="deal-card">
+      <img src="http://www.dronenerds.com/cdn/shop/files/socialimaghe.jpg?v=1770743914" alt="DJI RS 4 Mini (Open Box) - $0.00" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">DJI RS 4 Mini (Open Box) - $0.00</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$0.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dronenerds</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4377-dji-mic-mini-transmitter-arctic-white-open-box-0-00/" class="deal-card">
+      <img src="http://www.dronenerds.com/cdn/shop/files/socialimaghe.jpg?v=1770743914" alt="DJI Mic Mini Transmitter (Arctic White) (Open Box) - $0.00" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">DJI Mic Mini Transmitter (Arctic White) (Open Box) - $0.00</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$0.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dronenerds</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4378-dji-rs-4-open-box-0-00/" class="deal-card">
+      <img src="http://www.dronenerds.com/cdn/shop/files/socialimaghe.jpg?v=1770743914" alt="DJI RS 4 (OPEN BOX) - $0.00" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">DJI RS 4 (OPEN BOX) - $0.00</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$0.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dronenerds</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4379-dji-osmo-action-6-standard-combo-open-box-436-00/" class="deal-card">
+      <img src="http://www.dronenerds.com/cdn/shop/files/socialimaghe.jpg?v=1770743914" alt="DJI Osmo Action 6 Standard Combo (OPEN BOX) - $436.00" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">DJI Osmo Action 6 Standard Combo (OPEN BOX) - $436.00</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$436.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dronenerds</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4380-dji-goggles-open-box-276-99/" class="deal-card">
+      <img src="http://www.dronenerds.com/cdn/shop/files/socialimaghe.jpg?v=1770743914" alt="DJI Goggles (OPEN BOX) - $276.99" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">DJI Goggles (OPEN BOX) - $276.99</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$276.99</span>
+        </div>
+        <div class="deal-meta">
+          <span>dronenerds</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4381-dji-rs-3-combo-open-box-609-00/" class="deal-card">
+      <img src="http://www.dronenerds.com/cdn/shop/files/socialimaghe.jpg?v=1770743914" alt="DJI RS 3 Combo (Open Box) - $609.00" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">DJI RS 3 Combo (Open Box) - $609.00</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$609.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dronenerds</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4382-dji-osmo-action-5-pro-standard-combo-open-box-0-00/" class="deal-card">
+      <img src="http://www.dronenerds.com/cdn/shop/files/socialimaghe.jpg?v=1770743914" alt="DJI Osmo Action 5 Pro Standard Combo (Open Box) - $0.00" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">DJI Osmo Action 5 Pro Standard Combo (Open Box) - $0.00</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$0.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dronenerds</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4383-dji-osmo-mobile-se-open-box-0-00/" class="deal-card">
+      <img src="http://www.dronenerds.com/cdn/shop/files/socialimaghe.jpg?v=1770743914" alt="DJI Osmo Mobile SE (Open Box) - $0.00" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">DJI Osmo Mobile SE (Open Box) - $0.00</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$0.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dronenerds</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4384-dji-mini-4-pro-fly-more-combo-plus-dji-rc-2-gl-open-box-1159/" class="deal-card">
+      <img src="http://www.dronenerds.com/cdn/shop/files/socialimaghe.jpg?v=1770743914" alt="DJI Mini 4 Pro Fly More Combo Plus (DJI RC 2) (GL) (Open Box) - $1159.00" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">DJI Mini 4 Pro Fly More Combo Plus (DJI RC 2) (GL) (Open Box) - $1159.00</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$1,159.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dronenerds</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4385-dji-mini-4k-fly-drone-gl-open-box-299-00/" class="deal-card">
+      <img src="http://www.dronenerds.com/cdn/shop/files/socialimaghe.jpg?v=1770743914" alt="DJI Mini 4K Fly Drone (GL) (OPEN BOX) - $299.00" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">DJI Mini 4K Fly Drone (GL) (OPEN BOX) - $299.00</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$299.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dronenerds</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4386-dji-mini-3-fly-more-combo-gl-open-box-589-00/" class="deal-card">
+      <img src="http://www.dronenerds.com/cdn/shop/files/socialimaghe.jpg?v=1770743914" alt="DJI Mini 3 Fly More Combo (GL) Open Box - $589.00" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">DJI Mini 3 Fly More Combo (GL) Open Box - $589.00</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$589.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dronenerds</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4387-dji-mavic-3-classic-with-standard-remote-open-box-1279-00/" class="deal-card">
+      <img src="http://www.dronenerds.com/cdn/shop/files/socialimaghe.jpg?v=1770743914" alt="DJI Mavic 3 Classic With Standard Remote (Open Box) - $1279.00" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">DJI Mavic 3 Classic With Standard Remote (Open Box) - $1279.00</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$1,279.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dronenerds</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4388-dji-mavic-3-open-box-0-00/" class="deal-card">
+      <img src="http://www.dronenerds.com/cdn/shop/files/socialimaghe.jpg?v=1770743914" alt="DJI Mavic 3 OPEN BOX - $0.00" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">DJI Mavic 3 OPEN BOX - $0.00</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$0.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dronenerds</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4389-dji-mini-3-pro-fly-more-kit-open-box-189-00/" class="deal-card">
+      <img src="http://www.dronenerds.com/cdn/shop/files/socialimaghe.jpg?v=1770743914" alt="DJI Mini 3 Pro Fly More Kit (Open Box) - $189.00" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">DJI Mini 3 Pro Fly More Kit (Open Box) - $189.00</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$189.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dronenerds</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4390-dji-mini-se-drone-30-minute-flight-time-2-7k-camera-open-box/" class="deal-card">
+      <img src="http://www.dronenerds.com/cdn/shop/products/dji-mini-se-drone-30-minute-flight-time-2-7k-camera-cp-ma-00000324-01-dji-f89.jpg?v=1693814686" alt="DJI Mini SE Drone | 30 Minute Flight Time, 2.7K Camera (Open Box Resealed) - $279.00" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">DJI Mini SE Drone | 30 Minute Flight Time, 2.7K Camera (Open Box Resealed) - $279.00</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$279.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dronenerds</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4391-dji-mini-2-fly-more-combo-na-open-box-599-00/" class="deal-card">
+      <img src="http://www.dronenerds.com/cdn/shop/files/socialimaghe.jpg?v=1770743914" alt="DJI Mini 2 Fly More Combo (NA) (Open Box) - $599.00" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">DJI Mini 2 Fly More Combo (NA) (Open Box) - $599.00</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$599.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dronenerds</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4392-dji-mavic-mini-fly-more-combo-open-box-439-00/" class="deal-card">
+      <img src="http://www.dronenerds.com/cdn/shop/files/socialimaghe.jpg?v=1770743914" alt="DJI Mavic Mini Fly More Combo (OPEN BOX) - $439.00" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">DJI Mavic Mini Fly More Combo (OPEN BOX) - $439.00</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$439.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dronenerds</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4393-potensic-atom-fly-more-combo-open-box-0-00/" class="deal-card">
+      <img src="http://www.dronenerds.com/cdn/shop/files/socialimaghe.jpg?v=1770743914" alt="Potensic ATOM FLY MORE COMBO (OPEN BOX) - $0.00" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">Potensic ATOM FLY MORE COMBO (OPEN BOX) - $0.00</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$0.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dronenerds</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4394-potensic-atom-2-fly-more-combo-open-box-399-99/" class="deal-card">
+      <img src="http://www.dronenerds.com/cdn/shop/files/socialimaghe.jpg?v=1770743914" alt="Potensic ATOM 2 FLY MORE COMBO OPEN BOX - $399.99" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">Potensic ATOM 2 FLY MORE COMBO OPEN BOX - $399.99</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$399.99</span>
+        </div>
+        <div class="deal-meta">
+          <span>dronenerds</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4395-potensic-atom-se-expansion-kit-open-box-229-99/" class="deal-card">
+      <img src="http://www.dronenerds.com/cdn/shop/files/socialimaghe.jpg?v=1770743914" alt="Potensic ATOM SE EXPANSION KIT (Open Box) - $229.99" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">Potensic ATOM SE EXPANSION KIT (Open Box) - $229.99</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$229.99</span>
+        </div>
+        <div class="deal-meta">
+          <span>dronenerds</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4371-micoair-h743-v2-aio-flight-controller-35a-2-6s-4in1-esc-25-2/" class="deal-card">
+      <img src="https://pyrodrone.com/cdn/shop/files/MicoAir743v2-AIO-35A_1_1200x1200.jpg?v=1784931209" alt="MicoAir H743 v2 AIO Flight Controller &amp; 35A 2-6S 4in1 ESC - 25×25mm - $87.99" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">MicoAir H743 v2 AIO Flight Controller &amp; 35A 2-6S 4in1 ESC - 25×25mm - $87.99</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$87.99</span>
+        </div>
+        <div class="deal-meta">
+          <span>pyrodrone</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4372-tattu-r-line-version-6-0-1600mah-6s-22-2v-160c-sq-lipo-batte/" class="deal-card">
+      <img src="https://pyrodrone.com/cdn/shop/files/tattu_r-line_v6_1600mah_6s_160c_lipo_battery-2_1200x1200.jpg?v=1785273426" alt="Tattu R-Line Version 6.0 1600mAh 6S 22.2V 160C SQ Lipo Battery Pack - XT60 - $46.99" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">Tattu R-Line Version 6.0 1600mAh 6S 22.2V 160C SQ Lipo Battery Pack - XT60 - $46.99</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$46.99</span>
+        </div>
+        <div class="deal-meta">
+          <span>pyrodrone</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4396-peak-pro-solution-suite-cleaning-trailer-abz-c10-drone-with/" class="deal-card">
+      <img src="http://www.dronenerds.com/cdn/shop/files/Peak-Trailer-2.webp?v=1785515238" alt="Peak Pro Solution Suite Cleaning Trailer - ABZ C10 Drone with Trailer - $99999.00" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">Peak Pro Solution Suite Cleaning Trailer - ABZ C10 Drone with Trailer - $99999.00</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$99,999.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dronenerds</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4397-apex-pro-solution-suite-cleaning-van-skid-abz-c10-drone-with/" class="deal-card">
+      <img src="http://www.dronenerds.com/cdn/shop/files/Apex-Pro-Rig-Van-2.webp?v=1785512203" alt="Apex Pro Solution Suite Cleaning Van Skid - ABZ C10 Drone with Van Skid - $99999.00" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">Apex Pro Solution Suite Cleaning Van Skid - ABZ C10 Drone with Van Skid - $99999.00</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$99,999.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dronenerds</span>
+          <span>Jul 31, 2026</span>
+        </div>
+      </div>
+    </a><a href="/deal/4208-dji-mavic-2-pro-fly-more-kit-open-box-kit-drone-batteries-ca/" class="deal-card">
       <img src="http://www.dronenerds.com/cdn/shop/files/s-l1600_6_84667c67-4fc1-491f-af74-a7cd70450058.webp?v=1785427877" alt="DJI Mavic 2 Pro Fly More Kit (OPEN BOX KIT) Drone, Batteries, Case - $399.00" loading="lazy" />
       <div class="deal-card-body">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
@@ -1423,438 +1914,6 @@
         <p class="deal-title">FrSky 2.4G Spare Antenna (150mm) - $1.59 (was $2.49)</p>
         <div style="display:flex;align-items:baseline;gap:8px">
           <span class="price-current">$1.59</span><span class="price-original">$2.49</span>
-        </div>
-        <div class="deal-meta">
-          <span>myfpvstore</span>
-          <span>Jul 20, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/1324-hqprop-dp-5x4-5x3v1s-5-props-black-3-99-was-4-49/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          <span class="discount-badge">11% off</span>
-        </div>
-        <p class="deal-title">HQProp DP 5X4.5X3V1S 5″ Props – Black - $3.99 (was $4.49)</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$3.99</span><span class="price-original">$4.49</span>
-        </div>
-        <div class="deal-meta">
-          <span>myfpvstore</span>
-          <span>Jul 20, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/1323-hqprop-dp-5x4-8x3v1s-5-props-black-3-99-was-4-49/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          <span class="discount-badge">11% off</span>
-        </div>
-        <p class="deal-title">HQProp DP 5X4.8X3V1S 5″ Props – Black - $3.99 (was $4.49)</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$3.99</span><span class="price-original">$4.49</span>
-        </div>
-        <div class="deal-meta">
-          <span>myfpvstore</span>
-          <span>Jul 20, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/1322-hqprop-dp-5x4-3x3v1s-5-props-black-3-99-was-4-49/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          <span class="discount-badge">11% off</span>
-        </div>
-        <p class="deal-title">HQProp DP 5X4.3X3V1S 5″ Props – Black - $3.99 (was $4.49)</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$3.99</span><span class="price-original">$4.49</span>
-        </div>
-        <div class="deal-meta">
-          <span>myfpvstore</span>
-          <span>Jul 20, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/1321-armattan-mongoose-5-inch-spare-arm-replacement-3mm-5-59-was/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          <span class="discount-badge">11% off</span>
-        </div>
-        <p class="deal-title">Armattan Mongoose 5 Inch Spare Arm Replacement (3mm) - $5.59 (was $6.29)</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$5.59</span><span class="price-original">$6.29</span>
-        </div>
-        <div class="deal-meta">
-          <span>myfpvstore</span>
-          <span>Jul 20, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/1320-rooster-front-top-plate-1-69-was-1-99/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          <span class="discount-badge">15% off</span>
-        </div>
-        <p class="deal-title">Rooster Front Top Plate - $1.69 (was $1.99)</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$1.69</span><span class="price-original">$1.99</span>
-        </div>
-        <div class="deal-meta">
-          <span>myfpvstore</span>
-          <span>Jul 20, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/1319-emax-rsii-2306-race-spec-brushless-motor-3-4s-2400kv-22-99-w/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          <span class="discount-badge">26% off</span>
-        </div>
-        <p class="deal-title">EMAX RSII 2306 Race Spec Brushless Motor (3-4S) 2400Kv - $22.99 (was $30.99)</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$22.99</span><span class="price-original">$30.99</span>
-        </div>
-        <div class="deal-meta">
-          <span>myfpvstore</span>
-          <span>Jul 20, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/1318-assorted-zip-ties-by-color-and-size-bundle-pack-14-59-was-15/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          <span class="discount-badge">9% off</span>
-        </div>
-        <p class="deal-title">ASSORTED ZIP TIES BY COLOR AND SIZE BUNDLE PACK - $14.59 (was $15.99)</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$14.59</span><span class="price-original">$15.99</span>
-        </div>
-        <div class="deal-meta">
-          <span>myfpvstore</span>
-          <span>Jul 20, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/1317-wire-stripper-and-cutter-8-39-was-8-99/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          <span class="discount-badge">7% off</span>
-        </div>
-        <p class="deal-title">WIRE STRIPPER AND CUTTER - $8.39 (was $8.99)</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$8.39</span><span class="price-original">$8.99</span>
-        </div>
-        <div class="deal-meta">
-          <span>myfpvstore</span>
-          <span>Jul 20, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/1316-long-needle-nose-pliers-7-89-was-8-99/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          <span class="discount-badge">12% off</span>
-        </div>
-        <p class="deal-title">Long Needle Nose Pliers - $7.89 (was $8.99)</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$7.89</span><span class="price-original">$8.99</span>
-        </div>
-        <div class="deal-meta">
-          <span>myfpvstore</span>
-          <span>Jul 20, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/1315-hot-glue-sticks-6-pack-1-29-was-1-99/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          <span class="discount-badge">35% off</span>
-        </div>
-        <p class="deal-title">Hot Glue Sticks (6-Pack) - $1.29 (was $1.99)</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$1.29</span><span class="price-original">$1.99</span>
-        </div>
-        <div class="deal-meta">
-          <span>myfpvstore</span>
-          <span>Jul 20, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/1314-100-pack-4-zip-ties-1-89-was-1-99/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          <span class="discount-badge">5% off</span>
-        </div>
-        <p class="deal-title">100 Pack 4″ Zip Ties - $1.89 (was $1.99)</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$1.89</span><span class="price-original">$1.99</span>
-        </div>
-        <div class="deal-meta">
-          <span>myfpvstore</span>
-          <span>Jul 20, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/1313-cyclone-t6040c-longe-range-props-blue-2-49-was-3-99/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          <span class="discount-badge">38% off</span>
-        </div>
-        <p class="deal-title">CYCLONE T6040C Longe Range Props – Blue - $2.49 (was $3.99)</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$2.49</span><span class="price-original">$3.99</span>
-        </div>
-        <div class="deal-meta">
-          <span>myfpvstore</span>
-          <span>Jul 20, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/1312-cyclone-t6040c-longe-range-props-purple-2-49-was-3-99/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          <span class="discount-badge">38% off</span>
-        </div>
-        <p class="deal-title">CYCLONE T6040C Longe Range Props – Purple - $2.49 (was $3.99)</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$2.49</span><span class="price-original">$3.99</span>
-        </div>
-        <div class="deal-meta">
-          <span>myfpvstore</span>
-          <span>Jul 20, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/1311-dalprop-cyclone-t5051c-5-racing-propeller-red-2-40-was-3-99/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          <span class="discount-badge">40% off</span>
-        </div>
-        <p class="deal-title">Dalprop Cyclone T5051C 5″ Racing Propeller – Red - $2.40 (was $3.99)</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$2.40</span><span class="price-original">$3.99</span>
-        </div>
-        <div class="deal-meta">
-          <span>myfpvstore</span>
-          <span>Jul 20, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/1310-dalprop-cyclone-t5051c-5-racing-propeller-blue-2-40-was-3-99/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          <span class="discount-badge">40% off</span>
-        </div>
-        <p class="deal-title">Dalprop Cyclone T5051C 5″ Racing Propeller – Blue - $2.40 (was $3.99)</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$2.40</span><span class="price-original">$3.99</span>
-        </div>
-        <div class="deal-meta">
-          <span>myfpvstore</span>
-          <span>Jul 20, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/1309-wire-cutter-6-1-2-7-89-was-8-99/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          <span class="discount-badge">12% off</span>
-        </div>
-        <p class="deal-title">WIRE CUTTER 6-1/2″ - $7.89 (was $8.99)</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$7.89</span><span class="price-original">$8.99</span>
-        </div>
-        <div class="deal-meta">
-          <span>myfpvstore</span>
-          <span>Jul 20, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/1308-super-glue-2-pack-2-59-was-2-99/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          <span class="discount-badge">13% off</span>
-        </div>
-        <p class="deal-title">SUPER GLUE (2 PACK) - $2.59 (was $2.99)</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$2.59</span><span class="price-original">$2.99</span>
-        </div>
-        <div class="deal-meta">
-          <span>myfpvstore</span>
-          <span>Jul 20, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/1307-multi-charging-cable-jst-to-banana-connector-11-19-was-11-99/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          <span class="discount-badge">7% off</span>
-        </div>
-        <p class="deal-title">Multi Charging Cable JST to Banana Connector - $11.19 (was $11.99)</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$11.19</span><span class="price-original">$11.99</span>
-        </div>
-        <div class="deal-meta">
-          <span>myfpvstore</span>
-          <span>Jul 20, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/1306-silicone-wire-16awg-2-feet-red-black-1-79-was-1-99/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          <span class="discount-badge">10% off</span>
-        </div>
-        <p class="deal-title">Silicone Wire 16awg 2 Feet Red &amp; Black - $1.79 (was $1.99)</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$1.79</span><span class="price-original">$1.99</span>
-        </div>
-        <div class="deal-meta">
-          <span>myfpvstore</span>
-          <span>Jul 20, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/1305-silicone-wire-18awg-2-feet-red-black-1-49-was-1-99/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          <span class="discount-badge">25% off</span>
-        </div>
-        <p class="deal-title">Silicone Wire 18awg 2 Feet Red &amp; Black - $1.49 (was $1.99)</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$1.49</span><span class="price-original">$1.99</span>
-        </div>
-        <div class="deal-meta">
-          <span>myfpvstore</span>
-          <span>Jul 20, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/1304-xt30-charging-cable-2-99-was-3-99/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          <span class="discount-badge">25% off</span>
-        </div>
-        <p class="deal-title">XT30 Charging Cable - $2.99 (was $3.99)</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$2.99</span><span class="price-original">$3.99</span>
-        </div>
-        <div class="deal-meta">
-          <span>myfpvstore</span>
-          <span>Jul 20, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/1303-xt60-charging-cable-3-09-was-3-99/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          <span class="discount-badge">23% off</span>
-        </div>
-        <p class="deal-title">XT60 Charging Cable - $3.09 (was $3.99)</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$3.09</span><span class="price-original">$3.99</span>
-        </div>
-        <div class="deal-meta">
-          <span>myfpvstore</span>
-          <span>Jul 20, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/1302-rp-sma-90-degree-male-to-female-adapter-1-49-was-1-99/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          <span class="discount-badge">25% off</span>
-        </div>
-        <p class="deal-title">RP-SMA 90 Degree Male to Female Adapter - $1.49 (was $1.99)</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$1.49</span><span class="price-original">$1.99</span>
-        </div>
-        <div class="deal-meta">
-          <span>myfpvstore</span>
-          <span>Jul 20, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/1301-skinny-kid-5-5-beef-cake-replacement-arm-2-pack-8-19-was-11/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          <span class="discount-badge">32% off</span>
-        </div>
-        <p class="deal-title">Skinny Kid – 5.5″ Beef Cake Replacement Arm 2 Pack - $8.19 (was $11.99)</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$8.19</span><span class="price-original">$11.99</span>
-        </div>
-        <div class="deal-meta">
-          <span>myfpvstore</span>
-          <span>Jul 20, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/1300-brotherhobby-r5-returner-2306-2650kv-motor-redhulk-19-99-was/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          <span class="discount-badge">38% off</span>
-        </div>
-        <p class="deal-title">BrotherHobby R5 Returner 2306 2650Kv Motor – “RedHulk” - $19.99 (was $31.99)</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$19.99</span><span class="price-original">$31.99</span>
-        </div>
-        <div class="deal-meta">
-          <span>myfpvstore</span>
-          <span>Jul 20, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/1299-brotherhobby-r5-returner-2306-2450kv-motor-deadpool-21-69-wa/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          <span class="discount-badge">32% off</span>
-        </div>
-        <p class="deal-title">BrotherHobby R5 Returner 2306 2450Kv Motor – “DeadPool” - $21.69 (was $31.99)</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$21.69</span><span class="price-original">$31.99</span>
-        </div>
-        <div class="deal-meta">
-          <span>myfpvstore</span>
-          <span>Jul 20, 2026</span>
-        </div>
-      </div>
-    </a><a href="/deal/1298-dalprop-cyclone-t5047c-propeller-6-pair-bundle-popo-black-8/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          <span class="discount-badge">21% off</span>
-        </div>
-        <p class="deal-title">DALPROP Cyclone T5047C Propeller 6 Pair Bundle POPO – Black - $8.69 (was $10.99)</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$8.69</span><span class="price-original">$10.99</span>
         </div>
         <div class="deal-meta">
           <span>myfpvstore</span>
