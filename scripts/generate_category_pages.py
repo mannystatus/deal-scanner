@@ -521,7 +521,7 @@ def build_breadcrumb_jsonld(items: list[tuple[str, str]]) -> str:
 
 # ── Category / home page assembly ────────────────────────────────────────
 
-def swap_head_meta(template: str, title: str, description: str, url: str) -> str:
+def swap_head_meta(template: str, title: str, description: str, url: str, image_url: str | None = None) -> str:
     # Replacement strings come from re.sub, which treats backslashes
     # specially (\1 group refs etc.) — deal titles are attacker/source
     # controlled (Reddit/RSS), so a stray backslash could corrupt the page.
@@ -563,6 +563,22 @@ def swap_head_meta(template: str, title: str, description: str, url: str) -> str
         lambda m: f'<meta name="twitter:description" content="{esc(description)}" />',
         html_out, count=1,
     )
+    if image_url:
+        # Deal thumbnails are scraped from the retailer at whatever
+        # dimensions they happen to be — the template's og:image:width/
+        # height/type describe the default 2400x1260 asset, so they'd be
+        # wrong here. Drop them rather than swap in a guess; og:image and
+        # twitter:image alone are enough for a rich preview.
+        html_out = re.sub(
+            r'<meta property="og:image" content="[^"]*" />\n( *<meta property="og:image:(?:width|height|type)" content="[^"]*" />\n)*',
+            lambda m: f'<meta property="og:image" content="{esc(image_url)}" />\n',
+            html_out, count=1,
+        )
+        html_out = re.sub(
+            r'<meta name="twitter:image" content="[^"]*" />',
+            lambda m: f'<meta name="twitter:image" content="{esc(image_url)}" />',
+            html_out, count=1,
+        )
     return html_out
 
 
@@ -633,7 +649,7 @@ def build_deal_page(head_template: str, deal: Deal) -> str:
         + ". Tracked live by Hack the Deal."
     )
 
-    head = swap_head_meta(head_template, title, description[:300], url)
+    head = swap_head_meta(head_template, title, description[:300], url, image_url=deal.thumbnail_url)
     # Individual deal permalinks are thin by nature — a scraped title, a
     # price, and one outbound link — so they're excluded from indexing and
     # from the sitemap (see build_sitemap). They stay live and linked (the
