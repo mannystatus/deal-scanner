@@ -132,6 +132,7 @@ def upsert_deal(
     reddit_id: str,
     posted_at: datetime,
     thumbnail_url: str | None = None,
+    vote_score: int | None = None,
 ) -> bool:
     dedup_hash = make_hash(parsed.url)
     exists = session.execute(
@@ -157,6 +158,7 @@ def upsert_deal(
         ingested_at=datetime.now(timezone.utc),
         confidence=parsed.confidence,
         thumbnail_url=thumbnail_url,
+        vote_score=vote_score,
     )
     session.add(deal)
 

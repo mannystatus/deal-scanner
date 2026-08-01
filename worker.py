@@ -190,6 +190,7 @@ def main() -> int:
                 reddit_id=post["reddit_id"],
                 posted_at=post["posted_at"],
                 thumbnail_url=thumbnail_url,
+                vote_score=post.get("vote_score"),
             ):
                 total_new += 1
                 notify_new_deal(session, parsed, thumbnail_url)

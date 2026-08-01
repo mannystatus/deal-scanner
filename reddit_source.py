@@ -87,6 +87,7 @@ def iter_posts(subreddit: str, limit: int = 100, token: Optional[str] = None) ->
                 d.get("created_utc", time.time()), tz=timezone.utc
             ),
             "source": subreddit,
+            "vote_score": d.get("score"),
         }
 
 

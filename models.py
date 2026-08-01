@@ -30,6 +30,11 @@ class Deal(Base):
     ingested_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     confidence: Mapped[float] = mapped_column(Float, default=0.5)
     thumbnail_url: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    # Community vote count at ingest time — Slickdeals' "Thumb Score" or a
+    # Reddit post's score (ups - downs). Null for sources with no voting
+    # (DealNews, 9to5toys, WooCommerce/Bambulab catalogs), not re-fetched
+    # after ingest, same as every other field here (see upsert_deal).
+    vote_score: Mapped[Optional[int]] = mapped_column(nullable=True)
 
     __table_args__ = (
         Index("ix_deals_category_posted", "category", "posted_at"),

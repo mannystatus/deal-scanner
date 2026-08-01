@@ -20,6 +20,7 @@ class DealOut(BaseModel):
     posted_at: datetime
     confidence: float
     thumbnail_url: Optional[str] = None
+    vote_score: Optional[int] = None
 
     model_config = {"from_attributes": True}
 

@@ -3369,7 +3369,14 @@
               "div",
               { className: "deal-meta" },
               e("span", null, deal.merchant || deal.source),
-              e("span", null, timeAgo(deal.posted_at))
+              e("span", null, timeAgo(deal.posted_at)),
+              // Only Slickdeals/Reddit-sourced deals carry a real vote
+              // count (see rss_source.py/reddit_source.py) — everything
+              // else (DealNews, 9to5toys, catalog sources) has none, so
+              // this stays hidden rather than showing a misleading 0.
+              deal.vote_score !== null && deal.vote_score !== undefined
+                ? e("span", { title: "Community vote score" }, `▲ ${deal.vote_score}`)
+                : null
             )
           )
         );

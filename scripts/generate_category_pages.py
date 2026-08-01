@@ -361,6 +361,15 @@ def render_deal_card(deal: Deal) -> str:
     if original:
         price_html += f'<span class="price-original">{esc(original)}</span>'
 
+    # Only Slickdeals/Reddit-sourced deals carry a real vote count (see
+    # rss_source.py/reddit_source.py) — everything else has none, so this
+    # stays out rather than showing a misleading 0.
+    vote_html = (
+        f'<span title="Community vote score">▲ {deal.vote_score}</span>'
+        if deal.vote_score is not None
+        else ""
+    )
+
     # Points at the internal permalink page, not straight at the affiliate
     # link — crawlers get a real page to index and follow; the live React
     # app replaces this the instant it mounts and links straight to
@@ -379,6 +388,7 @@ def render_deal_card(deal: Deal) -> str:
         <div class="deal-meta">
           <span>{esc(deal.merchant or deal.source)}</span>
           <span>{esc(format_date(deal.posted_at))}</span>
+          {vote_html}
         </div>
       </div>
     </a>"""
@@ -711,7 +721,7 @@ def build_deal_page(head_template: str, deal: Deal) -> str:
           </div>
           <h1 style="font-size:22px;line-height:1.3;margin:0 0 12px">{esc(deal.title)}</h1>
           <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:10px">{price_html}</div>
-          <p style="color:var(--muted);font-size:13px;margin:0 0 18px">Sold by {esc(deal.merchant or deal.source)} · Posted {esc(format_date(deal.posted_at))}</p>
+          <p style="color:var(--muted);font-size:13px;margin:0 0 18px">Sold by {esc(deal.merchant or deal.source)} · Posted {esc(format_date(deal.posted_at))}{f" · ▲ {deal.vote_score}" if deal.vote_score is not None else ""}</p>
           <a href="{esc(target)}" target="_blank" rel="{outbound_rel(deal)}"
              style="display:inline-block;background:var(--accent);color:#0a0c12;font-weight:700;font-size:14px;padding:12px 26px;border-radius:999px;text-decoration:none">
             Get This Deal →

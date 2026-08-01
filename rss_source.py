@@ -164,6 +164,23 @@ def _shopify_price(summary: str) -> str | None:
     return m.group(1) if m else None
 
 
+# Slickdeals' RSS embeds its community vote count as plain text inside the
+# entry's content:encoded HTML (e.g. "Thumb Score: 42"), not a dedicated
+# field — feedparser exposes it as entry.content[0].value. No other feed
+# in DEFAULT_FEEDS has anything comparable (DealNews/9to5toys are
+# editorially curated, not community-voted), so this simply never matches
+# for those and vote_score stays None.
+_THUMB_SCORE_RE = re.compile(r'Thumb Score:\s*(-?\d+)')
+
+
+def _thumb_score(entry) -> int | None:
+    content = entry.get("content")
+    if not content:
+        return None
+    m = _THUMB_SCORE_RE.search(content[0].get("value", ""))
+    return int(m.group(1)) if m else None
+
+
 def _load_feeds() -> list[tuple[str, str]]:
     """Allow overriding feeds via FEED_URLS env var (format: 'source|url,source|url')."""
     raw = os.getenv("FEED_URLS", "").strip()
@@ -225,11 +242,12 @@ def iter_feed(source: str, url: str) -> Iterator[dict]:
             entry.get("published_parsed") or entry.get("updated_parsed")
         )
         yield {
-            "reddit_id": _make_id(link),  # same field name as the old Reddit source
-            "title":     title,
-            "url":       link,
-            "posted_at": posted_at,
-            "source":    source,
+            "reddit_id":  _make_id(link),  # same field name as the old Reddit source
+            "title":      title,
+            "url":        link,
+            "posted_at":  posted_at,
+            "source":     source,
+            "vote_score": _thumb_score(entry),
         }
 
 
