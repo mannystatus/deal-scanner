@@ -930,6 +930,7 @@
         <div class="deal-meta">
           <span>9to5toys</span>
           <span>Jul 31, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/4000-target-8-2-8-8-buy-a-50-google-play-gc-get-5-target-gift-car/" class="deal-card">
@@ -946,6 +947,7 @@
         <div class="deal-meta">
           <span>slickdeals</span>
           <span>Jul 31, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/4093-today-s-best-apple-tv-deals-from-5-bourne-ultimate-collectio/" class="deal-card">
@@ -962,6 +964,7 @@
         <div class="deal-meta">
           <span>9to5toys</span>
           <span>Jul 30, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/3837-mid-week-apple-tv-deals-up-to-65-off-x-files-collection-horr/" class="deal-card">
@@ -978,6 +981,7 @@
         <div class="deal-meta">
           <span>9to5toys</span>
           <span>Jul 29, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/3569-tuesday-s-apple-tv-deals-from-3-devil-wears-prada-1-and-2-ha/" class="deal-card">
@@ -994,6 +998,7 @@
         <div class="deal-meta">
           <span>9to5toys</span>
           <span>Jul 28, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/3295-monday-s-apple-tv-deals-up-to-83-off-studio-ghibli-6-film-co/" class="deal-card">
@@ -1010,6 +1015,7 @@
         <div class="deal-meta">
           <span>9to5toys</span>
           <span>Jul 27, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/4588-mamoru-hosoda-5-film-collection-4k-summer-wars-wolf-children/" class="deal-card">
@@ -1026,6 +1032,7 @@
         <div class="deal-meta">
           <span>slickdeals-itunes</span>
           <span>Jul 26, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/3133-mamoru-hosoda-5-film-collection-4k-summer-wars-wolf-children/" class="deal-card">
@@ -1042,6 +1049,7 @@
         <div class="deal-meta">
           <span>slickdeals-itunes</span>
           <span>Jul 26, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/2741-friday-apple-tv-deals-from-1-just-about-every-spider-man-mov/" class="deal-card">
@@ -1058,6 +1066,7 @@
         <div class="deal-meta">
           <span>9to5toys</span>
           <span>Jul 24, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/2507-today-s-apple-tv-deals-super-mario-galaxy-blue-moon-mortal-k/" class="deal-card">
@@ -1074,6 +1083,7 @@
         <div class="deal-meta">
           <span>9to5toys</span>
           <span>Jul 23, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/2301-mid-week-apple-tv-deals-from-5-justice-league-collections-me/" class="deal-card">
@@ -1090,6 +1100,7 @@
         <div class="deal-meta">
           <span>9to5toys</span>
           <span>Jul 22, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/1998-giant-lineup-of-tuesday-apple-tv-deals-up-to-95-off-deadpool/" class="deal-card">
@@ -1106,6 +1117,7 @@
         <div class="deal-meta">
           <span>9to5toys</span>
           <span>Jul 21, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/2091-12-99-dystopian-worlds-10-movie-collection-at-itunes/" class="deal-card">
@@ -1122,6 +1134,7 @@
         <div class="deal-meta">
           <span>slickdeals-itunes</span>
           <span>Jul 14, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/4589-12-99-dystopian-worlds-10-movie-collection-at-itunes/" class="deal-card">
@@ -1138,6 +1151,7 @@
         <div class="deal-meta">
           <span>slickdeals-itunes</span>
           <span>Jul 14, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/2092-the-waterboy-hd-1080p-appletv-digital-4-99/" class="deal-card">
@@ -1154,6 +1168,7 @@
         <div class="deal-meta">
           <span>slickdeals-itunes</span>
           <span>Jul 4, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/4590-the-waterboy-hd-1080p-appletv-digital-4-99/" class="deal-card">
@@ -1170,6 +1185,7 @@
         <div class="deal-meta">
           <span>slickdeals-itunes</span>
           <span>Jul 4, 2026</span>
+          
         </div>
       </div>
     </a></div>
@@ -2632,7 +2648,14 @@
               "div",
               { className: "deal-meta" },
               e("span", null, deal.merchant || deal.source),
-              e("span", null, timeAgo(deal.posted_at))
+              e("span", null, timeAgo(deal.posted_at)),
+              // Only Slickdeals/Reddit-sourced deals carry a real vote
+              // count (see rss_source.py/reddit_source.py) — everything
+              // else (DealNews, 9to5toys, catalog sources) has none, so
+              // this stays hidden rather than showing a misleading 0.
+              deal.vote_score !== null && deal.vote_score !== undefined
+                ? e("span", { title: "Community vote score" }, `▲ ${deal.vote_score}`)
+                : null
             )
           )
         );

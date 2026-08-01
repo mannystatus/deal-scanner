@@ -922,6 +922,7 @@
         <div class="deal-meta">
           <span>9to5mac</span>
           <span>Jul 30, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/3843-deals-m5-macbook-pro-320-off-base-macbook-air-170-off-airpod/" class="deal-card">
@@ -938,6 +939,7 @@
         <div class="deal-meta">
           <span>9to5mac</span>
           <span>Jul 29, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/3574-deals-24gb-m5-macbook-air-200-off-macbook-pro-500-off-airtag/" class="deal-card">
@@ -954,6 +956,7 @@
         <div class="deal-meta">
           <span>9to5mac</span>
           <span>Jul 28, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/3299-deals-m5-pro-macbook-pro-24gb-500-off-48gb-400-off-find-my-c/" class="deal-card">
@@ -970,6 +973,7 @@
         <div class="deal-meta">
           <span>9to5mac</span>
           <span>Jul 27, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/2518-deals-m5-pro-macbook-pro-320-off-series-11-from-299-airpods/" class="deal-card">
@@ -986,6 +990,7 @@
         <div class="deal-meta">
           <span>9to5mac</span>
           <span>Jul 23, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/147-deals-airpods-with-anc-from-119-airpods-pro-3-macbook-pro-up/" class="deal-card">
@@ -1002,6 +1007,7 @@
         <div class="deal-meta">
           <span>9to5mac</span>
           <span>Jul 16, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/156-deals-m5-ipad-pro-420-off-airtag-2-from-22-each-apple-watch/" class="deal-card">
@@ -1018,6 +1024,7 @@
         <div class="deal-meta">
           <span>9to5mac</span>
           <span>Jul 6, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/158-deals-airpods-4-nearly-25-off-m5-ipad-pro-350-off-m4-ipad-ai/" class="deal-card">
@@ -1034,6 +1041,7 @@
         <div class="deal-meta">
           <span>9to5mac</span>
           <span>Jul 2, 2026</span>
+          
         </div>
       </div>
     </a></div>
@@ -2496,7 +2504,14 @@
               "div",
               { className: "deal-meta" },
               e("span", null, deal.merchant || deal.source),
-              e("span", null, timeAgo(deal.posted_at))
+              e("span", null, timeAgo(deal.posted_at)),
+              // Only Slickdeals/Reddit-sourced deals carry a real vote
+              // count (see rss_source.py/reddit_source.py) — everything
+              // else (DealNews, 9to5toys, catalog sources) has none, so
+              // this stays hidden rather than showing a misleading 0.
+              deal.vote_score !== null && deal.vote_score !== undefined
+                ? e("span", { title: "Community vote score" }, `▲ ${deal.vote_score}`)
+                : null
             )
           )
         );

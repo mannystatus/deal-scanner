@@ -919,6 +919,7 @@
         <div class="deal-meta">
           <span>9to5toys</span>
           <span>Jul 24, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/1929-3-hallmark-christmas-ornament-chucky-3-89-free-shipping-w-pr/" class="deal-card">
@@ -935,6 +936,7 @@
         <div class="deal-meta">
           <span>slickdeals</span>
           <span>Jul 22, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/1840-century-cruises-7-night-amsterdam-to-basel-christmas-markets/" class="deal-card">
@@ -951,6 +953,7 @@
         <div class="deal-meta">
           <span>dealnews-travel</span>
           <span>Jul 21, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/819-emerald-cruises-18-night-prague-christmas-markets-of-europe/" class="deal-card">
@@ -967,6 +970,7 @@
         <div class="deal-meta">
           <span>dealnews-travel</span>
           <span>Jul 17, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/402-24-count-hallmark-mini-ornament-disney-tim-burton-s-the-nigh/" class="deal-card">
@@ -983,6 +987,7 @@
         <div class="deal-meta">
           <span>slickdeals</span>
           <span>Jul 16, 2026</span>
+          
         </div>
       </div>
     </a></div>
@@ -2445,7 +2450,14 @@
               "div",
               { className: "deal-meta" },
               e("span", null, deal.merchant || deal.source),
-              e("span", null, timeAgo(deal.posted_at))
+              e("span", null, timeAgo(deal.posted_at)),
+              // Only Slickdeals/Reddit-sourced deals carry a real vote
+              // count (see rss_source.py/reddit_source.py) — everything
+              // else (DealNews, 9to5toys, catalog sources) has none, so
+              // this stays hidden rather than showing a misleading 0.
+              deal.vote_score !== null && deal.vote_score !== undefined
+                ? e("span", { title: "Community vote score" }, `▲ ${deal.vote_score}`)
+                : null
             )
           )
         );

@@ -932,6 +932,7 @@
         <div class="deal-meta">
           <span>dealnews-software</span>
           <span>Jul 27, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/2371-appsumo-the-deal-is-right-sale-up-to-93-off/" class="deal-card">
@@ -948,6 +949,7 @@
         <div class="deal-meta">
           <span>dealnews-software</span>
           <span>Jul 22, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/1854-adguard-family-lifetime-subscription-for-9-devices-for-13-fr/" class="deal-card">
@@ -964,6 +966,7 @@
         <div class="deal-meta">
           <span>dealnews-software</span>
           <span>Jul 9, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/4581-adguard-vpn-subscription-promo-code-deal-80-off-2-year-subsc/" class="deal-card">
@@ -980,6 +983,7 @@
         <div class="deal-meta">
           <span>dealnews-software</span>
           <span>Jul 8, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/1855-adguard-vpn-subscription-promo-code-deal-80-off-2-year-subsc/" class="deal-card">
@@ -996,6 +1000,7 @@
         <div class="deal-meta">
           <span>dealnews-software</span>
           <span>Jul 8, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/4582-norton-360-premium-antivirus-for-10-devices-for-30-free-ship/" class="deal-card">
@@ -1012,6 +1017,7 @@
         <div class="deal-meta">
           <span>dealnews-software</span>
           <span>Jul 8, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/1856-norton-360-premium-antivirus-for-10-devices-for-30-free-ship/" class="deal-card">
@@ -1028,6 +1034,7 @@
         <div class="deal-meta">
           <span>dealnews-software</span>
           <span>Jul 8, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/1857-adguard-family-plan-lifetime-subscription-for-16/" class="deal-card">
@@ -1044,6 +1051,7 @@
         <div class="deal-meta">
           <span>dealnews-software</span>
           <span>Jul 7, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/4583-adguard-family-plan-lifetime-subscription-for-16/" class="deal-card">
@@ -1060,6 +1068,7 @@
         <div class="deal-meta">
           <span>dealnews-software</span>
           <span>Jul 7, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/4584-internxt-cloud-storage-lifetime-subscription-for-130/" class="deal-card">
@@ -1076,6 +1085,7 @@
         <div class="deal-meta">
           <span>dealnews-software</span>
           <span>Jul 7, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/1858-internxt-cloud-storage-lifetime-subscription-for-130/" class="deal-card">
@@ -1092,6 +1102,7 @@
         <div class="deal-meta">
           <span>dealnews-software</span>
           <span>Jul 7, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/1859-fastestvpn-pro-lifetime-subscription-15-devices-for-25/" class="deal-card">
@@ -1108,6 +1119,7 @@
         <div class="deal-meta">
           <span>dealnews-software</span>
           <span>Jul 7, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/4585-fastestvpn-pro-lifetime-subscription-15-devices-for-25/" class="deal-card">
@@ -1124,6 +1136,7 @@
         <div class="deal-meta">
           <span>dealnews-software</span>
           <span>Jul 7, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/1861-1min-ai-advanced-business-plan-lifetime-subscription-for-60/" class="deal-card">
@@ -1140,6 +1153,7 @@
         <div class="deal-meta">
           <span>dealnews-software</span>
           <span>Jul 7, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/4586-1min-ai-advanced-business-plan-lifetime-subscription-for-60/" class="deal-card">
@@ -1156,6 +1170,7 @@
         <div class="deal-meta">
           <span>dealnews-software</span>
           <span>Jul 7, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/4587-stacksocial-sitewide-sale-up-to-97-off/" class="deal-card">
@@ -1172,6 +1187,7 @@
         <div class="deal-meta">
           <span>dealnews-software</span>
           <span>Jul 7, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/1862-stacksocial-sitewide-sale-up-to-97-off/" class="deal-card">
@@ -1188,6 +1204,7 @@
         <div class="deal-meta">
           <span>dealnews-software</span>
           <span>Jul 7, 2026</span>
+          
         </div>
       </div>
     </a><a href="/deal/3916-keeper-the-1-rated-password-manager-50-off-digital-download/" class="deal-card">
@@ -1204,6 +1221,7 @@
         <div class="deal-meta">
           <span>dealnews-software</span>
           <span>Jul 3, 2026</span>
+          
         </div>
       </div>
     </a></div>
@@ -2666,7 +2684,14 @@
               "div",
               { className: "deal-meta" },
               e("span", null, deal.merchant || deal.source),
-              e("span", null, timeAgo(deal.posted_at))
+              e("span", null, timeAgo(deal.posted_at)),
+              // Only Slickdeals/Reddit-sourced deals carry a real vote
+              // count (see rss_source.py/reddit_source.py) — everything
+              // else (DealNews, 9to5toys, catalog sources) has none, so
+              // this stays hidden rather than showing a misleading 0.
+              deal.vote_score !== null && deal.vote_score !== undefined
+                ? e("span", { title: "Community vote score" }, `▲ ${deal.vote_score}`)
+                : null
             )
           )
         );
