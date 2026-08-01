@@ -13,7 +13,7 @@ import httpx
 logger = logging.getLogger(__name__)
 
 RESEND_API_KEY = os.getenv("RESEND_API_KEY", "")
-FROM_EMAIL = os.getenv("EMAIL_FROM", "Hack the Deal <deals@hackthedeal.com>")
+FROM_EMAIL = os.getenv("EMAIL_FROM", "Hack the Deal <deals@deals.hackthedeal.com>")
 
 
 def is_configured() -> bool:
