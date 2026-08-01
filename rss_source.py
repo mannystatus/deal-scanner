@@ -170,7 +170,7 @@ def _shopify_price(summary: str) -> str | None:
 # in DEFAULT_FEEDS has anything comparable (DealNews/9to5toys are
 # editorially curated, not community-voted), so this simply never matches
 # for those and vote_score stays None.
-_THUMB_SCORE_RE = re.compile(r'Thumb Score:\s*(-?\d+)')
+_THUMB_SCORE_RE = re.compile(r'Thumb Score:\s*([+-]?\d+)')
 
 
 def _thumb_score(entry) -> int | None:
