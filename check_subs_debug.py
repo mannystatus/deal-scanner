@@ -3,7 +3,8 @@ from models import EmailSubscription
 
 init_db()
 with SessionLocal() as s:
-    rows = s.query(EmailSubscription).all()
-    print(f"{len(rows)} total rows")
-    for r in rows:
-        print(r.id, r.email, "confirmed=" + str(r.confirmed), "categories=" + r.categories, r.created_at)
+    row = s.query(EmailSubscription).filter_by(email="mannydotco@gmail.com").first()
+    if row:
+        print("TOKEN:" + row.token)
+    else:
+        print("NOT FOUND")
