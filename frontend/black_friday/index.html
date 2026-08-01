@@ -590,6 +590,23 @@
         white-space: nowrap;
       }
 
+      /* Neutral/muted rather than --danger-*'s red — "expired" is a status,
+         not an alarm, and needs to read as visually distinct from the
+         discount badge it sits next to on the same card. */
+      .expired-badge {
+        font-size: 11px;
+        font-weight: 800;
+        padding: 3px 9px;
+        border-radius: 8px;
+        background: var(--border);
+        color: var(--muted);
+        white-space: nowrap;
+      }
+
+      .deal-card.is-dead {
+        opacity: 0.6;
+      }
+
       /* Price */
       .price-current {
         font-size: 20px;
@@ -3331,7 +3348,7 @@
             href: target,
             target: "_blank",
             rel: linkRel,
-            className: isTracked ? undefined : "deal-card",
+            className: isTracked ? undefined : `deal-card${deal.is_dead ? " is-dead" : ""}`,
             style: isTracked ? { display: "flex", flexDirection: "column", flex: "1 1 auto", textDecoration: "none", color: "inherit" } : undefined,
           },
           showImage
@@ -3349,7 +3366,9 @@
               "div",
               { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6 } },
               e("span", { className: "cat-chip" }, deal.category),
-              deal.discount_pct
+              deal.is_dead
+                ? e("span", { className: "expired-badge" }, "Expired")
+                : deal.discount_pct
                 ? e("span", { className: "discount-badge" }, `${Math.round(deal.discount_pct)}% off`)
                 : null
             ),
@@ -3384,7 +3403,7 @@
 
         return e(
           "div",
-          { className: "deal-card" },
+          { className: `deal-card${deal.is_dead ? " is-dead" : ""}` },
           link,
           e(
             "div",

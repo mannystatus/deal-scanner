@@ -590,6 +590,23 @@
         white-space: nowrap;
       }
 
+      /* Neutral/muted rather than --danger-*'s red — "expired" is a status,
+         not an alarm, and needs to read as visually distinct from the
+         discount badge it sits next to on the same card. */
+      .expired-badge {
+        font-size: 11px;
+        font-weight: 800;
+        padding: 3px 9px;
+        border-radius: 8px;
+        background: var(--border);
+        color: var(--muted);
+        white-space: nowrap;
+      }
+
+      .deal-card.is-dead {
+        opacity: 0.6;
+      }
+
       /* Price */
       .price-current {
         font-size: 20px;
@@ -798,32 +815,32 @@
       "itemListElement": [
 { "@type": "ListItem", "position": 1, "name": "BestQool Dual Chip 660nm 850nm Red Light Therapy Panel for $97.30 + free shipping", "url": "https://www.hackthedeal.com/deal/4537-bestqool-dual-chip-660nm-850nm-red-light-therapy-panel-for-9/" },
 { "@type": "ListItem", "position": 2, "name": "BestQool Red Light Therapy Belt for $84 + free shipping", "url": "https://www.hackthedeal.com/deal/4538-bestqool-red-light-therapy-belt-for-84-free-shipping/" },
-{ "@type": "ListItem", "position": 3, "name": "Amazon Basics 5-Blade MotionSphere Razor w/ 2 Cartridges for $6.40 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4539-amazon-basics-5-blade-motionsphere-razor-w-2-cartridges-for/" },
-{ "@type": "ListItem", "position": 4, "name": "Amazon Basics 5-Blade MotionSphere Razor w/ 2 Cartridges for $6.40 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4348-amazon-basics-5-blade-motionsphere-razor-w-2-cartridges-for/" },
-{ "@type": "ListItem", "position": 5, "name": "Harry's Razors Bundles & Sets Deals: Up to 30% off + free shipping w/ $30", "url": "https://www.hackthedeal.com/deal/4540-harry-s-razors-bundles-sets-deals-up-to-30-off-free-shipping/" },
-{ "@type": "ListItem", "position": 6, "name": "Harry's Razors Bundles & Sets Deals: Up to 30% off + free shipping w/ $30", "url": "https://www.hackthedeal.com/deal/4349-harry-s-razors-bundles-sets-deals-up-to-30-off-free-shipping/" },
-{ "@type": "ListItem", "position": 7, "name": "Harry's Plus Value Pack for $20 + free shipping w/ $30", "url": "https://www.hackthedeal.com/deal/4541-harry-s-plus-value-pack-for-20-free-shipping-w-30/" },
-{ "@type": "ListItem", "position": 8, "name": "Harry's Plus Value Pack for $20 + free shipping w/ $30", "url": "https://www.hackthedeal.com/deal/4350-harry-s-plus-value-pack-for-20-free-shipping-w-30/" },
-{ "@type": "ListItem", "position": 9, "name": "Harry's Plus Shave Set for $20 + free shipping w/ $30", "url": "https://www.hackthedeal.com/deal/4542-harry-s-plus-shave-set-for-20-free-shipping-w-30/" },
-{ "@type": "ListItem", "position": 10, "name": "Harry's Plus Shave Set for $20 + free shipping w/ $30", "url": "https://www.hackthedeal.com/deal/4351-harry-s-plus-shave-set-for-20-free-shipping-w-30/" },
-{ "@type": "ListItem", "position": 11, "name": "Harry's Plus Annual Plan for $77 + free shipping", "url": "https://www.hackthedeal.com/deal/4543-harry-s-plus-annual-plan-for-77-free-shipping/" },
-{ "@type": "ListItem", "position": 12, "name": "Harry's Plus Annual Plan for $77 + free shipping", "url": "https://www.hackthedeal.com/deal/4352-harry-s-plus-annual-plan-for-77-free-shipping/" },
-{ "@type": "ListItem", "position": 13, "name": "Harry's Plus 8 Blades & 1 Gel for $31 + free shipping", "url": "https://www.hackthedeal.com/deal/4544-harry-s-plus-8-blades-1-gel-for-31-free-shipping/" },
-{ "@type": "ListItem", "position": 14, "name": "Harry's Plus 8 Blades & 1 Gel for $31 + free shipping", "url": "https://www.hackthedeal.com/deal/4353-harry-s-plus-8-blades-1-gel-for-31-free-shipping/" },
-{ "@type": "ListItem", "position": 15, "name": "Harry's Plus Razor for Men w/ 1 Handle & 1 Razor Blade Cartridge for $12 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4545-harry-s-plus-razor-for-men-w-1-handle-1-razor-blade-cartridg/" },
-{ "@type": "ListItem", "position": 16, "name": "Harry's Plus Razor for Men w/ 1 Handle & 1 Razor Blade Cartridge for $12 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4354-harry-s-plus-razor-for-men-w-1-handle-1-razor-blade-cartridg/" },
+{ "@type": "ListItem", "position": 3, "name": "Amazon Basics 5-Blade MotionSphere Razor w/ 2 Cartridges for $6.40 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4348-amazon-basics-5-blade-motionsphere-razor-w-2-cartridges-for/" },
+{ "@type": "ListItem", "position": 4, "name": "Amazon Basics 5-Blade MotionSphere Razor w/ 2 Cartridges for $6.40 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4539-amazon-basics-5-blade-motionsphere-razor-w-2-cartridges-for/" },
+{ "@type": "ListItem", "position": 5, "name": "Harry's Razors Bundles & Sets Deals: Up to 30% off + free shipping w/ $30", "url": "https://www.hackthedeal.com/deal/4349-harry-s-razors-bundles-sets-deals-up-to-30-off-free-shipping/" },
+{ "@type": "ListItem", "position": 6, "name": "Harry's Razors Bundles & Sets Deals: Up to 30% off + free shipping w/ $30", "url": "https://www.hackthedeal.com/deal/4540-harry-s-razors-bundles-sets-deals-up-to-30-off-free-shipping/" },
+{ "@type": "ListItem", "position": 7, "name": "Harry's Plus Value Pack for $20 + free shipping w/ $30", "url": "https://www.hackthedeal.com/deal/4350-harry-s-plus-value-pack-for-20-free-shipping-w-30/" },
+{ "@type": "ListItem", "position": 8, "name": "Harry's Plus Value Pack for $20 + free shipping w/ $30", "url": "https://www.hackthedeal.com/deal/4541-harry-s-plus-value-pack-for-20-free-shipping-w-30/" },
+{ "@type": "ListItem", "position": 9, "name": "Harry's Plus Shave Set for $20 + free shipping w/ $30", "url": "https://www.hackthedeal.com/deal/4351-harry-s-plus-shave-set-for-20-free-shipping-w-30/" },
+{ "@type": "ListItem", "position": 10, "name": "Harry's Plus Shave Set for $20 + free shipping w/ $30", "url": "https://www.hackthedeal.com/deal/4542-harry-s-plus-shave-set-for-20-free-shipping-w-30/" },
+{ "@type": "ListItem", "position": 11, "name": "Harry's Plus Annual Plan for $77 + free shipping", "url": "https://www.hackthedeal.com/deal/4352-harry-s-plus-annual-plan-for-77-free-shipping/" },
+{ "@type": "ListItem", "position": 12, "name": "Harry's Plus Annual Plan for $77 + free shipping", "url": "https://www.hackthedeal.com/deal/4543-harry-s-plus-annual-plan-for-77-free-shipping/" },
+{ "@type": "ListItem", "position": 13, "name": "Harry's Plus 8 Blades & 1 Gel for $31 + free shipping", "url": "https://www.hackthedeal.com/deal/4353-harry-s-plus-8-blades-1-gel-for-31-free-shipping/" },
+{ "@type": "ListItem", "position": 14, "name": "Harry's Plus 8 Blades & 1 Gel for $31 + free shipping", "url": "https://www.hackthedeal.com/deal/4544-harry-s-plus-8-blades-1-gel-for-31-free-shipping/" },
+{ "@type": "ListItem", "position": 15, "name": "Harry's Plus Razor for Men w/ 1 Handle & 1 Razor Blade Cartridge for $12 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4354-harry-s-plus-razor-for-men-w-1-handle-1-razor-blade-cartridg/" },
+{ "@type": "ListItem", "position": 16, "name": "Harry's Plus Razor for Men w/ 1 Handle & 1 Razor Blade Cartridge for $12 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4545-harry-s-plus-razor-for-men-w-1-handle-1-razor-blade-cartridg/" },
 { "@type": "ListItem", "position": 17, "name": "LifeZoom Red Light Therapy Face and Cold Sore Wand for $64 + free shipping", "url": "https://www.hackthedeal.com/deal/4546-lifezoom-red-light-therapy-face-and-cold-sore-wand-for-64-fr/" },
 { "@type": "ListItem", "position": 18, "name": "LifeZoom Undereye Infrared Red Light Therapy Device for $62.30 + free shipping", "url": "https://www.hackthedeal.com/deal/4547-lifezoom-undereye-infrared-red-light-therapy-device-for-62-3/" },
-{ "@type": "ListItem", "position": 19, "name": "Stsvzorr Orthopedic Arch Support Insoles for From $9.49 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4548-stsvzorr-orthopedic-arch-support-insoles-for-from-9-49-free/" },
-{ "@type": "ListItem", "position": 20, "name": "Stsvzorr Orthopedic Arch Support Insoles for From $9.49 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4355-stsvzorr-orthopedic-arch-support-insoles-for-from-9-49-free/" },
-{ "@type": "ListItem", "position": 21, "name": "Redneck Sport SPF 50 Sunscreen Spray for $10 + free shipping w/ $25", "url": "https://www.hackthedeal.com/deal/4550-redneck-sport-spf-50-sunscreen-spray-for-10-free-shipping-w/" },
-{ "@type": "ListItem", "position": 22, "name": "Redneck Sport SPF 50 Sunscreen Spray for $10 + free shipping w/ $25", "url": "https://www.hackthedeal.com/deal/4169-redneck-sport-spf-50-sunscreen-spray-for-10-free-shipping-w/" },
-{ "@type": "ListItem", "position": 23, "name": "FitTimer Sonic Electric Toothbrush for $25 + free shipping", "url": "https://www.hackthedeal.com/deal/4551-fittimer-sonic-electric-toothbrush-for-25-free-shipping/" },
-{ "@type": "ListItem", "position": 24, "name": "FitTimer Sonic Electric Toothbrush for $25 + free shipping", "url": "https://www.hackthedeal.com/deal/4170-fittimer-sonic-electric-toothbrush-for-25-free-shipping/" },
-{ "@type": "ListItem", "position": 25, "name": "Banana Boat Sport SPF 50 Lip Sunscreen 2-Pack for $5 + free shipping w/ $25", "url": "https://www.hackthedeal.com/deal/4554-banana-boat-sport-spf-50-lip-sunscreen-2-pack-for-5-free-shi/" },
-{ "@type": "ListItem", "position": 26, "name": "Banana Boat Sport SPF 50 Lip Sunscreen 2-Pack for $5 + free shipping w/ $25", "url": "https://www.hackthedeal.com/deal/4172-banana-boat-sport-spf-50-lip-sunscreen-2-pack-for-5-free-shi/" },
-{ "@type": "ListItem", "position": 27, "name": "Walmart Fragrances Flash Deals: Up to 76% off + free shipping w/ $35", "url": "https://www.hackthedeal.com/deal/4555-walmart-fragrances-flash-deals-up-to-76-off-free-shipping-w/" },
-{ "@type": "ListItem", "position": 28, "name": "Walmart Fragrances Flash Deals: Up to 76% off + free shipping w/ $35", "url": "https://www.hackthedeal.com/deal/4173-walmart-fragrances-flash-deals-up-to-76-off-free-shipping-w/" },
+{ "@type": "ListItem", "position": 19, "name": "Stsvzorr Orthopedic Arch Support Insoles for From $9.49 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4355-stsvzorr-orthopedic-arch-support-insoles-for-from-9-49-free/" },
+{ "@type": "ListItem", "position": 20, "name": "Stsvzorr Orthopedic Arch Support Insoles for From $9.49 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4548-stsvzorr-orthopedic-arch-support-insoles-for-from-9-49-free/" },
+{ "@type": "ListItem", "position": 21, "name": "Redneck Sport SPF 50 Sunscreen Spray for $10 + free shipping w/ $25", "url": "https://www.hackthedeal.com/deal/4169-redneck-sport-spf-50-sunscreen-spray-for-10-free-shipping-w/" },
+{ "@type": "ListItem", "position": 22, "name": "Redneck Sport SPF 50 Sunscreen Spray for $10 + free shipping w/ $25", "url": "https://www.hackthedeal.com/deal/4550-redneck-sport-spf-50-sunscreen-spray-for-10-free-shipping-w/" },
+{ "@type": "ListItem", "position": 23, "name": "FitTimer Sonic Electric Toothbrush for $25 + free shipping", "url": "https://www.hackthedeal.com/deal/4170-fittimer-sonic-electric-toothbrush-for-25-free-shipping/" },
+{ "@type": "ListItem", "position": 24, "name": "FitTimer Sonic Electric Toothbrush for $25 + free shipping", "url": "https://www.hackthedeal.com/deal/4551-fittimer-sonic-electric-toothbrush-for-25-free-shipping/" },
+{ "@type": "ListItem", "position": 25, "name": "Banana Boat Sport SPF 50 Lip Sunscreen 2-Pack for $5 + free shipping w/ $25", "url": "https://www.hackthedeal.com/deal/4172-banana-boat-sport-spf-50-lip-sunscreen-2-pack-for-5-free-shi/" },
+{ "@type": "ListItem", "position": 26, "name": "Banana Boat Sport SPF 50 Lip Sunscreen 2-Pack for $5 + free shipping w/ $25", "url": "https://www.hackthedeal.com/deal/4554-banana-boat-sport-spf-50-lip-sunscreen-2-pack-for-5-free-shi/" },
+{ "@type": "ListItem", "position": 27, "name": "Walmart Fragrances Flash Deals: Up to 76% off + free shipping w/ $35", "url": "https://www.hackthedeal.com/deal/4173-walmart-fragrances-flash-deals-up-to-76-off-free-shipping-w/" },
+{ "@type": "ListItem", "position": 28, "name": "Walmart Fragrances Flash Deals: Up to 76% off + free shipping w/ $35", "url": "https://www.hackthedeal.com/deal/4555-walmart-fragrances-flash-deals-up-to-76-off-free-shipping-w/" },
 { "@type": "ListItem", "position": 29, "name": "Cliganic Organic Lip Balm Set for $7.99 w/ Subscribe & Save + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4174-cliganic-organic-lip-balm-set-for-7-99-w-subscribe-save-free/" },
 { "@type": "ListItem", "position": 30, "name": "Cliganic 10-Pack Mosquito Repellent Bracelets for $9 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4175-cliganic-10-pack-mosquito-repellent-bracelets-for-9-free-shi/" },
 { "@type": "ListItem", "position": 31, "name": "Etekcity Smart Fitness Scale for $20 + free shipping w/ Prime", "url": "https://www.hackthedeal.com/deal/4176-etekcity-smart-fitness-scale-for-20-free-shipping-w-prime/" },
@@ -994,23 +1011,6 @@
           
         </div>
       </div>
-    </a><a href="/deal/4539-amazon-basics-5-blade-motionsphere-razor-w-2-cartridges-for/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">beauty</span>
-          
-        </div>
-        <p class="deal-title">Amazon Basics 5-Blade MotionSphere Razor w/ 2 Cartridges for $6.40 + free shipping w/ Prime</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$6.40</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-beauty</span>
-          <span>Jul 31, 2026</span>
-          
-        </div>
-      </div>
     </a><a href="/deal/4348-amazon-basics-5-blade-motionsphere-razor-w-2-cartridges-for/" class="deal-card">
       <img src="https://d.dlnws.com/64599/1785521474-71zuuyqwm8l.jpg?h=1024&amp;w=1024" alt="Amazon Basics 5-Blade MotionSphere Razor w/ 2 Cartridges for $6.40 + free shipping w/ Prime" loading="lazy" />
       <div class="deal-card-body">
@@ -1028,16 +1028,16 @@
           
         </div>
       </div>
-    </a><a href="/deal/4540-harry-s-razors-bundles-sets-deals-up-to-30-off-free-shipping/" class="deal-card">
+    </a><a href="/deal/4539-amazon-basics-5-blade-motionsphere-razor-w-2-cartridges-for/" class="deal-card">
       <div class="deal-card-icon-fallback"></div>
       <div class="deal-card-body">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
           <span class="cat-chip">beauty</span>
-          <span class="discount-badge">30% off</span>
+          
         </div>
-        <p class="deal-title">Harry&#x27;s Razors Bundles &amp; Sets Deals: Up to 30% off + free shipping w/ $30</p>
+        <p class="deal-title">Amazon Basics 5-Blade MotionSphere Razor w/ 2 Cartridges for $6.40 + free shipping w/ Prime</p>
         <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$30.00</span>
+          <span class="price-current">$6.40</span>
         </div>
         <div class="deal-meta">
           <span>dealnews-beauty</span>
@@ -1062,16 +1062,16 @@
           
         </div>
       </div>
-    </a><a href="/deal/4541-harry-s-plus-value-pack-for-20-free-shipping-w-30/" class="deal-card">
+    </a><a href="/deal/4540-harry-s-razors-bundles-sets-deals-up-to-30-off-free-shipping/" class="deal-card">
       <div class="deal-card-icon-fallback"></div>
       <div class="deal-card-body">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
           <span class="cat-chip">beauty</span>
-          <span class="discount-badge">33% off</span>
+          <span class="discount-badge">30% off</span>
         </div>
-        <p class="deal-title">Harry&#x27;s Plus Value Pack for $20 + free shipping w/ $30</p>
+        <p class="deal-title">Harry&#x27;s Razors Bundles &amp; Sets Deals: Up to 30% off + free shipping w/ $30</p>
         <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$20.00</span><span class="price-original">$30.00</span>
+          <span class="price-current">$30.00</span>
         </div>
         <div class="deal-meta">
           <span>dealnews-beauty</span>
@@ -1096,14 +1096,14 @@
           
         </div>
       </div>
-    </a><a href="/deal/4542-harry-s-plus-shave-set-for-20-free-shipping-w-30/" class="deal-card">
+    </a><a href="/deal/4541-harry-s-plus-value-pack-for-20-free-shipping-w-30/" class="deal-card">
       <div class="deal-card-icon-fallback"></div>
       <div class="deal-card-body">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
           <span class="cat-chip">beauty</span>
           <span class="discount-badge">33% off</span>
         </div>
-        <p class="deal-title">Harry&#x27;s Plus Shave Set for $20 + free shipping w/ $30</p>
+        <p class="deal-title">Harry&#x27;s Plus Value Pack for $20 + free shipping w/ $30</p>
         <div style="display:flex;align-items:baseline;gap:8px">
           <span class="price-current">$20.00</span><span class="price-original">$30.00</span>
         </div>
@@ -1130,16 +1130,16 @@
           
         </div>
       </div>
-    </a><a href="/deal/4543-harry-s-plus-annual-plan-for-77-free-shipping/" class="deal-card">
+    </a><a href="/deal/4542-harry-s-plus-shave-set-for-20-free-shipping-w-30/" class="deal-card">
       <div class="deal-card-icon-fallback"></div>
       <div class="deal-card-body">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
           <span class="cat-chip">beauty</span>
-          
+          <span class="discount-badge">33% off</span>
         </div>
-        <p class="deal-title">Harry&#x27;s Plus Annual Plan for $77 + free shipping</p>
+        <p class="deal-title">Harry&#x27;s Plus Shave Set for $20 + free shipping w/ $30</p>
         <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$77.00</span>
+          <span class="price-current">$20.00</span><span class="price-original">$30.00</span>
         </div>
         <div class="deal-meta">
           <span>dealnews-beauty</span>
@@ -1164,16 +1164,16 @@
           
         </div>
       </div>
-    </a><a href="/deal/4544-harry-s-plus-8-blades-1-gel-for-31-free-shipping/" class="deal-card">
+    </a><a href="/deal/4543-harry-s-plus-annual-plan-for-77-free-shipping/" class="deal-card">
       <div class="deal-card-icon-fallback"></div>
       <div class="deal-card-body">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
           <span class="cat-chip">beauty</span>
           
         </div>
-        <p class="deal-title">Harry&#x27;s Plus 8 Blades &amp; 1 Gel for $31 + free shipping</p>
+        <p class="deal-title">Harry&#x27;s Plus Annual Plan for $77 + free shipping</p>
         <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$31.00</span>
+          <span class="price-current">$77.00</span>
         </div>
         <div class="deal-meta">
           <span>dealnews-beauty</span>
@@ -1198,7 +1198,24 @@
           
         </div>
       </div>
-    </a><a href="/deal/4545-harry-s-plus-razor-for-men-w-1-handle-1-razor-blade-cartridg/" class="deal-card">
+    </a><a href="/deal/4544-harry-s-plus-8-blades-1-gel-for-31-free-shipping/" class="deal-card">
+      <div class="deal-card-icon-fallback"></div>
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">beauty</span>
+          
+        </div>
+        <p class="deal-title">Harry&#x27;s Plus 8 Blades &amp; 1 Gel for $31 + free shipping</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$31.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-beauty</span>
+          <span>Jul 31, 2026</span>
+          
+        </div>
+      </div>
+    </a><a href="/deal/4354-harry-s-plus-razor-for-men-w-1-handle-1-razor-blade-cartridg/" class="deal-card">
       <div class="deal-card-icon-fallback"></div>
       <div class="deal-card-body">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
@@ -1215,7 +1232,7 @@
           
         </div>
       </div>
-    </a><a href="/deal/4354-harry-s-plus-razor-for-men-w-1-handle-1-razor-blade-cartridg/" class="deal-card">
+    </a><a href="/deal/4545-harry-s-plus-razor-for-men-w-1-handle-1-razor-blade-cartridg/" class="deal-card">
       <div class="deal-card-icon-fallback"></div>
       <div class="deal-card-body">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
@@ -1266,23 +1283,6 @@
           
         </div>
       </div>
-    </a><a href="/deal/4548-stsvzorr-orthopedic-arch-support-insoles-for-from-9-49-free/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">beauty</span>
-          
-        </div>
-        <p class="deal-title">Stsvzorr Orthopedic Arch Support Insoles for From $9.49 + free shipping w/ Prime</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$9.49</span>
-        </div>
-        <div class="deal-meta">
-          <span>dealnews-beauty</span>
-          <span>Jul 31, 2026</span>
-          
-        </div>
-      </div>
     </a><a href="/deal/4355-stsvzorr-orthopedic-arch-support-insoles-for-from-9-49-free/" class="deal-card">
       <div class="deal-card-icon-fallback"></div>
       <div class="deal-card-body">
@@ -1300,16 +1300,16 @@
           
         </div>
       </div>
-    </a><a href="/deal/4550-redneck-sport-spf-50-sunscreen-spray-for-10-free-shipping-w/" class="deal-card">
+    </a><a href="/deal/4548-stsvzorr-orthopedic-arch-support-insoles-for-from-9-49-free/" class="deal-card">
       <div class="deal-card-icon-fallback"></div>
       <div class="deal-card-body">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
           <span class="cat-chip">beauty</span>
-          <span class="discount-badge">60% off</span>
+          
         </div>
-        <p class="deal-title">Redneck Sport SPF 50 Sunscreen Spray for $10 + free shipping w/ $25</p>
+        <p class="deal-title">Stsvzorr Orthopedic Arch Support Insoles for From $9.49 + free shipping w/ Prime</p>
         <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$10.00</span><span class="price-original">$25.00</span>
+          <span class="price-current">$9.49</span>
         </div>
         <div class="deal-meta">
           <span>dealnews-beauty</span>
@@ -1334,16 +1334,16 @@
           
         </div>
       </div>
-    </a><a href="/deal/4551-fittimer-sonic-electric-toothbrush-for-25-free-shipping/" class="deal-card">
+    </a><a href="/deal/4550-redneck-sport-spf-50-sunscreen-spray-for-10-free-shipping-w/" class="deal-card">
       <div class="deal-card-icon-fallback"></div>
       <div class="deal-card-body">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
           <span class="cat-chip">beauty</span>
-          
+          <span class="discount-badge">60% off</span>
         </div>
-        <p class="deal-title">FitTimer Sonic Electric Toothbrush for $25 + free shipping</p>
+        <p class="deal-title">Redneck Sport SPF 50 Sunscreen Spray for $10 + free shipping w/ $25</p>
         <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$25.00</span>
+          <span class="price-current">$10.00</span><span class="price-original">$25.00</span>
         </div>
         <div class="deal-meta">
           <span>dealnews-beauty</span>
@@ -1368,16 +1368,16 @@
           
         </div>
       </div>
-    </a><a href="/deal/4554-banana-boat-sport-spf-50-lip-sunscreen-2-pack-for-5-free-shi/" class="deal-card">
+    </a><a href="/deal/4551-fittimer-sonic-electric-toothbrush-for-25-free-shipping/" class="deal-card">
       <div class="deal-card-icon-fallback"></div>
       <div class="deal-card-body">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
           <span class="cat-chip">beauty</span>
-          <span class="discount-badge">80% off</span>
+          
         </div>
-        <p class="deal-title">Banana Boat Sport SPF 50 Lip Sunscreen 2-Pack for $5 + free shipping w/ $25</p>
+        <p class="deal-title">FitTimer Sonic Electric Toothbrush for $25 + free shipping</p>
         <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$5.00</span><span class="price-original">$25.00</span>
+          <span class="price-current">$25.00</span>
         </div>
         <div class="deal-meta">
           <span>dealnews-beauty</span>
@@ -1402,7 +1402,24 @@
           
         </div>
       </div>
-    </a><a href="/deal/4555-walmart-fragrances-flash-deals-up-to-76-off-free-shipping-w/" class="deal-card">
+    </a><a href="/deal/4554-banana-boat-sport-spf-50-lip-sunscreen-2-pack-for-5-free-shi/" class="deal-card">
+      <div class="deal-card-icon-fallback"></div>
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">beauty</span>
+          <span class="discount-badge">80% off</span>
+        </div>
+        <p class="deal-title">Banana Boat Sport SPF 50 Lip Sunscreen 2-Pack for $5 + free shipping w/ $25</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$5.00</span><span class="price-original">$25.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-beauty</span>
+          <span>Jul 31, 2026</span>
+          
+        </div>
+      </div>
+    </a><a href="/deal/4173-walmart-fragrances-flash-deals-up-to-76-off-free-shipping-w/" class="deal-card">
       <div class="deal-card-icon-fallback"></div>
       <div class="deal-card-body">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
@@ -1419,7 +1436,7 @@
           
         </div>
       </div>
-    </a><a href="/deal/4173-walmart-fragrances-flash-deals-up-to-76-off-free-shipping-w/" class="deal-card">
+    </a><a href="/deal/4555-walmart-fragrances-flash-deals-up-to-76-off-free-shipping-w/" class="deal-card">
       <div class="deal-card-icon-fallback"></div>
       <div class="deal-card-body">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
@@ -3403,7 +3420,7 @@
             href: target,
             target: "_blank",
             rel: linkRel,
-            className: isTracked ? undefined : "deal-card",
+            className: isTracked ? undefined : `deal-card${deal.is_dead ? " is-dead" : ""}`,
             style: isTracked ? { display: "flex", flexDirection: "column", flex: "1 1 auto", textDecoration: "none", color: "inherit" } : undefined,
           },
           showImage
@@ -3421,7 +3438,9 @@
               "div",
               { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6 } },
               e("span", { className: "cat-chip" }, deal.category),
-              deal.discount_pct
+              deal.is_dead
+                ? e("span", { className: "expired-badge" }, "Expired")
+                : deal.discount_pct
                 ? e("span", { className: "discount-badge" }, `${Math.round(deal.discount_pct)}% off`)
                 : null
             ),
@@ -3456,7 +3475,7 @@
 
         return e(
           "div",
-          { className: "deal-card" },
+          { className: `deal-card${deal.is_dead ? " is-dead" : ""}` },
           link,
           e(
             "div",

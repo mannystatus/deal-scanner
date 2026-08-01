@@ -590,6 +590,23 @@
         white-space: nowrap;
       }
 
+      /* Neutral/muted rather than --danger-*'s red — "expired" is a status,
+         not an alarm, and needs to read as visually distinct from the
+         discount badge it sits next to on the same card. */
+      .expired-badge {
+        font-size: 11px;
+        font-weight: 800;
+        padding: 3px 9px;
+        border-radius: 8px;
+        background: var(--border);
+        color: var(--muted);
+        white-space: nowrap;
+      }
+
+      .deal-card.is-dead {
+        opacity: 0.6;
+      }
+
       /* Price */
       .price-current {
         font-size: 20px;
@@ -796,23 +813,28 @@
       "@type": "ItemList",
       "name": "Best Camera & Photography Deals Today",
       "itemListElement": [
-{ "@type": "ListItem", "position": 1, "name": "Kodak PIXPRO FZ45 16MP 4X Optical Zoom Digital Camera Kit for $222", "url": "https://www.hackthedeal.com/deal/4767-kodak-pixpro-fz45-16mp-4x-optical-zoom-digital-camera-kit-fo/" },
-{ "@type": "ListItem", "position": 2, "name": "Kodak PIXPRO FZ55 16MP Digital Camera Bundle for $291", "url": "https://www.hackthedeal.com/deal/4768-kodak-pixpro-fz55-16mp-digital-camera-bundle-for-291/" },
-{ "@type": "ListItem", "position": 3, "name": "Instant Print Digital Kids Camera and Video Camcorder 32GB for $149", "url": "https://www.hackthedeal.com/deal/4769-instant-print-digital-kids-camera-and-video-camcorder-32gb-f/" },
-{ "@type": "ListItem", "position": 4, "name": "Nikon Z8 Mirrorless Camera w/ Basic Bundle for $3,497 + free shipping", "url": "https://www.hackthedeal.com/deal/4762-nikon-z8-mirrorless-camera-w-basic-bundle-for-3-497-free-shi/" },
-{ "@type": "ListItem", "position": 5, "name": "Sony Camera Cash Back Offer at Best Buy for $50 Visa gift card w/ camera or lens + free shipping", "url": "https://www.hackthedeal.com/deal/4763-sony-camera-cash-back-offer-at-best-buy-for-50-visa-gift-car/" },
-{ "@type": "ListItem", "position": 6, "name": "5K 64MP Digital Vlogging Camera with 64GB TF Card for $208", "url": "https://www.hackthedeal.com/deal/2953-5k-64mp-digital-vlogging-camera-with-64gb-tf-card-for-208/" },
-{ "@type": "ListItem", "position": 7, "name": "Kodak Pixpro FZ55 16MP Digital Camera Bundle for $270", "url": "https://www.hackthedeal.com/deal/2954-kodak-pixpro-fz55-16mp-digital-camera-bundle-for-270/" },
-{ "@type": "ListItem", "position": 8, "name": "myFirst Camera 2 Kids Action Camera for $84", "url": "https://www.hackthedeal.com/deal/2955-myfirst-camera-2-kids-action-camera-for-84/" },
-{ "@type": "ListItem", "position": 9, "name": "4K 48MP Vlogging Digital Camera with 32GB SD Card for $85", "url": "https://www.hackthedeal.com/deal/2956-4k-48mp-vlogging-digital-camera-with-32gb-sd-card-for-85/" },
-{ "@type": "ListItem", "position": 10, "name": "Kids Digital Camera and Video Camcorder with 32GB Memory Card for $127", "url": "https://www.hackthedeal.com/deal/2154-kids-digital-camera-and-video-camcorder-with-32gb-memory-car/" },
-{ "@type": "ListItem", "position": 11, "name": "48MP 4K Vlogging Digital Camera with 32GB SD Card for $63 + free shipping", "url": "https://www.hackthedeal.com/deal/2155-48mp-4k-vlogging-digital-camera-with-32gb-sd-card-for-63-fre/" },
-{ "@type": "ListItem", "position": 12, "name": "Open Box GoPro Max2 8K 360 Action Camera for $258 + free shipping", "url": "https://www.hackthedeal.com/deal/4764-open-box-gopro-max2-8k-360-action-camera-for-258-free-shippi/" },
-{ "@type": "ListItem", "position": 13, "name": "Open Box GoPro Max2 8K 360 Action Camera for $258 + free shipping", "url": "https://www.hackthedeal.com/deal/2149-open-box-gopro-max2-8k-360-action-camera-for-258-free-shippi/" },
-{ "@type": "ListItem", "position": 14, "name": "Kodak PIXPRO Friendly Zoom 16MP Digital Camera with 4X Optical Zoom for $100 + free shipping", "url": "https://www.hackthedeal.com/deal/2150-kodak-pixpro-friendly-zoom-16mp-digital-camera-with-4x-optic/" },
-{ "@type": "ListItem", "position": 15, "name": "Kodak PIXPRO Friendly Zoom 16MP Digital Camera with 4X Optical Zoom for $100 + free shipping", "url": "https://www.hackthedeal.com/deal/4765-kodak-pixpro-friendly-zoom-16mp-digital-camera-with-4x-optic/" },
-{ "@type": "ListItem", "position": 16, "name": "Panasonic Lumix S9 Mirrorless Camera w/ 18-40mm Lens  for $1,398  + free shipping", "url": "https://www.hackthedeal.com/deal/4766-panasonic-lumix-s9-mirrorless-camera-w-18-40mm-lens-for-1-39/" },
-{ "@type": "ListItem", "position": 17, "name": "Panasonic Lumix S9 Mirrorless Camera w/ 18-40mm Lens  for $1,398  + free shipping", "url": "https://www.hackthedeal.com/deal/2151-panasonic-lumix-s9-mirrorless-camera-w-18-40mm-lens-for-1-39/" }
+{ "@type": "ListItem", "position": 1, "name": "Kodak Pixpro FZ55 16MP 5X Optical Zoom Digital Camera Bundle for $285", "url": "https://www.hackthedeal.com/deal/4779-kodak-pixpro-fz55-16mp-5x-optical-zoom-digital-camera-bundle/" },
+{ "@type": "ListItem", "position": 2, "name": "Kodak PIXPRO WPZ2 16MP 4X Optical Zoom Waterproof Camera Bundle for $322", "url": "https://www.hackthedeal.com/deal/4780-kodak-pixpro-wpz2-16mp-4x-optical-zoom-waterproof-camera-bun/" },
+{ "@type": "ListItem", "position": 3, "name": "Data line P6 1080P Instant Print Children's Camera for $66", "url": "https://www.hackthedeal.com/deal/4781-data-line-p6-1080p-instant-print-children-s-camera-for-66/" },
+{ "@type": "ListItem", "position": 4, "name": "Kodak Pixpro FZ55 16MP 5x Optical Zoom Digital Camera 64GB Bundle for $282", "url": "https://www.hackthedeal.com/deal/4782-kodak-pixpro-fz55-16mp-5x-optical-zoom-digital-camera-64gb-b/" },
+{ "@type": "ListItem", "position": 5, "name": "48MP 4K Digital Vlogging Camera with 32GB TF Card for $187", "url": "https://www.hackthedeal.com/deal/4783-48mp-4k-digital-vlogging-camera-with-32gb-tf-card-for-187/" },
+{ "@type": "ListItem", "position": 6, "name": "Kodak PIXPRO FZ45 16MP 4X Optical Zoom Digital Camera Kit for $222", "url": "https://www.hackthedeal.com/deal/4767-kodak-pixpro-fz45-16mp-4x-optical-zoom-digital-camera-kit-fo/" },
+{ "@type": "ListItem", "position": 7, "name": "Kodak PIXPRO FZ55 16MP Digital Camera Bundle for $291", "url": "https://www.hackthedeal.com/deal/4768-kodak-pixpro-fz55-16mp-digital-camera-bundle-for-291/" },
+{ "@type": "ListItem", "position": 8, "name": "Instant Print Digital Kids Camera and Video Camcorder 32GB for $149", "url": "https://www.hackthedeal.com/deal/4769-instant-print-digital-kids-camera-and-video-camcorder-32gb-f/" },
+{ "@type": "ListItem", "position": 9, "name": "Nikon Z8 Mirrorless Camera w/ Basic Bundle for $3,497 + free shipping", "url": "https://www.hackthedeal.com/deal/4762-nikon-z8-mirrorless-camera-w-basic-bundle-for-3-497-free-shi/" },
+{ "@type": "ListItem", "position": 10, "name": "Sony Camera Cash Back Offer at Best Buy for $50 Visa gift card w/ camera or lens + free shipping", "url": "https://www.hackthedeal.com/deal/4763-sony-camera-cash-back-offer-at-best-buy-for-50-visa-gift-car/" },
+{ "@type": "ListItem", "position": 11, "name": "5K 64MP Digital Vlogging Camera with 64GB TF Card for $208", "url": "https://www.hackthedeal.com/deal/2953-5k-64mp-digital-vlogging-camera-with-64gb-tf-card-for-208/" },
+{ "@type": "ListItem", "position": 12, "name": "Kodak Pixpro FZ55 16MP Digital Camera Bundle for $270", "url": "https://www.hackthedeal.com/deal/2954-kodak-pixpro-fz55-16mp-digital-camera-bundle-for-270/" },
+{ "@type": "ListItem", "position": 13, "name": "myFirst Camera 2 Kids Action Camera for $84", "url": "https://www.hackthedeal.com/deal/2955-myfirst-camera-2-kids-action-camera-for-84/" },
+{ "@type": "ListItem", "position": 14, "name": "4K 48MP Vlogging Digital Camera with 32GB SD Card for $85", "url": "https://www.hackthedeal.com/deal/2956-4k-48mp-vlogging-digital-camera-with-32gb-sd-card-for-85/" },
+{ "@type": "ListItem", "position": 15, "name": "Kids Digital Camera and Video Camcorder with 32GB Memory Card for $127", "url": "https://www.hackthedeal.com/deal/2154-kids-digital-camera-and-video-camcorder-with-32gb-memory-car/" },
+{ "@type": "ListItem", "position": 16, "name": "48MP 4K Vlogging Digital Camera with 32GB SD Card for $63 + free shipping", "url": "https://www.hackthedeal.com/deal/2155-48mp-4k-vlogging-digital-camera-with-32gb-sd-card-for-63-fre/" },
+{ "@type": "ListItem", "position": 17, "name": "Open Box GoPro Max2 8K 360 Action Camera for $258 + free shipping", "url": "https://www.hackthedeal.com/deal/4764-open-box-gopro-max2-8k-360-action-camera-for-258-free-shippi/" },
+{ "@type": "ListItem", "position": 18, "name": "Open Box GoPro Max2 8K 360 Action Camera for $258 + free shipping", "url": "https://www.hackthedeal.com/deal/2149-open-box-gopro-max2-8k-360-action-camera-for-258-free-shippi/" },
+{ "@type": "ListItem", "position": 19, "name": "Kodak PIXPRO Friendly Zoom 16MP Digital Camera with 4X Optical Zoom for $100 + free shipping", "url": "https://www.hackthedeal.com/deal/2150-kodak-pixpro-friendly-zoom-16mp-digital-camera-with-4x-optic/" },
+{ "@type": "ListItem", "position": 20, "name": "Kodak PIXPRO Friendly Zoom 16MP Digital Camera with 4X Optical Zoom for $100 + free shipping", "url": "https://www.hackthedeal.com/deal/4765-kodak-pixpro-friendly-zoom-16mp-digital-camera-with-4x-optic/" },
+{ "@type": "ListItem", "position": 21, "name": "Panasonic Lumix S9 Mirrorless Camera w/ 18-40mm Lens  for $1,398  + free shipping", "url": "https://www.hackthedeal.com/deal/4766-panasonic-lumix-s9-mirrorless-camera-w-18-40mm-lens-for-1-39/" },
+{ "@type": "ListItem", "position": 22, "name": "Panasonic Lumix S9 Mirrorless Camera w/ 18-40mm Lens  for $1,398  + free shipping", "url": "https://www.hackthedeal.com/deal/2151-panasonic-lumix-s9-mirrorless-camera-w-18-40mm-lens-for-1-39/" }
       ]
     }
     </script>
@@ -917,7 +939,92 @@
       </section>
       <main style="max-width:1152px;margin:0 auto;padding:8px 16px 40px">
         <div class="section-title-bar"><span class="section-label">Latest Deals</span></div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px"><a href="/deal/4767-kodak-pixpro-fz45-16mp-4x-optical-zoom-digital-camera-kit-fo/" class="deal-card">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px"><a href="/deal/4779-kodak-pixpro-fz55-16mp-5x-optical-zoom-digital-camera-bundle/" class="deal-card">
+      <img src="https://c.dlnws.com/image/upload/creative/logos/dn-logo-web.svg" alt="Kodak Pixpro FZ55 16MP 5X Optical Zoom Digital Camera Bundle for $285" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">cameras</span>
+          
+        </div>
+        <p class="deal-title">Kodak Pixpro FZ55 16MP 5X Optical Zoom Digital Camera Bundle for $285</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$285.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-cameras</span>
+          <span>Aug 1, 2026</span>
+          
+        </div>
+      </div>
+    </a><a href="/deal/4780-kodak-pixpro-wpz2-16mp-4x-optical-zoom-waterproof-camera-bun/" class="deal-card">
+      <img src="https://c.dlnws.com/image/upload/creative/logos/dn-logo-web.svg" alt="Kodak PIXPRO WPZ2 16MP 4X Optical Zoom Waterproof Camera Bundle for $322" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">cameras</span>
+          
+        </div>
+        <p class="deal-title">Kodak PIXPRO WPZ2 16MP 4X Optical Zoom Waterproof Camera Bundle for $322</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$322.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-cameras</span>
+          <span>Aug 1, 2026</span>
+          
+        </div>
+      </div>
+    </a><a href="/deal/4781-data-line-p6-1080p-instant-print-children-s-camera-for-66/" class="deal-card">
+      <img src="https://c.dlnws.com/image/upload/creative/logos/dn-logo-web.svg" alt="Data line P6 1080P Instant Print Children&#x27;s Camera for $66" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">cameras</span>
+          
+        </div>
+        <p class="deal-title">Data line P6 1080P Instant Print Children&#x27;s Camera for $66</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$66.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-cameras</span>
+          <span>Aug 1, 2026</span>
+          
+        </div>
+      </div>
+    </a><a href="/deal/4782-kodak-pixpro-fz55-16mp-5x-optical-zoom-digital-camera-64gb-b/" class="deal-card">
+      <img src="https://c.dlnws.com/image/upload/creative/logos/dn-logo-web.svg" alt="Kodak Pixpro FZ55 16MP 5x Optical Zoom Digital Camera 64GB Bundle for $282" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">cameras</span>
+          
+        </div>
+        <p class="deal-title">Kodak Pixpro FZ55 16MP 5x Optical Zoom Digital Camera 64GB Bundle for $282</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$282.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-cameras</span>
+          <span>Aug 1, 2026</span>
+          
+        </div>
+      </div>
+    </a><a href="/deal/4783-48mp-4k-digital-vlogging-camera-with-32gb-tf-card-for-187/" class="deal-card">
+      <img src="https://c.dlnws.com/image/upload/creative/logos/dn-logo-web.svg" alt="48MP 4K Digital Vlogging Camera with 32GB TF Card for $187" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">cameras</span>
+          
+        </div>
+        <p class="deal-title">48MP 4K Digital Vlogging Camera with 32GB TF Card for $187</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$187.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dealnews-cameras</span>
+          <span>Aug 1, 2026</span>
+          
+        </div>
+      </div>
+    </a><a href="/deal/4767-kodak-pixpro-fz45-16mp-4x-optical-zoom-digital-camera-kit-fo/" class="deal-card">
       <img src="https://c.dlnws.com/image/upload/creative/logos/dn-logo-web.svg" alt="Kodak PIXPRO FZ45 16MP 4X Optical Zoom Digital Camera Kit for $222" loading="lazy" />
       <div class="deal-card-body">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
@@ -2629,7 +2736,7 @@
             href: target,
             target: "_blank",
             rel: linkRel,
-            className: isTracked ? undefined : "deal-card",
+            className: isTracked ? undefined : `deal-card${deal.is_dead ? " is-dead" : ""}`,
             style: isTracked ? { display: "flex", flexDirection: "column", flex: "1 1 auto", textDecoration: "none", color: "inherit" } : undefined,
           },
           showImage
@@ -2647,7 +2754,9 @@
               "div",
               { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6 } },
               e("span", { className: "cat-chip" }, deal.category),
-              deal.discount_pct
+              deal.is_dead
+                ? e("span", { className: "expired-badge" }, "Expired")
+                : deal.discount_pct
                 ? e("span", { className: "discount-badge" }, `${Math.round(deal.discount_pct)}% off`)
                 : null
             ),
@@ -2682,7 +2791,7 @@
 
         return e(
           "div",
-          { className: "deal-card" },
+          { className: `deal-card${deal.is_dead ? " is-dead" : ""}` },
           link,
           e(
             "div",
