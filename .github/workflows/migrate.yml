@@ -1,0 +1,38 @@
+name: Run DB migration
+
+# Manual trigger for one-off schema migration scripts (migrate_vote_score.py,
+# migrate_thumbnails.py, etc.) against production — these need DATABASE_URL,
+# which only exists as a secret here and in Render's dashboard, not locally.
+# Idempotent by design (ALTER TABLE ... IF NOT EXISTS / column-presence
+# checks), so safe to re-run or leave configured for future migrations.
+
+on:
+  workflow_dispatch:
+    inputs:
+      script:
+        description: "Migration script to run (path from repo root)"
+        required: true
+        default: "migrate_vote_score.py"
+
+permissions:
+  contents: read
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run migration
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python ${{ inputs.script }}
