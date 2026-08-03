@@ -310,8 +310,30 @@
         color: var(--text);
       }
 
-      /* Scrolling deal ticker — replaces the old network bar as the
-         top-of-page strip; the fyi network switcher moved to the footer. */
+      /* fyi network bar — sits between the ticker and the header. Same
+         navy as the ticker (just a faint separator line) so the two read
+         as one continuous dark strip instead of clashing shades. */
+      .network-bar {
+        background: var(--brand-navy);
+        color: rgba(245, 245, 240, 0.72);
+        border-top: 1px solid rgba(245, 245, 240, 0.12);
+        font-size: 11px;
+        letter-spacing: 0.04em;
+      }
+      .network-bar a {
+        color: rgba(245, 245, 240, 0.72);
+        text-decoration: none;
+        transition: color 0.15s;
+      }
+      .network-bar a:hover { color: var(--brand-green); }
+      .network-bar-inner {
+        flex-wrap: wrap;
+        row-gap: 2px;
+        column-gap: 12px;
+      }
+      .network-bar-inner span { min-width: 0; }
+
+      /* Scrolling deal ticker */
       .deal-ticker {
         background: var(--brand-navy);
         color: var(--brand-cream);
@@ -354,8 +376,7 @@
         .deal-ticker-track { animation: none; }
       }
 
-      /* fyi network switcher — dropdown listing our other sites (lives in
-         the footer now; styling unchanged) */
+      /* fyi network switcher — dropdown listing our other sites */
       .network-menu { position: relative; flex: 0 0 auto; }
       .network-menu-btn {
         display: flex;

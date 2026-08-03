@@ -313,8 +313,30 @@
         color: var(--text);
       }
 
-      /* Scrolling deal ticker — replaces the old network bar as the
-         top-of-page strip; the fyi network switcher moved to the footer. */
+      /* fyi network bar — sits between the ticker and the header. Same
+         navy as the ticker (just a faint separator line) so the two read
+         as one continuous dark strip instead of clashing shades. */
+      .network-bar {
+        background: var(--brand-navy);
+        color: rgba(245, 245, 240, 0.72);
+        border-top: 1px solid rgba(245, 245, 240, 0.12);
+        font-size: 11px;
+        letter-spacing: 0.04em;
+      }
+      .network-bar a {
+        color: rgba(245, 245, 240, 0.72);
+        text-decoration: none;
+        transition: color 0.15s;
+      }
+      .network-bar a:hover { color: var(--brand-green); }
+      .network-bar-inner {
+        flex-wrap: wrap;
+        row-gap: 2px;
+        column-gap: 12px;
+      }
+      .network-bar-inner span { min-width: 0; }
+
+      /* Scrolling deal ticker */
       .deal-ticker {
         background: var(--brand-navy);
         color: var(--brand-cream);
@@ -357,8 +379,7 @@
         .deal-ticker-track { animation: none; }
       }
 
-      /* fyi network switcher — dropdown listing our other sites (lives in
-         the footer now; styling unchanged) */
+      /* fyi network switcher — dropdown listing our other sites */
       .network-menu { position: relative; flex: 0 0 auto; }
       .network-menu-btn {
         display: flex;
@@ -3372,6 +3393,23 @@
           /* ── Scrolling deal ticker ── */
           e(DealTicker, { deals }),
 
+          /* ── fyi network bar ── */
+          e(
+            "div",
+            { className: "network-bar" },
+            e(
+              "div",
+              { className: "network-bar-inner", style: { maxWidth: 1152, margin: "0 auto", padding: "6px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" } },
+              e("span", null, "Your source for the best deals on the web"),
+              e(
+                "div",
+                { style: { display: "flex", alignItems: "center", gap: 14 } },
+                e("span", { style: { fontSize: 10 } }, `${total.toLocaleString()} live deals updated continuously`),
+                e(NetworkMenu, null)
+              )
+            )
+          ),
+
           /* ── Site header ── */
           e(
             "header",
@@ -3683,13 +3721,12 @@
               e(
                 "span",
                 null,
-                `© Hack the Deal 2026 · ${total.toLocaleString()} live deals tracked continuously. `,
+                "© Hack the Deal 2026. ",
                 e("strong", { style: { fontWeight: 700 } }, "This site contains affiliate links, including as an Amazon Associate — we earn from qualifying purchases.")
               ),
               e(
                 "div",
                 { style: { display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" } },
-                e(NetworkMenu, null),
                 e(
                   "div",
                   { style: { display: "flex", alignItems: "center", gap: 10 } },

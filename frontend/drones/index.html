@@ -313,8 +313,30 @@
         color: var(--text);
       }
 
-      /* Scrolling deal ticker — replaces the old network bar as the
-         top-of-page strip; the fyi network switcher moved to the footer. */
+      /* fyi network bar — sits between the ticker and the header. Same
+         navy as the ticker (just a faint separator line) so the two read
+         as one continuous dark strip instead of clashing shades. */
+      .network-bar {
+        background: var(--brand-navy);
+        color: rgba(245, 245, 240, 0.72);
+        border-top: 1px solid rgba(245, 245, 240, 0.12);
+        font-size: 11px;
+        letter-spacing: 0.04em;
+      }
+      .network-bar a {
+        color: rgba(245, 245, 240, 0.72);
+        text-decoration: none;
+        transition: color 0.15s;
+      }
+      .network-bar a:hover { color: var(--brand-green); }
+      .network-bar-inner {
+        flex-wrap: wrap;
+        row-gap: 2px;
+        column-gap: 12px;
+      }
+      .network-bar-inner span { min-width: 0; }
+
+      /* Scrolling deal ticker */
       .deal-ticker {
         background: var(--brand-navy);
         color: var(--brand-cream);
@@ -357,8 +379,7 @@
         .deal-ticker-track { animation: none; }
       }
 
-      /* fyi network switcher — dropdown listing our other sites (lives in
-         the footer now; styling unchanged) */
+      /* fyi network switcher — dropdown listing our other sites */
       .network-menu { position: relative; flex: 0 0 auto; }
       .network-menu-btn {
         display: flex;
@@ -1068,10 +1089,10 @@
 { "@type": "ListItem", "position": 8, "name": "DJI Phantom 4 Part 22 Craft Only (no remote, battery, camera, or charger) (Open Box) - $199.00", "url": "https://www.hackthedeal.com/deal/4373-dji-phantom-4-part-22-craft-only-no-remote-battery-camera-or/" },
 { "@type": "ListItem", "position": 9, "name": "XREAL One Pro M AR Glasses (Medium) (OPEN BOX) - $599.00", "url": "https://www.hackthedeal.com/deal/4374-xreal-one-pro-m-ar-glasses-medium-open-box-599-00/" },
 { "@type": "ListItem", "position": 10, "name": "DJI RS 4 Mini Combo (OPEN BOX) - $369.00", "url": "https://www.hackthedeal.com/deal/4375-dji-rs-4-mini-combo-open-box-369-00/" },
-{ "@type": "ListItem", "position": 11, "name": "DJI Mic Mini Transmitter (Arctic White) (Open Box) - $0.00", "url": "https://www.hackthedeal.com/deal/4377-dji-mic-mini-transmitter-arctic-white-open-box-0-00/" },
-{ "@type": "ListItem", "position": 12, "name": "DJI RS 4 Mini (Open Box) - $0.00", "url": "https://www.hackthedeal.com/deal/4376-dji-rs-4-mini-open-box-0-00/" },
-{ "@type": "ListItem", "position": 13, "name": "DJI Osmo Action 6 Standard Combo (OPEN BOX) - $436.00", "url": "https://www.hackthedeal.com/deal/4379-dji-osmo-action-6-standard-combo-open-box-436-00/" },
-{ "@type": "ListItem", "position": 14, "name": "DJI RS 4 (OPEN BOX) - $0.00", "url": "https://www.hackthedeal.com/deal/4378-dji-rs-4-open-box-0-00/" },
+{ "@type": "ListItem", "position": 11, "name": "DJI RS 4 Mini (Open Box) - $0.00", "url": "https://www.hackthedeal.com/deal/4376-dji-rs-4-mini-open-box-0-00/" },
+{ "@type": "ListItem", "position": 12, "name": "DJI Mic Mini Transmitter (Arctic White) (Open Box) - $0.00", "url": "https://www.hackthedeal.com/deal/4377-dji-mic-mini-transmitter-arctic-white-open-box-0-00/" },
+{ "@type": "ListItem", "position": 13, "name": "DJI RS 4 (OPEN BOX) - $0.00", "url": "https://www.hackthedeal.com/deal/4378-dji-rs-4-open-box-0-00/" },
+{ "@type": "ListItem", "position": 14, "name": "DJI Osmo Action 6 Standard Combo (OPEN BOX) - $436.00", "url": "https://www.hackthedeal.com/deal/4379-dji-osmo-action-6-standard-combo-open-box-436-00/" },
 { "@type": "ListItem", "position": 15, "name": "DJI Goggles (OPEN BOX) - $276.99", "url": "https://www.hackthedeal.com/deal/4380-dji-goggles-open-box-276-99/" },
 { "@type": "ListItem", "position": 16, "name": "DJI RS 3 Combo (Open Box) - $609.00", "url": "https://www.hackthedeal.com/deal/4381-dji-rs-3-combo-open-box-609-00/" },
 { "@type": "ListItem", "position": 17, "name": "DJI Osmo Action 5 Pro Standard Combo (Open Box) - $0.00", "url": "https://www.hackthedeal.com/deal/4382-dji-osmo-action-5-pro-standard-combo-open-box-0-00/" },
@@ -1083,8 +1104,8 @@
 { "@type": "ListItem", "position": 23, "name": "DJI Mavic 3 OPEN BOX - $0.00", "url": "https://www.hackthedeal.com/deal/4388-dji-mavic-3-open-box-0-00/" },
 { "@type": "ListItem", "position": 24, "name": "DJI Mini 3 Pro Fly More Kit (Open Box) - $189.00", "url": "https://www.hackthedeal.com/deal/4389-dji-mini-3-pro-fly-more-kit-open-box-189-00/" },
 { "@type": "ListItem", "position": 25, "name": "DJI Mini SE Drone | 30 Minute Flight Time, 2.7K Camera (Open Box Resealed) - $279.00", "url": "https://www.hackthedeal.com/deal/4390-dji-mini-se-drone-30-minute-flight-time-2-7k-camera-open-box/" },
-{ "@type": "ListItem", "position": 26, "name": "DJI Mavic Mini Fly More Combo (OPEN BOX) - $439.00", "url": "https://www.hackthedeal.com/deal/4392-dji-mavic-mini-fly-more-combo-open-box-439-00/" },
-{ "@type": "ListItem", "position": 27, "name": "DJI Mini 2 Fly More Combo (NA) (Open Box) - $599.00", "url": "https://www.hackthedeal.com/deal/4391-dji-mini-2-fly-more-combo-na-open-box-599-00/" },
+{ "@type": "ListItem", "position": 26, "name": "DJI Mini 2 Fly More Combo (NA) (Open Box) - $599.00", "url": "https://www.hackthedeal.com/deal/4391-dji-mini-2-fly-more-combo-na-open-box-599-00/" },
+{ "@type": "ListItem", "position": 27, "name": "DJI Mavic Mini Fly More Combo (OPEN BOX) - $439.00", "url": "https://www.hackthedeal.com/deal/4392-dji-mavic-mini-fly-more-combo-open-box-439-00/" },
 { "@type": "ListItem", "position": 28, "name": "Potensic ATOM FLY MORE COMBO (OPEN BOX) - $0.00", "url": "https://www.hackthedeal.com/deal/4393-potensic-atom-fly-more-combo-open-box-0-00/" },
 { "@type": "ListItem", "position": 29, "name": "Potensic ATOM 2 FLY MORE COMBO OPEN BOX - $399.99", "url": "https://www.hackthedeal.com/deal/4394-potensic-atom-2-fly-more-combo-open-box-399-99/" },
 { "@type": "ListItem", "position": 30, "name": "Potensic ATOM SE EXPANSION KIT (Open Box) - $229.99", "url": "https://www.hackthedeal.com/deal/4395-potensic-atom-se-expansion-kit-open-box-229-99/" },
@@ -1392,6 +1413,23 @@
           
         </div>
       </div>
+    </a><a href="/deal/4376-dji-rs-4-mini-open-box-0-00/" class="deal-card">
+      <img src="http://www.dronenerds.com/cdn/shop/files/socialimaghe.jpg?v=1770743914" alt="DJI RS 4 Mini (Open Box) - $0.00" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">DJI RS 4 Mini (Open Box) - $0.00</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$0.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dronenerds</span>
+          <span>Jul 31, 2026</span>
+          
+        </div>
+      </div>
     </a><a href="/deal/4377-dji-mic-mini-transmitter-arctic-white-open-box-0-00/" class="deal-card">
       <img src="http://www.dronenerds.com/cdn/shop/files/socialimaghe.jpg?v=1770743914" alt="DJI Mic Mini Transmitter (Arctic White) (Open Box) - $0.00" loading="lazy" />
       <div class="deal-card-body">
@@ -1409,14 +1447,14 @@
           
         </div>
       </div>
-    </a><a href="/deal/4376-dji-rs-4-mini-open-box-0-00/" class="deal-card">
-      <img src="http://www.dronenerds.com/cdn/shop/files/socialimaghe.jpg?v=1770743914" alt="DJI RS 4 Mini (Open Box) - $0.00" loading="lazy" />
+    </a><a href="/deal/4378-dji-rs-4-open-box-0-00/" class="deal-card">
+      <img src="http://www.dronenerds.com/cdn/shop/files/socialimaghe.jpg?v=1770743914" alt="DJI RS 4 (OPEN BOX) - $0.00" loading="lazy" />
       <div class="deal-card-body">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
           <span class="cat-chip">drones</span>
           
         </div>
-        <p class="deal-title">DJI RS 4 Mini (Open Box) - $0.00</p>
+        <p class="deal-title">DJI RS 4 (OPEN BOX) - $0.00</p>
         <div style="display:flex;align-items:baseline;gap:8px">
           <span class="price-current">$0.00</span>
         </div>
@@ -1436,23 +1474,6 @@
         <p class="deal-title">DJI Osmo Action 6 Standard Combo (OPEN BOX) - $436.00</p>
         <div style="display:flex;align-items:baseline;gap:8px">
           <span class="price-current">$436.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dronenerds</span>
-          <span>Jul 31, 2026</span>
-          
-        </div>
-      </div>
-    </a><a href="/deal/4378-dji-rs-4-open-box-0-00/" class="deal-card">
-      <img src="http://www.dronenerds.com/cdn/shop/files/socialimaghe.jpg?v=1770743914" alt="DJI RS 4 (OPEN BOX) - $0.00" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          
-        </div>
-        <p class="deal-title">DJI RS 4 (OPEN BOX) - $0.00</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$0.00</span>
         </div>
         <div class="deal-meta">
           <span>dronenerds</span>
@@ -1647,23 +1668,6 @@
           
         </div>
       </div>
-    </a><a href="/deal/4392-dji-mavic-mini-fly-more-combo-open-box-439-00/" class="deal-card">
-      <img src="http://www.dronenerds.com/cdn/shop/files/socialimaghe.jpg?v=1770743914" alt="DJI Mavic Mini Fly More Combo (OPEN BOX) - $439.00" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          
-        </div>
-        <p class="deal-title">DJI Mavic Mini Fly More Combo (OPEN BOX) - $439.00</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$439.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dronenerds</span>
-          <span>Jul 31, 2026</span>
-          
-        </div>
-      </div>
     </a><a href="/deal/4391-dji-mini-2-fly-more-combo-na-open-box-599-00/" class="deal-card">
       <img src="http://www.dronenerds.com/cdn/shop/files/socialimaghe.jpg?v=1770743914" alt="DJI Mini 2 Fly More Combo (NA) (Open Box) - $599.00" loading="lazy" />
       <div class="deal-card-body">
@@ -1674,6 +1678,23 @@
         <p class="deal-title">DJI Mini 2 Fly More Combo (NA) (Open Box) - $599.00</p>
         <div style="display:flex;align-items:baseline;gap:8px">
           <span class="price-current">$599.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>dronenerds</span>
+          <span>Jul 31, 2026</span>
+          
+        </div>
+      </div>
+    </a><a href="/deal/4392-dji-mavic-mini-fly-more-combo-open-box-439-00/" class="deal-card">
+      <img src="http://www.dronenerds.com/cdn/shop/files/socialimaghe.jpg?v=1770743914" alt="DJI Mavic Mini Fly More Combo (OPEN BOX) - $439.00" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">DJI Mavic Mini Fly More Combo (OPEN BOX) - $439.00</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$439.00</span>
         </div>
         <div class="deal-meta">
           <span>dronenerds</span>
@@ -4146,6 +4167,23 @@
           /* ── Scrolling deal ticker ── */
           e(DealTicker, { deals }),
 
+          /* ── fyi network bar ── */
+          e(
+            "div",
+            { className: "network-bar" },
+            e(
+              "div",
+              { className: "network-bar-inner", style: { maxWidth: 1152, margin: "0 auto", padding: "6px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" } },
+              e("span", null, "Your source for the best deals on the web"),
+              e(
+                "div",
+                { style: { display: "flex", alignItems: "center", gap: 14 } },
+                e("span", { style: { fontSize: 10 } }, `${total.toLocaleString()} live deals updated continuously`),
+                e(NetworkMenu, null)
+              )
+            )
+          ),
+
           /* ── Site header ── */
           e(
             "header",
@@ -4457,13 +4495,12 @@
               e(
                 "span",
                 null,
-                `© Hack the Deal 2026 · ${total.toLocaleString()} live deals tracked continuously. `,
+                "© Hack the Deal 2026. ",
                 e("strong", { style: { fontWeight: 700 } }, "This site contains affiliate links, including as an Amazon Associate — we earn from qualifying purchases.")
               ),
               e(
                 "div",
                 { style: { display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" } },
-                e(NetworkMenu, null),
                 e(
                   "div",
                   { style: { display: "flex", alignItems: "center", gap: 10 } },
