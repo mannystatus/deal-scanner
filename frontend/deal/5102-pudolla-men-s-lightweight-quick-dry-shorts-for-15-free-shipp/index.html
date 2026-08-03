@@ -320,12 +320,12 @@
         font-size: 11px;
         letter-spacing: 0.04em;
       }
-      .network-bar a {
-        color: rgba(245, 245, 240, 0.72);
-        text-decoration: none;
-        transition: color 0.15s;
-      }
-      .network-bar a:hover { color: var(--brand-green); }
+      /* Deliberately no ".network-bar a" color rule — the only <a> tags
+         inside .network-bar are the dropdown's .network-menu-item links,
+         which live in a popover that escapes the bar visually but not in
+         the DOM. A bar-wide anchor rule previously clobbered their
+         var(--text) color with translucent cream, unreadable on the
+         popover's light-mode white background. */
       .network-bar-inner {
         flex-wrap: wrap;
         row-gap: 2px;

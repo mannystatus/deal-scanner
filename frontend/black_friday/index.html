@@ -323,12 +323,12 @@
         font-size: 11px;
         letter-spacing: 0.04em;
       }
-      .network-bar a {
-        color: rgba(245, 245, 240, 0.72);
-        text-decoration: none;
-        transition: color 0.15s;
-      }
-      .network-bar a:hover { color: var(--brand-green); }
+      /* Deliberately no ".network-bar a" color rule — the only <a> tags
+         inside .network-bar are the dropdown's .network-menu-item links,
+         which live in a popover that escapes the bar visually but not in
+         the DOM. A bar-wide anchor rule previously clobbered their
+         var(--text) color with translucent cream, unreadable on the
+         popover's light-mode white background. */
       .network-bar-inner {
         flex-wrap: wrap;
         row-gap: 2px;
@@ -1919,12 +1919,12 @@
           
         </div>
       </div>
-    </a><a href="/deal/1748-best-buy-black-friday-in-july-smart-home-security-deals-for/" class="deal-card">
+    </a><a href="/deal/1748-best-buy-black-friday-in-july-smart-home-security-deals-for/" class="deal-card is-dead">
       <img src="https://d.dlnws.com/64599/1784628299-6551551_sd.webp?h=441&amp;w=900" alt="Best Buy Black Friday in July Smart Home Security Deals for From $30 + free shipping" loading="lazy" />
       <div class="deal-card-body">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
           <span class="cat-chip">computers</span>
-          
+          <span class="expired-badge">Expired</span>
         </div>
         <p class="deal-title">Best Buy Black Friday in July Smart Home Security Deals for From $30 + free shipping</p>
         <div style="display:flex;align-items:baseline;gap:8px">
@@ -1953,12 +1953,12 @@
           
         </div>
       </div>
-    </a><a href="/deal/1754-best-buy-black-friday-in-july-tv-deals-for-from-70-free-ship/" class="deal-card">
+    </a><a href="/deal/1754-best-buy-black-friday-in-july-tv-deals-for-from-70-free-ship/" class="deal-card is-dead">
       <img src="https://d.dlnws.com/64599/1784620259-6c94448a-fb81-4a03-ba89-0b804d4ffe48.webp?h=516&amp;w=900" alt="Best Buy Black Friday in July TV Deals for From $70 + free shipping" loading="lazy" />
       <div class="deal-card-body">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
           <span class="cat-chip">computers</span>
-          
+          <span class="expired-badge">Expired</span>
         </div>
         <p class="deal-title">Best Buy Black Friday in July TV Deals for From $70 + free shipping</p>
         <div style="display:flex;align-items:baseline;gap:8px">
@@ -3138,6 +3138,7 @@
         { name: "fyiFlyNow", url: "https://fyiflynow.com/" },
         { name: "fyiLakers", url: "https://fyilakers.com/" },
         { name: "fyiDodgers", url: "https://fyidodgers.com/" },
+        { name: "fyiCams", url: "https://fyicams.com/" },
       ];
 
       function NetworkMenu() {
@@ -4414,6 +4415,22 @@
                     onClick: (ev) => { ev.preventDefault(); navigateToCategory(c.id); },
                   },
                   c.id === "amazon_finds" ? c.label : c.label + " Deals"
+                )
+              )
+            ),
+            e(
+              "div",
+              { style: { maxWidth: 1152, margin: "0 auto", padding: "16px 16px 0" } },
+              e(
+                "h5",
+                { style: { fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#7982a9", margin: "0 0 10px" } },
+                "The fyi family of sites"
+              ),
+              e(
+                "div",
+                { style: { display: "flex", flexWrap: "wrap", gap: 14, fontSize: 12 } },
+                FYI_NETWORK_SITES.map((site) =>
+                  e("a", { key: site.url, href: site.url, target: "_blank", rel: "noopener noreferrer" }, site.name)
                 )
               )
             ),

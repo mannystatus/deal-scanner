@@ -320,12 +320,12 @@
         font-size: 11px;
         letter-spacing: 0.04em;
       }
-      .network-bar a {
-        color: rgba(245, 245, 240, 0.72);
-        text-decoration: none;
-        transition: color 0.15s;
-      }
-      .network-bar a:hover { color: var(--brand-green); }
+      /* Deliberately no ".network-bar a" color rule — the only <a> tags
+         inside .network-bar are the dropdown's .network-menu-item links,
+         which live in a popover that escapes the bar visually but not in
+         the DOM. A bar-wide anchor rule previously clobbered their
+         var(--text) color with translucent cream, unreadable on the
+         popover's light-mode white background. */
       .network-bar-inner {
         flex-wrap: wrap;
         row-gap: 2px;
@@ -1153,17 +1153,17 @@
         <div style="flex:1;min-width:260px">
           <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px">
             <span class="cat-chip">computers</span>
-            
+            <span class="expired-badge">Expired</span>
           </div>
           <h1 style="font-size:22px;line-height:1.3;margin:0 0 12px">Best Buy Black Friday in July TV Deals for From $70 + free shipping</h1>
           <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:10px"><span class="price-current" style="font-size:22px">$70.00</span></div>
           <p style="color:var(--muted);font-size:13px;margin:0 0 18px">Sold by dealnews · Posted Jul 21, 2026</p>
           <a href="https://www.dealnews.com/Best-Buy-Black-Friday-in-July-TV-Deals-for-From-70-free-shipping/21917708.html?iref=rss-c142" target="_blank" rel="noopener noreferrer"
              style="display:inline-block;background:var(--accent);color:#0a0c12;font-weight:700;font-size:14px;padding:12px 26px;border-radius:999px;text-decoration:none">
-            Get This Deal →
+            Visit Retailer (may be expired) →
           </a>
           <p style="font-size:11px;color:var(--muted);margin-top:12px;max-width:420px">
-            Price and availability last confirmed Jul 21, 2026; subject to change on the retailer's site.
+            This link no longer resolved as of our last check — the deal may be sold out or expired. Price and availability last confirmed Jul 21, 2026; subject to change on the retailer's site.
             This is an affiliate link — Hack the Deal may earn a commission at no extra cost to you.
           </p>
         </div>
