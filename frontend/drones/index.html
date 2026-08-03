@@ -71,10 +71,19 @@
     <title>Best Drone &amp; FPV Parts Deals Today – Live Price Drops | Hack the Deal</title>
     <meta name="description" content="Live price drops on drones, FPV parts, batteries, motors, and accessories straight from vendors like Pyrodrone and RaceDayQuads. Hack the Deal tracks drone deals continuously." />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="theme-color" content="#0B1F3A" />
     <link rel="canonical" href="https://www.hackthedeal.com/drones/" />
     <link rel="icon" href="/favicon-v3.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-v3.ico" sizes="any" />
+
+    <!-- Brand type — used by the ticker/header/hero only; the rest of the
+         page keeps the system font stack. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
@@ -169,6 +178,19 @@
         --danger-bg: #2a1519;
         --danger-text: #f7768e;
         --icon-bg: #1a1b26;
+      }
+
+      /* Brand palette — fixed (not theme-reactive) colors for the ticker,
+         header, and hero, matching the 2026 rebrand. Everything below the
+         hero still follows --bg/--text/etc. and the light/dark toggle. */
+      :root {
+        --brand-cream: #f5f5f0;
+        --brand-navy: #0b1f3a;
+        --brand-green: #00c77a;
+        --brand-green-dark: #00a868;
+        --brand-muted: #5b6472;
+        --brand-border: #dde1e6;
+        --brand-orange: #ff6b35;
       }
 
       * { box-sizing: border-box; }
@@ -291,27 +313,52 @@
         color: var(--text);
       }
 
-      /* Header network bar */
-      .network-bar {
-        background: #1a1b26;
-        color: #a9b1d6;
-        font-size: 11px;
-        letter-spacing: 0.04em;
+      /* Scrolling deal ticker — replaces the old network bar as the
+         top-of-page strip; the fyi network switcher moved to the footer. */
+      .deal-ticker {
+        background: var(--brand-navy);
+        color: var(--brand-cream);
+        overflow: hidden;
+        white-space: nowrap;
       }
-      .network-bar a {
-        color: #aaa;
+      .deal-ticker-track {
+        display: inline-flex;
+        gap: 52px;
+        padding: 9px 0;
+        animation: htdTickerScroll 34s linear infinite;
+        will-change: transform;
+      }
+      .deal-ticker:hover .deal-ticker-track,
+      .deal-ticker:focus-within .deal-ticker-track {
+        animation-play-state: paused;
+      }
+      @keyframes htdTickerScroll {
+        from { transform: translateX(0); }
+        to { transform: translateX(-50%); }
+      }
+      .deal-ticker-item {
+        font-family: "IBM Plex Mono", "SF Mono", monospace;
+        font-size: 12px;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        color: inherit;
         text-decoration: none;
-        transition: color 0.15s;
       }
-      .network-bar a:hover { color: var(--accent); }
-      .network-bar-inner {
-        flex-wrap: wrap;
-        row-gap: 2px;
-        column-gap: 12px;
+      .deal-ticker-item:hover { color: var(--brand-green); }
+      .deal-ticker-tag {
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        font-size: 10.5px;
       }
-      .network-bar-inner span { min-width: 0; }
+      @media (prefers-reduced-motion: reduce) {
+        .deal-ticker-track { animation: none; }
+      }
 
-      /* fyi network switcher — dropdown listing our other sites */
+      /* fyi network switcher — dropdown listing our other sites (lives in
+         the footer now; styling unchanged) */
       .network-menu { position: relative; flex: 0 0 auto; }
       .network-menu-btn {
         display: flex;
@@ -361,25 +408,86 @@
         color: var(--muted);
       }
 
-      /* Main header */
+      /* Main header — fixed brand palette rather than the dark/light toggle
+         (the toggle still drives everything from the deals grid down).
+         Redefining the shared vars here means .cat-pill, .search-input,
+         .theme-toggle-btn, .header-contact-link etc. all pick up the brand
+         colors automatically without duplicating their rules. */
       .site-header {
-        background: var(--surface);
-        border-bottom: 3px solid var(--accent);
+        --bg: var(--brand-cream);
+        --surface: var(--brand-cream);
+        --border: var(--brand-border);
+        --text: var(--brand-navy);
+        --muted: var(--brand-muted);
+        --accent: var(--brand-green);
+        --accent-text: var(--brand-green-dark);
+        background: rgba(245, 245, 240, 0.94);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-bottom: 2px solid var(--brand-navy);
         position: sticky;
         top: 0;
         z-index: 50;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
         transition: transform 0.25s ease;
       }
 
-      /* Logo — plain monospace terminal-style wordmark */
+      /* Nav links row, between the logo and the search/alert controls */
+      .brand-nav {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        font-size: 13.5px;
+        font-weight: 600;
+      }
+      .brand-nav a {
+        color: var(--brand-navy);
+        text-decoration: none;
+        background: none;
+        border: none;
+        font: inherit;
+        cursor: pointer;
+        padding: 0;
+      }
+      .brand-nav a:hover { color: var(--brand-green-dark); }
+
+      /* Logo — "Hack" + green-highlighted "TheDeal" */
       .logo {
         display: flex;
         align-items: center;
         line-height: 1;
-        color: var(--accent-text);
+        text-decoration: none;
       }
-      .logo svg { height: 22px; width: auto; display: block; }
+      .brand-logo {
+        font-family: "Space Grotesk", sans-serif;
+        font-weight: 700;
+        font-size: 21px;
+        color: var(--brand-navy);
+      }
+      .brand-logo-badge {
+        background: var(--brand-green);
+        color: var(--brand-navy);
+        padding: 1px 8px;
+        margin-left: 2px;
+        border-radius: 2px;
+      }
+
+      /* "Set alert" button — the NotifyPanel trigger, restyled as a solid
+         brand button instead of the bare icon it used to be */
+      .set-alert-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--brand-navy);
+        color: var(--brand-cream);
+        padding: 9px 16px;
+        border-radius: 4px;
+        font-weight: 700;
+        font-size: 13px;
+        border: none;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      .set-alert-btn:hover { opacity: 0.9; }
 
       /* Category nav pills */
       .cat-pill {
@@ -443,6 +551,7 @@
       @media (max-width: 640px) {
         .logo-row { flex-wrap: wrap; }
         .logo-row .logo-controls { flex-basis: 100%; }
+        .brand-nav { display: none; }
         .search-input { flex-basis: 100%; }
         /* Hide the sticky header on scroll-down, reveal on scroll-up —
            frees up screen space on small viewports where the header
@@ -452,8 +561,20 @@
       .search-input:focus { border-color: var(--accent); }
       .search-input::placeholder { color: var(--muted); }
 
-      /* Hero */
+      /* Hero — same fixed-brand-palette trick as .site-header, so the hero
+         reads as one continuous brand block with the header above it
+         regardless of the dark/light toggle (which still applies from the
+         deals grid down). */
       .hero {
+        --bg: var(--brand-cream);
+        --surface: var(--brand-cream);
+        --border: var(--brand-border);
+        --text: var(--brand-navy);
+        --muted: var(--brand-muted);
+        --accent: var(--brand-green);
+        --accent-text: var(--brand-green-dark);
+        --accent2-text: var(--brand-green-dark);
+        background: var(--brand-cream);
         max-width: 1152px;
         margin: 0 auto;
         width: 100%;
@@ -471,8 +592,9 @@
         margin: 0 0 10px;
       }
       .hero-title {
+        font-family: "Space Grotesk", sans-serif;
         font-size: 30px;
-        font-weight: 800;
+        font-weight: 700;
         letter-spacing: -0.4px;
         color: var(--text);
         margin: 0 0 10px;
@@ -489,6 +611,129 @@
         .hero { flex-direction: column; text-align: center; padding: 32px 16px 24px; }
         .hero-sub { max-width: none; }
       }
+
+      /* Homepage-only hero: verified-deals badge, headline, CTAs, and a
+         deal-of-the-day card pulled from the live feed. */
+      .hero-home {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 40px;
+        align-items: center;
+        width: 100%;
+      }
+      @media (max-width: 860px) {
+        .hero-home { grid-template-columns: 1fr; }
+      }
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--brand-green-dark);
+        background: rgba(0, 199, 122, 0.1);
+        padding: 5px 12px;
+        border-radius: 20px;
+        margin-bottom: 18px;
+      }
+      .hero-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--brand-green); flex-shrink: 0; }
+      .hero-home-title {
+        font-family: "Space Grotesk", sans-serif;
+        font-weight: 700;
+        font-size: clamp(26px, 4vw, 38px);
+        line-height: 1.1;
+        color: var(--brand-navy);
+        margin: 0 0 14px;
+      }
+      .hero-home-sub {
+        font-size: 15px;
+        color: var(--brand-muted);
+        max-width: 52ch;
+        line-height: 1.6;
+        margin: 0 0 22px;
+      }
+      .hero-home-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+      .hero-btn-primary {
+        background: var(--brand-navy);
+        color: var(--brand-cream);
+        padding: 12px 22px;
+        border-radius: 4px;
+        font-weight: 700;
+        font-size: 14px;
+        border: none;
+        cursor: pointer;
+      }
+      .hero-btn-primary:hover { opacity: 0.9; }
+      .hero-btn-secondary {
+        padding: 12px 20px;
+        border-radius: 4px;
+        font-weight: 700;
+        font-size: 14px;
+        border: 1.5px solid var(--brand-navy);
+        background: transparent;
+        color: var(--brand-navy);
+        cursor: pointer;
+      }
+      .hero-btn-secondary:hover { background: rgba(11, 31, 58, 0.06); }
+      .hero-home-guide {
+        max-width: 60ch;
+        font-size: 12.5px;
+        line-height: 1.6;
+        color: var(--brand-muted);
+        margin: 0;
+      }
+      .hero-home-guide a { color: var(--brand-green-dark); font-weight: 600; }
+
+      .deal-of-day {
+        background: var(--brand-navy);
+        color: var(--brand-cream);
+        padding: 22px;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        position: relative;
+        text-decoration: none;
+      }
+      .deal-of-day-badge {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        background: var(--brand-orange);
+        color: #fff;
+        font-family: "IBM Plex Mono", monospace;
+        font-weight: 700;
+        font-size: 10.5px;
+        padding: 4px 9px;
+        border-radius: 4px;
+      }
+      .deal-of-day-eyebrow {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 10.5px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #8ca0b8;
+      }
+      .deal-of-day-media {
+        aspect-ratio: 4 / 3;
+        width: 100%;
+        object-fit: cover;
+        border-radius: 6px;
+        background: #132a4d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .deal-of-day-media svg { width: 56px; height: 56px; opacity: 0.85; }
+      .deal-of-day-title { font-weight: 600; font-size: 16px; margin: 0; line-height: 1.35; }
+      .deal-of-day-price-row { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+      .deal-of-day-price { font-family: "IBM Plex Mono", monospace; font-weight: 700; font-size: 22px; color: var(--brand-green); }
+      .deal-of-day-was { font-family: "IBM Plex Mono", monospace; font-size: 14px; color: #8ca0b8; text-decoration: line-through; }
+      .deal-of-day-discount { background: var(--brand-green); color: var(--brand-navy); font-family: "IBM Plex Mono", monospace; font-weight: 700; font-size: 12px; padding: 2px 8px; border-radius: 3px; }
+      .deal-of-day-meta { font-family: "IBM Plex Mono", monospace; font-size: 12px; color: #8ca0b8; }
 
       /* Category showcase (homepage only) */
       .cat-showcase {
@@ -813,66 +1058,66 @@
       "@type": "ItemList",
       "name": "Best Drone & FPV Parts Deals Today",
       "itemListElement": [
-{ "@type": "ListItem", "position": 1, "name": "Anzu Robotics Raptor USB-C Power Adapter - $19.99", "url": "https://www.hackthedeal.com/deal/5158-anzu-robotics-raptor-usb-c-power-adapter-19-99/" },
-{ "@type": "ListItem", "position": 2, "name": "DJI Phantom 4 Part 22 Craft Only (no remote, battery, camera, or charger) (Open Box) - $199.00", "url": "https://www.hackthedeal.com/deal/4373-dji-phantom-4-part-22-craft-only-no-remote-battery-camera-or/" },
-{ "@type": "ListItem", "position": 3, "name": "XREAL One Pro M AR Glasses (Medium) (OPEN BOX) - $599.00", "url": "https://www.hackthedeal.com/deal/4374-xreal-one-pro-m-ar-glasses-medium-open-box-599-00/" },
-{ "@type": "ListItem", "position": 4, "name": "DJI RS 4 Mini Combo (OPEN BOX) - $369.00", "url": "https://www.hackthedeal.com/deal/4375-dji-rs-4-mini-combo-open-box-369-00/" },
-{ "@type": "ListItem", "position": 5, "name": "DJI Mic Mini Transmitter (Arctic White) (Open Box) - $0.00", "url": "https://www.hackthedeal.com/deal/4377-dji-mic-mini-transmitter-arctic-white-open-box-0-00/" },
-{ "@type": "ListItem", "position": 6, "name": "DJI RS 4 Mini (Open Box) - $0.00", "url": "https://www.hackthedeal.com/deal/4376-dji-rs-4-mini-open-box-0-00/" },
-{ "@type": "ListItem", "position": 7, "name": "DJI Osmo Action 6 Standard Combo (OPEN BOX) - $436.00", "url": "https://www.hackthedeal.com/deal/4379-dji-osmo-action-6-standard-combo-open-box-436-00/" },
-{ "@type": "ListItem", "position": 8, "name": "DJI RS 4 (OPEN BOX) - $0.00", "url": "https://www.hackthedeal.com/deal/4378-dji-rs-4-open-box-0-00/" },
-{ "@type": "ListItem", "position": 9, "name": "DJI Goggles (OPEN BOX) - $276.99", "url": "https://www.hackthedeal.com/deal/4380-dji-goggles-open-box-276-99/" },
-{ "@type": "ListItem", "position": 10, "name": "DJI RS 3 Combo (Open Box) - $609.00", "url": "https://www.hackthedeal.com/deal/4381-dji-rs-3-combo-open-box-609-00/" },
-{ "@type": "ListItem", "position": 11, "name": "DJI Osmo Action 5 Pro Standard Combo (Open Box) - $0.00", "url": "https://www.hackthedeal.com/deal/4382-dji-osmo-action-5-pro-standard-combo-open-box-0-00/" },
-{ "@type": "ListItem", "position": 12, "name": "DJI Osmo Mobile SE (Open Box) - $0.00", "url": "https://www.hackthedeal.com/deal/4383-dji-osmo-mobile-se-open-box-0-00/" },
-{ "@type": "ListItem", "position": 13, "name": "DJI Mini 4 Pro Fly More Combo Plus (DJI RC 2) (GL) (Open Box) - $1159.00", "url": "https://www.hackthedeal.com/deal/4384-dji-mini-4-pro-fly-more-combo-plus-dji-rc-2-gl-open-box-1159/" },
-{ "@type": "ListItem", "position": 14, "name": "DJI Mini 4K Fly Drone (GL) (OPEN BOX) - $299.00", "url": "https://www.hackthedeal.com/deal/4385-dji-mini-4k-fly-drone-gl-open-box-299-00/" },
-{ "@type": "ListItem", "position": 15, "name": "DJI Mini 3 Fly More Combo (GL) Open Box - $589.00", "url": "https://www.hackthedeal.com/deal/4386-dji-mini-3-fly-more-combo-gl-open-box-589-00/" },
-{ "@type": "ListItem", "position": 16, "name": "DJI Mavic 3 Classic With Standard Remote (Open Box) - $1279.00", "url": "https://www.hackthedeal.com/deal/4387-dji-mavic-3-classic-with-standard-remote-open-box-1279-00/" },
-{ "@type": "ListItem", "position": 17, "name": "DJI Mavic 3 OPEN BOX - $0.00", "url": "https://www.hackthedeal.com/deal/4388-dji-mavic-3-open-box-0-00/" },
-{ "@type": "ListItem", "position": 18, "name": "DJI Mini 3 Pro Fly More Kit (Open Box) - $189.00", "url": "https://www.hackthedeal.com/deal/4389-dji-mini-3-pro-fly-more-kit-open-box-189-00/" },
-{ "@type": "ListItem", "position": 19, "name": "DJI Mini SE Drone | 30 Minute Flight Time, 2.7K Camera (Open Box Resealed) - $279.00", "url": "https://www.hackthedeal.com/deal/4390-dji-mini-se-drone-30-minute-flight-time-2-7k-camera-open-box/" },
-{ "@type": "ListItem", "position": 20, "name": "DJI Mavic Mini Fly More Combo (OPEN BOX) - $439.00", "url": "https://www.hackthedeal.com/deal/4392-dji-mavic-mini-fly-more-combo-open-box-439-00/" },
-{ "@type": "ListItem", "position": 21, "name": "DJI Mini 2 Fly More Combo (NA) (Open Box) - $599.00", "url": "https://www.hackthedeal.com/deal/4391-dji-mini-2-fly-more-combo-na-open-box-599-00/" },
-{ "@type": "ListItem", "position": 22, "name": "Potensic ATOM FLY MORE COMBO (OPEN BOX) - $0.00", "url": "https://www.hackthedeal.com/deal/4393-potensic-atom-fly-more-combo-open-box-0-00/" },
-{ "@type": "ListItem", "position": 23, "name": "Potensic ATOM 2 FLY MORE COMBO OPEN BOX - $399.99", "url": "https://www.hackthedeal.com/deal/4394-potensic-atom-2-fly-more-combo-open-box-399-99/" },
-{ "@type": "ListItem", "position": 24, "name": "Potensic ATOM SE EXPANSION KIT (Open Box) - $229.99", "url": "https://www.hackthedeal.com/deal/4395-potensic-atom-se-expansion-kit-open-box-229-99/" },
-{ "@type": "ListItem", "position": 25, "name": "MicoAir H743 v2 AIO Flight Controller & 35A 2-6S 4in1 ESC - 25\u00d725mm - $87.99", "url": "https://www.hackthedeal.com/deal/4371-micoair-h743-v2-aio-flight-controller-35a-2-6s-4in1-esc-25-2/" },
-{ "@type": "ListItem", "position": 26, "name": "Tattu R-Line Version 6.0 1600mAh 6S 22.2V 160C SQ Lipo Battery Pack - XT60 - $46.99", "url": "https://www.hackthedeal.com/deal/4372-tattu-r-line-version-6-0-1600mah-6s-22-2v-160c-sq-lipo-batte/" },
-{ "@type": "ListItem", "position": 27, "name": "Peak Pro Solution Suite Cleaning Trailer - ABZ C10 Drone with Trailer - $99999.00", "url": "https://www.hackthedeal.com/deal/4396-peak-pro-solution-suite-cleaning-trailer-abz-c10-drone-with/" },
-{ "@type": "ListItem", "position": 28, "name": "Apex Pro Solution Suite Cleaning Van Skid - ABZ C10 Drone with Van Skid - $99999.00", "url": "https://www.hackthedeal.com/deal/4397-apex-pro-solution-suite-cleaning-van-skid-abz-c10-drone-with/" },
-{ "@type": "ListItem", "position": 29, "name": "DJI Mavic 2 Pro Fly More Kit (OPEN BOX KIT) Drone, Batteries, Case - $399.00", "url": "https://www.hackthedeal.com/deal/4208-dji-mavic-2-pro-fly-more-kit-open-box-kit-drone-batteries-ca/" },
-{ "@type": "ListItem", "position": 30, "name": "Autel Robotics EVO II Pro 6K Rugged Bundle, V2 (OPEN BOX KIT) Drone, Batteries, Case - $999.00", "url": "https://www.hackthedeal.com/deal/4209-autel-robotics-evo-ii-pro-6k-rugged-bundle-v2-open-box-kit-d/" },
-{ "@type": "ListItem", "position": 31, "name": "RobopowerUA 15000mah 6S Li-Ion Battery - XT60 - $275.00", "url": "https://www.hackthedeal.com/deal/3964-robopowerua-15000mah-6s-li-ion-battery-xt60-275-00/" },
-{ "@type": "ListItem", "position": 32, "name": "Skyzone SKY02O 640*400 OLED 5.8GHz FPV Goggles w/ SteadyView Diversity Rx - $415.99", "url": "https://www.hackthedeal.com/deal/3951-skyzone-sky02o-640-400-oled-5-8ghz-fpv-goggles-w-steadyview/" },
-{ "@type": "ListItem", "position": 33, "name": "SanDisk Extreme\u00ae microSD\u2122 UHS-I Memory Card 256GB - $62.99", "url": "https://www.hackthedeal.com/deal/3965-sandisk-extreme-microsd-uhs-i-memory-card-256gb-62-99/" },
-{ "@type": "ListItem", "position": 34, "name": "HQProp DP 6x3x3 V1S Propeller (Set of 4) - Light Blue - $5.49", "url": "https://www.hackthedeal.com/deal/3411-hqprop-dp-6x3x3-v1s-propeller-set-of-4-light-blue-5-49/" },
-{ "@type": "ListItem", "position": 35, "name": "HQProp FlowerPig R29V4 3-Blade Propeller (Set of 4) - Pink - $2.99", "url": "https://www.hackthedeal.com/deal/3412-hqprop-flowerpig-r29v4-3-blade-propeller-set-of-4-pink-2-99/" },
-{ "@type": "ListItem", "position": 36, "name": "HQProp Juicy Prop J35 3-Blade Propeller (Set of 4) - $3.49", "url": "https://www.hackthedeal.com/deal/3413-hqprop-juicy-prop-j35-3-blade-propeller-set-of-4-3-49/" },
-{ "@type": "ListItem", "position": 37, "name": "RCINPOWER GTS V3 1203 11500kv Plus 2-3 inch Cinewhoop Micro Motor - Choose Color - $18.99", "url": "https://www.hackthedeal.com/deal/3952-rcinpower-gts-v3-1203-11500kv-plus-2-3-inch-cinewhoop-micro/" },
-{ "@type": "ListItem", "position": 38, "name": "RCINPOWER GTS V3 1203 6000kv Plus 2-3 inch Cinewhoop Micro Motor - Choose Color - $18.99", "url": "https://www.hackthedeal.com/deal/3953-rcinpower-gts-v3-1203-6000kv-plus-2-3-inch-cinewhoop-micro-m/" },
-{ "@type": "ListItem", "position": 39, "name": "TrueRC CORE 5.8GHz Antenna - SMA - 80mm RHCP - $20.99", "url": "https://www.hackthedeal.com/deal/3414-truerc-core-5-8ghz-antenna-sma-80mm-rhcp-20-99/" },
-{ "@type": "ListItem", "position": 40, "name": "Walksnail Avatar Goggles X Replacement Heat Sink Kit - $2.99", "url": "https://www.hackthedeal.com/deal/3415-walksnail-avatar-goggles-x-replacement-heat-sink-kit-2-99/" },
-{ "@type": "ListItem", "position": 41, "name": "Axisflying Manta 5 SE V2 Front Arm - $6.49", "url": "https://www.hackthedeal.com/deal/3416-axisflying-manta-5-se-v2-front-arm-6-49/" },
-{ "@type": "ListItem", "position": 42, "name": "FPVStoreRC STB5 5 Inch FPV Racing Frame Kit - $67.99", "url": "https://www.hackthedeal.com/deal/3954-fpvstorerc-stb5-5-inch-fpv-racing-frame-kit-67-99/" },
-{ "@type": "ListItem", "position": 43, "name": "FPVStoreRC STB5 Frame Replacement Arm - $9.99", "url": "https://www.hackthedeal.com/deal/3955-fpvstorerc-stb5-frame-replacement-arm-9-99/" },
-{ "@type": "ListItem", "position": 44, "name": "FPVStoreRC STB5 Frame Replacement Top Plate - $4.99", "url": "https://www.hackthedeal.com/deal/3956-fpvstorerc-stb5-frame-replacement-top-plate-4-99/" },
-{ "@type": "ListItem", "position": 45, "name": "FPVStoreRC STB5 Frame Replacement Base Plate - $5.99", "url": "https://www.hackthedeal.com/deal/3957-fpvstorerc-stb5-frame-replacement-base-plate-5-99/" },
-{ "@type": "ListItem", "position": 46, "name": "FPVStoreRC Evo 0702 33800KV 1S Brushless Motor for FPV - Orange & Purple - $23.99", "url": "https://www.hackthedeal.com/deal/3958-fpvstorerc-evo-0702-33800kv-1s-brushless-motor-for-fpv-orang/" },
-{ "@type": "ListItem", "position": 47, "name": "DJI Manifold 3 Accessory Kit (Matrice 400) - $80.00", "url": "https://www.hackthedeal.com/deal/3421-dji-manifold-3-accessory-kit-matrice-400-80-00/" },
-{ "@type": "ListItem", "position": 48, "name": "HQProp X-Class 13X9X3 V2 Glass Fiber Nylon Propeller (Set of 2) - $20.49", "url": "https://www.hackthedeal.com/deal/3417-hqprop-x-class-13x9x3-v2-glass-fiber-nylon-propeller-set-of/" },
-{ "@type": "ListItem", "position": 49, "name": "HQProp 8x4x3 3-Blade Propeller (Set of 4) - $11.99", "url": "https://www.hackthedeal.com/deal/3418-hqprop-8x4x3-3-blade-propeller-set-of-4-11-99/" },
-{ "@type": "ListItem", "position": 50, "name": "HQProp MacroQuad 9x5x3 3-Blade Propeller (Set of 4) - $23.49", "url": "https://www.hackthedeal.com/deal/3419-hqprop-macroquad-9x5x3-3-blade-propeller-set-of-4-23-49/" },
-{ "@type": "ListItem", "position": 51, "name": "ToolkitRC U3 V2 3A 38W 2-3S USB-C Balance LiPo Charger - $14.99", "url": "https://www.hackthedeal.com/deal/3420-toolkitrc-u3-v2-3a-38w-2-3s-usb-c-balance-lipo-charger-14-99/" },
-{ "@type": "ListItem", "position": 52, "name": "MicoAir H743 V2 2-6S Flight Controller with Bluetooth and pre-loaded with Ardupilot - 30\u00d730mm - $72.99", "url": "https://www.hackthedeal.com/deal/3959-micoair-h743-v2-2-6s-flight-controller-with-bluetooth-and-pr/" },
-{ "@type": "ListItem", "position": 53, "name": "BetaFPV Air Camera 16:9 Analog FPV camera - $15.99", "url": "https://www.hackthedeal.com/deal/3960-betafpv-air-camera-16-9-analog-fpv-camera-15-99/" },
-{ "@type": "ListItem", "position": 54, "name": "BetaFPV Air Camera 4:3 Analog FPV camera - $14.99", "url": "https://www.hackthedeal.com/deal/3961-betafpv-air-camera-4-3-analog-fpv-camera-14-99/" },
-{ "@type": "ListItem", "position": 55, "name": "ISDT D2 Mark II 200W 20A AC Dual Channel Smart Balance Charger - $168.99", "url": "https://www.hackthedeal.com/deal/3962-isdt-d2-mark-ii-200w-20a-ac-dual-channel-smart-balance-charg/" },
-{ "@type": "ListItem", "position": 56, "name": "Freefly Tattu TA3200 Dual-Channel Smart Charger (Alta X Gen2) - $795.00", "url": "https://www.hackthedeal.com/deal/3422-freefly-tattu-ta3200-dual-channel-smart-charger-alta-x-gen2/" },
-{ "@type": "ListItem", "position": 57, "name": "Freefly Alta X Gen2 12S Flight Battery (AS150U) - $725.00", "url": "https://www.hackthedeal.com/deal/3423-freefly-alta-x-gen2-12s-flight-battery-as150u-725-00/" },
-{ "@type": "ListItem", "position": 58, "name": "Freefly SL8 Travel Case - $595.00", "url": "https://www.hackthedeal.com/deal/3424-freefly-sl8-travel-case-595-00/" },
-{ "@type": "ListItem", "position": 59, "name": "Freefly Smart Dovetail Receiver - $345.00", "url": "https://www.hackthedeal.com/deal/3425-freefly-smart-dovetail-receiver-345-00/" },
-{ "@type": "ListItem", "position": 60, "name": "Pyrodrone Kevlar XXL Strap W/ Woven Rubber Grip & Metal Buckle - 711x25mm - $5.99", "url": "https://www.hackthedeal.com/deal/3963-pyrodrone-kevlar-xxl-strap-w-woven-rubber-grip-metal-buckle/" }
+{ "@type": "ListItem", "position": 1, "name": "BetaFPV LAVA Series 1104 5500KV Brushless Motor with 24mm Wire with Connector for 4S 2.2\" Quads (1Pc.) - $16.99", "url": "https://www.hackthedeal.com/deal/5267-betafpv-lava-series-1104-5500kv-brushless-motor-with-24mm-wi/" },
+{ "@type": "ListItem", "position": 2, "name": "BetaFPV Cube G4 2-4S 30A 3in1 V1 ELRS 2.4G Brushless Flight Controller - $70.99", "url": "https://www.hackthedeal.com/deal/5268-betafpv-cube-g4-2-4s-30a-3in1-v1-elrs-2-4g-brushless-flight/" },
+{ "@type": "ListItem", "position": 3, "name": "BetaFPV Pavo20 Pro II 2.2\" 4S O4 Pro Cinewhoop Quadcopter - ELRS 2.4G - $474.99", "url": "https://www.hackthedeal.com/deal/5269-betafpv-pavo20-pro-ii-2-2-4s-o4-pro-cinewhoop-quadcopter-elr/" },
+{ "@type": "ListItem", "position": 4, "name": "BetaFPV Pavo20 Pro II 2.2\" 3S O4 Pro Cinewhoop Quadcopter - ELRS 2.4G - $474.99", "url": "https://www.hackthedeal.com/deal/5270-betafpv-pavo20-pro-ii-2-2-3s-o4-pro-cinewhoop-quadcopter-elr/" },
+{ "@type": "ListItem", "position": 5, "name": "BetaFPV Pavo20 Pro II 2.2\" 4S PNP Cinewhoop Quadcopter (DJI O4 Pro Ready) - ELRS 2.4G - $136.99", "url": "https://www.hackthedeal.com/deal/5271-betafpv-pavo20-pro-ii-2-2-4s-pnp-cinewhoop-quadcopter-dji-o4/" },
+{ "@type": "ListItem", "position": 6, "name": "BetaFPV Pavo20 Pro II 2.2\" 3S PNP Cinewhoop Quadcopter (DJI O4 Pro Ready) - ELRS 2.4G - $136.99", "url": "https://www.hackthedeal.com/deal/5272-betafpv-pavo20-pro-ii-2-2-3s-pnp-cinewhoop-quadcopter-dji-o4/" },
+{ "@type": "ListItem", "position": 7, "name": "Anzu Robotics Raptor USB-C Power Adapter - $19.99", "url": "https://www.hackthedeal.com/deal/5158-anzu-robotics-raptor-usb-c-power-adapter-19-99/" },
+{ "@type": "ListItem", "position": 8, "name": "DJI Phantom 4 Part 22 Craft Only (no remote, battery, camera, or charger) (Open Box) - $199.00", "url": "https://www.hackthedeal.com/deal/4373-dji-phantom-4-part-22-craft-only-no-remote-battery-camera-or/" },
+{ "@type": "ListItem", "position": 9, "name": "XREAL One Pro M AR Glasses (Medium) (OPEN BOX) - $599.00", "url": "https://www.hackthedeal.com/deal/4374-xreal-one-pro-m-ar-glasses-medium-open-box-599-00/" },
+{ "@type": "ListItem", "position": 10, "name": "DJI RS 4 Mini Combo (OPEN BOX) - $369.00", "url": "https://www.hackthedeal.com/deal/4375-dji-rs-4-mini-combo-open-box-369-00/" },
+{ "@type": "ListItem", "position": 11, "name": "DJI Mic Mini Transmitter (Arctic White) (Open Box) - $0.00", "url": "https://www.hackthedeal.com/deal/4377-dji-mic-mini-transmitter-arctic-white-open-box-0-00/" },
+{ "@type": "ListItem", "position": 12, "name": "DJI RS 4 Mini (Open Box) - $0.00", "url": "https://www.hackthedeal.com/deal/4376-dji-rs-4-mini-open-box-0-00/" },
+{ "@type": "ListItem", "position": 13, "name": "DJI Osmo Action 6 Standard Combo (OPEN BOX) - $436.00", "url": "https://www.hackthedeal.com/deal/4379-dji-osmo-action-6-standard-combo-open-box-436-00/" },
+{ "@type": "ListItem", "position": 14, "name": "DJI RS 4 (OPEN BOX) - $0.00", "url": "https://www.hackthedeal.com/deal/4378-dji-rs-4-open-box-0-00/" },
+{ "@type": "ListItem", "position": 15, "name": "DJI Goggles (OPEN BOX) - $276.99", "url": "https://www.hackthedeal.com/deal/4380-dji-goggles-open-box-276-99/" },
+{ "@type": "ListItem", "position": 16, "name": "DJI RS 3 Combo (Open Box) - $609.00", "url": "https://www.hackthedeal.com/deal/4381-dji-rs-3-combo-open-box-609-00/" },
+{ "@type": "ListItem", "position": 17, "name": "DJI Osmo Action 5 Pro Standard Combo (Open Box) - $0.00", "url": "https://www.hackthedeal.com/deal/4382-dji-osmo-action-5-pro-standard-combo-open-box-0-00/" },
+{ "@type": "ListItem", "position": 18, "name": "DJI Osmo Mobile SE (Open Box) - $0.00", "url": "https://www.hackthedeal.com/deal/4383-dji-osmo-mobile-se-open-box-0-00/" },
+{ "@type": "ListItem", "position": 19, "name": "DJI Mini 4 Pro Fly More Combo Plus (DJI RC 2) (GL) (Open Box) - $1159.00", "url": "https://www.hackthedeal.com/deal/4384-dji-mini-4-pro-fly-more-combo-plus-dji-rc-2-gl-open-box-1159/" },
+{ "@type": "ListItem", "position": 20, "name": "DJI Mini 4K Fly Drone (GL) (OPEN BOX) - $299.00", "url": "https://www.hackthedeal.com/deal/4385-dji-mini-4k-fly-drone-gl-open-box-299-00/" },
+{ "@type": "ListItem", "position": 21, "name": "DJI Mini 3 Fly More Combo (GL) Open Box - $589.00", "url": "https://www.hackthedeal.com/deal/4386-dji-mini-3-fly-more-combo-gl-open-box-589-00/" },
+{ "@type": "ListItem", "position": 22, "name": "DJI Mavic 3 Classic With Standard Remote (Open Box) - $1279.00", "url": "https://www.hackthedeal.com/deal/4387-dji-mavic-3-classic-with-standard-remote-open-box-1279-00/" },
+{ "@type": "ListItem", "position": 23, "name": "DJI Mavic 3 OPEN BOX - $0.00", "url": "https://www.hackthedeal.com/deal/4388-dji-mavic-3-open-box-0-00/" },
+{ "@type": "ListItem", "position": 24, "name": "DJI Mini 3 Pro Fly More Kit (Open Box) - $189.00", "url": "https://www.hackthedeal.com/deal/4389-dji-mini-3-pro-fly-more-kit-open-box-189-00/" },
+{ "@type": "ListItem", "position": 25, "name": "DJI Mini SE Drone | 30 Minute Flight Time, 2.7K Camera (Open Box Resealed) - $279.00", "url": "https://www.hackthedeal.com/deal/4390-dji-mini-se-drone-30-minute-flight-time-2-7k-camera-open-box/" },
+{ "@type": "ListItem", "position": 26, "name": "DJI Mavic Mini Fly More Combo (OPEN BOX) - $439.00", "url": "https://www.hackthedeal.com/deal/4392-dji-mavic-mini-fly-more-combo-open-box-439-00/" },
+{ "@type": "ListItem", "position": 27, "name": "DJI Mini 2 Fly More Combo (NA) (Open Box) - $599.00", "url": "https://www.hackthedeal.com/deal/4391-dji-mini-2-fly-more-combo-na-open-box-599-00/" },
+{ "@type": "ListItem", "position": 28, "name": "Potensic ATOM FLY MORE COMBO (OPEN BOX) - $0.00", "url": "https://www.hackthedeal.com/deal/4393-potensic-atom-fly-more-combo-open-box-0-00/" },
+{ "@type": "ListItem", "position": 29, "name": "Potensic ATOM 2 FLY MORE COMBO OPEN BOX - $399.99", "url": "https://www.hackthedeal.com/deal/4394-potensic-atom-2-fly-more-combo-open-box-399-99/" },
+{ "@type": "ListItem", "position": 30, "name": "Potensic ATOM SE EXPANSION KIT (Open Box) - $229.99", "url": "https://www.hackthedeal.com/deal/4395-potensic-atom-se-expansion-kit-open-box-229-99/" },
+{ "@type": "ListItem", "position": 31, "name": "MicoAir H743 v2 AIO Flight Controller & 35A 2-6S 4in1 ESC - 25\u00d725mm - $87.99", "url": "https://www.hackthedeal.com/deal/4371-micoair-h743-v2-aio-flight-controller-35a-2-6s-4in1-esc-25-2/" },
+{ "@type": "ListItem", "position": 32, "name": "Tattu R-Line Version 6.0 1600mAh 6S 22.2V 160C SQ Lipo Battery Pack - XT60 - $46.99", "url": "https://www.hackthedeal.com/deal/4372-tattu-r-line-version-6-0-1600mah-6s-22-2v-160c-sq-lipo-batte/" },
+{ "@type": "ListItem", "position": 33, "name": "Peak Pro Solution Suite Cleaning Trailer - ABZ C10 Drone with Trailer - $99999.00", "url": "https://www.hackthedeal.com/deal/4396-peak-pro-solution-suite-cleaning-trailer-abz-c10-drone-with/" },
+{ "@type": "ListItem", "position": 34, "name": "Apex Pro Solution Suite Cleaning Van Skid - ABZ C10 Drone with Van Skid - $99999.00", "url": "https://www.hackthedeal.com/deal/4397-apex-pro-solution-suite-cleaning-van-skid-abz-c10-drone-with/" },
+{ "@type": "ListItem", "position": 35, "name": "DJI Mavic 2 Pro Fly More Kit (OPEN BOX KIT) Drone, Batteries, Case - $399.00", "url": "https://www.hackthedeal.com/deal/4208-dji-mavic-2-pro-fly-more-kit-open-box-kit-drone-batteries-ca/" },
+{ "@type": "ListItem", "position": 36, "name": "Autel Robotics EVO II Pro 6K Rugged Bundle, V2 (OPEN BOX KIT) Drone, Batteries, Case - $999.00", "url": "https://www.hackthedeal.com/deal/4209-autel-robotics-evo-ii-pro-6k-rugged-bundle-v2-open-box-kit-d/" },
+{ "@type": "ListItem", "position": 37, "name": "RobopowerUA 15000mah 6S Li-Ion Battery - XT60 - $275.00", "url": "https://www.hackthedeal.com/deal/3964-robopowerua-15000mah-6s-li-ion-battery-xt60-275-00/" },
+{ "@type": "ListItem", "position": 38, "name": "Skyzone SKY02O 640*400 OLED 5.8GHz FPV Goggles w/ SteadyView Diversity Rx - $415.99", "url": "https://www.hackthedeal.com/deal/3951-skyzone-sky02o-640-400-oled-5-8ghz-fpv-goggles-w-steadyview/" },
+{ "@type": "ListItem", "position": 39, "name": "SanDisk Extreme\u00ae microSD\u2122 UHS-I Memory Card 256GB - $62.99", "url": "https://www.hackthedeal.com/deal/3965-sandisk-extreme-microsd-uhs-i-memory-card-256gb-62-99/" },
+{ "@type": "ListItem", "position": 40, "name": "HQProp DP 6x3x3 V1S Propeller (Set of 4) - Light Blue - $5.49", "url": "https://www.hackthedeal.com/deal/3411-hqprop-dp-6x3x3-v1s-propeller-set-of-4-light-blue-5-49/" },
+{ "@type": "ListItem", "position": 41, "name": "HQProp FlowerPig R29V4 3-Blade Propeller (Set of 4) - Pink - $2.99", "url": "https://www.hackthedeal.com/deal/3412-hqprop-flowerpig-r29v4-3-blade-propeller-set-of-4-pink-2-99/" },
+{ "@type": "ListItem", "position": 42, "name": "HQProp Juicy Prop J35 3-Blade Propeller (Set of 4) - $3.49", "url": "https://www.hackthedeal.com/deal/3413-hqprop-juicy-prop-j35-3-blade-propeller-set-of-4-3-49/" },
+{ "@type": "ListItem", "position": 43, "name": "RCINPOWER GTS V3 1203 11500kv Plus 2-3 inch Cinewhoop Micro Motor - Choose Color - $18.99", "url": "https://www.hackthedeal.com/deal/3952-rcinpower-gts-v3-1203-11500kv-plus-2-3-inch-cinewhoop-micro/" },
+{ "@type": "ListItem", "position": 44, "name": "RCINPOWER GTS V3 1203 6000kv Plus 2-3 inch Cinewhoop Micro Motor - Choose Color - $18.99", "url": "https://www.hackthedeal.com/deal/3953-rcinpower-gts-v3-1203-6000kv-plus-2-3-inch-cinewhoop-micro-m/" },
+{ "@type": "ListItem", "position": 45, "name": "TrueRC CORE 5.8GHz Antenna - SMA - 80mm RHCP - $20.99", "url": "https://www.hackthedeal.com/deal/3414-truerc-core-5-8ghz-antenna-sma-80mm-rhcp-20-99/" },
+{ "@type": "ListItem", "position": 46, "name": "Walksnail Avatar Goggles X Replacement Heat Sink Kit - $2.99", "url": "https://www.hackthedeal.com/deal/3415-walksnail-avatar-goggles-x-replacement-heat-sink-kit-2-99/" },
+{ "@type": "ListItem", "position": 47, "name": "Axisflying Manta 5 SE V2 Front Arm - $6.49", "url": "https://www.hackthedeal.com/deal/3416-axisflying-manta-5-se-v2-front-arm-6-49/" },
+{ "@type": "ListItem", "position": 48, "name": "FPVStoreRC STB5 5 Inch FPV Racing Frame Kit - $67.99", "url": "https://www.hackthedeal.com/deal/3954-fpvstorerc-stb5-5-inch-fpv-racing-frame-kit-67-99/" },
+{ "@type": "ListItem", "position": 49, "name": "FPVStoreRC STB5 Frame Replacement Arm - $9.99", "url": "https://www.hackthedeal.com/deal/3955-fpvstorerc-stb5-frame-replacement-arm-9-99/" },
+{ "@type": "ListItem", "position": 50, "name": "FPVStoreRC STB5 Frame Replacement Top Plate - $4.99", "url": "https://www.hackthedeal.com/deal/3956-fpvstorerc-stb5-frame-replacement-top-plate-4-99/" },
+{ "@type": "ListItem", "position": 51, "name": "FPVStoreRC STB5 Frame Replacement Base Plate - $5.99", "url": "https://www.hackthedeal.com/deal/3957-fpvstorerc-stb5-frame-replacement-base-plate-5-99/" },
+{ "@type": "ListItem", "position": 52, "name": "FPVStoreRC Evo 0702 33800KV 1S Brushless Motor for FPV - Orange & Purple - $23.99", "url": "https://www.hackthedeal.com/deal/3958-fpvstorerc-evo-0702-33800kv-1s-brushless-motor-for-fpv-orang/" },
+{ "@type": "ListItem", "position": 53, "name": "DJI Manifold 3 Accessory Kit (Matrice 400) - $80.00", "url": "https://www.hackthedeal.com/deal/3421-dji-manifold-3-accessory-kit-matrice-400-80-00/" },
+{ "@type": "ListItem", "position": 54, "name": "HQProp X-Class 13X9X3 V2 Glass Fiber Nylon Propeller (Set of 2) - $20.49", "url": "https://www.hackthedeal.com/deal/3417-hqprop-x-class-13x9x3-v2-glass-fiber-nylon-propeller-set-of/" },
+{ "@type": "ListItem", "position": 55, "name": "HQProp 8x4x3 3-Blade Propeller (Set of 4) - $11.99", "url": "https://www.hackthedeal.com/deal/3418-hqprop-8x4x3-3-blade-propeller-set-of-4-11-99/" },
+{ "@type": "ListItem", "position": 56, "name": "HQProp MacroQuad 9x5x3 3-Blade Propeller (Set of 4) - $23.49", "url": "https://www.hackthedeal.com/deal/3419-hqprop-macroquad-9x5x3-3-blade-propeller-set-of-4-23-49/" },
+{ "@type": "ListItem", "position": 57, "name": "ToolkitRC U3 V2 3A 38W 2-3S USB-C Balance LiPo Charger - $14.99", "url": "https://www.hackthedeal.com/deal/3420-toolkitrc-u3-v2-3a-38w-2-3s-usb-c-balance-lipo-charger-14-99/" },
+{ "@type": "ListItem", "position": 58, "name": "MicoAir H743 V2 2-6S Flight Controller with Bluetooth and pre-loaded with Ardupilot - 30\u00d730mm - $72.99", "url": "https://www.hackthedeal.com/deal/3959-micoair-h743-v2-2-6s-flight-controller-with-bluetooth-and-pr/" },
+{ "@type": "ListItem", "position": 59, "name": "BetaFPV Air Camera 16:9 Analog FPV camera - $15.99", "url": "https://www.hackthedeal.com/deal/3960-betafpv-air-camera-16-9-analog-fpv-camera-15-99/" },
+{ "@type": "ListItem", "position": 60, "name": "BetaFPV Air Camera 4:3 Analog FPV camera - $14.99", "url": "https://www.hackthedeal.com/deal/3961-betafpv-air-camera-4-3-analog-fpv-camera-14-99/" }
       ]
     }
     </script>
@@ -977,7 +1222,109 @@
       </section>
       <main style="max-width:1152px;margin:0 auto;padding:8px 16px 40px">
         <div class="section-title-bar"><span class="section-label">Latest Deals</span></div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px"><a href="/deal/5158-anzu-robotics-raptor-usb-c-power-adapter-19-99/" class="deal-card">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px"><a href="/deal/5267-betafpv-lava-series-1104-5500kv-brushless-motor-with-24mm-wi/" class="deal-card">
+      <img src="https://pyrodrone.com/cdn/shop/files/LAVA_Series_1104_5500KV_Brushless_Motors_900x_82dc9279-0193-4ef2-8eba-5b5e71b66ed6_1200x1200.jpg?v=1785565905" alt="BetaFPV LAVA Series 1104 5500KV Brushless Motor with 24mm Wire with Connector for 4S 2.2&quot; Quads (1Pc.) - $16.99" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">BetaFPV LAVA Series 1104 5500KV Brushless Motor with 24mm Wire with Connector for 4S 2.2&quot; Quads (1Pc.) - $16.99</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$16.99</span>
+        </div>
+        <div class="deal-meta">
+          <span>pyrodrone</span>
+          <span>Aug 3, 2026</span>
+          
+        </div>
+      </div>
+    </a><a href="/deal/5268-betafpv-cube-g4-2-4s-30a-3in1-v1-elrs-2-4g-brushless-flight/" class="deal-card">
+      <img src="https://pyrodrone.com/cdn/shop/files/Cube_Brushless_Flight_Controller_front_900x_20210aa4-956c-42a5-8a3e-a741b3687fa0_1200x1200.jpg?v=1785565221" alt="BetaFPV Cube G4 2-4S 30A 3in1 V1 ELRS 2.4G Brushless Flight Controller - $70.99" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">BetaFPV Cube G4 2-4S 30A 3in1 V1 ELRS 2.4G Brushless Flight Controller - $70.99</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$70.99</span>
+        </div>
+        <div class="deal-meta">
+          <span>pyrodrone</span>
+          <span>Aug 3, 2026</span>
+          
+        </div>
+      </div>
+    </a><a href="/deal/5269-betafpv-pavo20-pro-ii-2-2-4s-o4-pro-cinewhoop-quadcopter-elr/" class="deal-card">
+      <img src="https://pyrodrone.com/cdn/shop/files/Pavo20_Pro_II_Brushless_Whoop_Quadcopter_4S_900x_7df222b7-64b4-4a94-ba22-6dda6cb4a8bf_1200x1200.jpg?v=1785564535" alt="BetaFPV Pavo20 Pro II 2.2&quot; 4S O4 Pro Cinewhoop Quadcopter - ELRS 2.4G - $474.99" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">BetaFPV Pavo20 Pro II 2.2&quot; 4S O4 Pro Cinewhoop Quadcopter - ELRS 2.4G - $474.99</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$474.99</span>
+        </div>
+        <div class="deal-meta">
+          <span>pyrodrone</span>
+          <span>Aug 3, 2026</span>
+          
+        </div>
+      </div>
+    </a><a href="/deal/5270-betafpv-pavo20-pro-ii-2-2-3s-o4-pro-cinewhoop-quadcopter-elr/" class="deal-card">
+      <img src="https://pyrodrone.com/cdn/shop/files/Pavo20_Pro_II_Brushless_Whoop_Quadcopter_4S_900x_7df222b7-64b4-4a94-ba22-6dda6cb4a8bf_1200x1200.jpg?v=1785564535" alt="BetaFPV Pavo20 Pro II 2.2&quot; 3S O4 Pro Cinewhoop Quadcopter - ELRS 2.4G - $474.99" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">BetaFPV Pavo20 Pro II 2.2&quot; 3S O4 Pro Cinewhoop Quadcopter - ELRS 2.4G - $474.99</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$474.99</span>
+        </div>
+        <div class="deal-meta">
+          <span>pyrodrone</span>
+          <span>Aug 3, 2026</span>
+          
+        </div>
+      </div>
+    </a><a href="/deal/5271-betafpv-pavo20-pro-ii-2-2-4s-pnp-cinewhoop-quadcopter-dji-o4/" class="deal-card">
+      <img src="https://pyrodrone.com/cdn/shop/files/Pavo20_Pro_II_Brushless_Whoop_Quadcopter_4S_PNP_1080x_8445c624-33b1-40a6-9a24-d143f5ac769d_1200x1200.jpg?v=1785563058" alt="BetaFPV Pavo20 Pro II 2.2&quot; 4S PNP Cinewhoop Quadcopter (DJI O4 Pro Ready) - ELRS 2.4G - $136.99" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">BetaFPV Pavo20 Pro II 2.2&quot; 4S PNP Cinewhoop Quadcopter (DJI O4 Pro Ready) - ELRS 2.4G - $136.99</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$136.99</span>
+        </div>
+        <div class="deal-meta">
+          <span>pyrodrone</span>
+          <span>Aug 3, 2026</span>
+          
+        </div>
+      </div>
+    </a><a href="/deal/5272-betafpv-pavo20-pro-ii-2-2-3s-pnp-cinewhoop-quadcopter-dji-o4/" class="deal-card">
+      <img src="https://pyrodrone.com/cdn/shop/files/Pavo20_Pro_II_Brushless_Whoop_Quadcopter_4S_PNP_1080x_8445c624-33b1-40a6-9a24-d143f5ac769d_1200x1200.jpg?v=1785563058" alt="BetaFPV Pavo20 Pro II 2.2&quot; 3S PNP Cinewhoop Quadcopter (DJI O4 Pro Ready) - ELRS 2.4G - $136.99" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">drones</span>
+          
+        </div>
+        <p class="deal-title">BetaFPV Pavo20 Pro II 2.2&quot; 3S PNP Cinewhoop Quadcopter (DJI O4 Pro Ready) - ELRS 2.4G - $136.99</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$136.99</span>
+        </div>
+        <div class="deal-meta">
+          <span>pyrodrone</span>
+          <span>Aug 3, 2026</span>
+          
+        </div>
+      </div>
+    </a><a href="/deal/5158-anzu-robotics-raptor-usb-c-power-adapter-19-99/" class="deal-card">
       <img src="http://www.dronenerds.com/cdn/shop/files/Screenshot2025-05-12121005.jpg?v=1747066242" alt="Anzu Robotics Raptor USB-C Power Adapter - $19.99" loading="lazy" />
       <div class="deal-card-body">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
@@ -1892,108 +2239,6 @@
         <div class="deal-meta">
           <span>pyrodrone</span>
           <span>Jul 22, 2026</span>
-          
-        </div>
-      </div>
-    </a><a href="/deal/3962-isdt-d2-mark-ii-200w-20a-ac-dual-channel-smart-balance-charg/" class="deal-card">
-      <img src="https://pyrodrone.com/cdn/shop/files/isdt-d2-mark-ii-smart-balance-charger-main_1200x1200.jpg?v=1784745781" alt="ISDT D2 Mark II 200W 20A AC Dual Channel Smart Balance Charger - $168.99" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          
-        </div>
-        <p class="deal-title">ISDT D2 Mark II 200W 20A AC Dual Channel Smart Balance Charger - $168.99</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$168.99</span>
-        </div>
-        <div class="deal-meta">
-          <span>pyrodrone</span>
-          <span>Jul 22, 2026</span>
-          
-        </div>
-      </div>
-    </a><a href="/deal/3422-freefly-tattu-ta3200-dual-channel-smart-charger-alta-x-gen2/" class="deal-card">
-      <img src="http://www.dronenerds.com/cdn/shop/files/socialimaghe.jpg?v=1770743914" alt="Freefly Tattu TA3200 Dual-Channel Smart Charger (Alta X Gen2) - $795.00" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          
-        </div>
-        <p class="deal-title">Freefly Tattu TA3200 Dual-Channel Smart Charger (Alta X Gen2) - $795.00</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$795.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dronenerds</span>
-          <span>Jul 22, 2026</span>
-          
-        </div>
-      </div>
-    </a><a href="/deal/3423-freefly-alta-x-gen2-12s-flight-battery-as150u-725-00/" class="deal-card">
-      <img src="http://www.dronenerds.com/cdn/shop/files/socialimaghe.jpg?v=1770743914" alt="Freefly Alta X Gen2 12S Flight Battery (AS150U) - $725.00" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          
-        </div>
-        <p class="deal-title">Freefly Alta X Gen2 12S Flight Battery (AS150U) - $725.00</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$725.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dronenerds</span>
-          <span>Jul 22, 2026</span>
-          
-        </div>
-      </div>
-    </a><a href="/deal/3424-freefly-sl8-travel-case-595-00/" class="deal-card">
-      <img src="http://www.dronenerds.com/cdn/shop/files/socialimaghe.jpg?v=1770743914" alt="Freefly SL8 Travel Case - $595.00" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          
-        </div>
-        <p class="deal-title">Freefly SL8 Travel Case - $595.00</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$595.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dronenerds</span>
-          <span>Jul 22, 2026</span>
-          
-        </div>
-      </div>
-    </a><a href="/deal/3425-freefly-smart-dovetail-receiver-345-00/" class="deal-card">
-      <img src="http://www.dronenerds.com/cdn/shop/files/socialimaghe.jpg?v=1770743914" alt="Freefly Smart Dovetail Receiver - $345.00" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          
-        </div>
-        <p class="deal-title">Freefly Smart Dovetail Receiver - $345.00</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$345.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>dronenerds</span>
-          <span>Jul 22, 2026</span>
-          
-        </div>
-      </div>
-    </a><a href="/deal/3963-pyrodrone-kevlar-xxl-strap-w-woven-rubber-grip-metal-buckle/" class="deal-card">
-      <img src="https://pyrodrone.com/cdn/shop/files/71125_strap_1200x1200.jpg?v=1784658792" alt="Pyrodrone Kevlar XXL Strap W/ Woven Rubber Grip &amp; Metal Buckle - 711x25mm - $5.99" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">drones</span>
-          
-        </div>
-        <p class="deal-title">Pyrodrone Kevlar XXL Strap W/ Woven Rubber Grip &amp; Metal Buckle - 711x25mm - $5.99</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$5.99</span>
-        </div>
-        <div class="deal-meta">
-          <span>pyrodrone</span>
-          <span>Jul 21, 2026</span>
           
         </div>
       </div>
@@ -3005,6 +3250,73 @@
         );
       }
 
+      // Shown in the ticker before the first /deals fetch resolves (or if
+      // it comes back empty) — deliberately generic, not fabricated deal
+      // copy, since nothing real has loaded yet.
+      const FALLBACK_TICKER_ITEMS = [
+        { key: "f1", tag: "Live", text: "Tracking prices across tech, gaming, Apple, and daily essentials", href: null, rel: null },
+        { key: "f2", tag: "Live", text: "New deals are checked against 90 days of price history before they post", href: null, rel: null },
+      ];
+
+      function DealTicker({ deals }) {
+        const live = (deals || []).filter((d) => !d.is_dead).slice(0, 10);
+        const items = live.length
+          ? live.map((d) => {
+              const tag = d.discount_pct >= 40 ? "Hot" : d.vote_score ? "Community pick" : "New";
+              const text =
+                d.discount_pct
+                  ? `${d.title} — ${Math.round(d.discount_pct)}% off`
+                  : d.deal_price !== null && d.deal_price !== undefined
+                  ? `${d.title} — ${formatPrice(d.deal_price, d.currency)}`
+                  : d.title;
+              return {
+                key: d.id,
+                tag,
+                text,
+                href: d.affiliate_url || d.url,
+                rel: d.affiliate_url ? "sponsored noopener noreferrer" : "noopener noreferrer",
+              };
+            })
+          : FALLBACK_TICKER_ITEMS;
+
+        // Rendered twice so the CSS marquee (translateX(-50%)) loops
+        // seamlessly; the second copy is hidden from assistive tech/tab order.
+        const loop = items.concat(items);
+
+        return e(
+          "div",
+          { className: "deal-ticker" },
+          e(
+            "div",
+            { className: "deal-ticker-track" },
+            loop.map((item, i) => {
+              const hidden = i >= items.length;
+              const tagColor =
+                item.tag === "Ending soon" ? "var(--brand-orange)" : item.tag === "Community pick" ? "#8ca0b8" : "var(--brand-green)";
+              const kids = [
+                e("span", { key: "tag", className: "deal-ticker-tag", style: { color: tagColor } }, item.tag),
+                item.text,
+              ];
+              return item.href
+                ? e(
+                    "a",
+                    {
+                      key: i,
+                      className: "deal-ticker-item",
+                      href: item.href,
+                      target: "_blank",
+                      rel: item.rel,
+                      "aria-hidden": hidden || undefined,
+                      tabIndex: hidden ? -1 : undefined,
+                    },
+                    kids
+                  )
+                : e("span", { key: i, className: "deal-ticker-item", "aria-hidden": hidden || undefined }, kids);
+            })
+          )
+        );
+      }
+
       function NotifyPanel() {
         const supported = "serviceWorker" in navigator && "PushManager" in window;
         const [open, setOpen] = useState(false);
@@ -3116,12 +3428,14 @@
             "button",
             {
               type: "button",
-              className: "theme-toggle-btn",
+              id: "htd-notify-trigger",
+              className: "set-alert-btn",
               "aria-label": "Deal notifications",
               title: "Deal notifications",
               onClick: () => setOpen((v) => !v),
             },
-            supported ? (subscribed ? "🔔" : "🔕") : "✉️"
+            supported ? (subscribed ? "🔔" : "🔕") : "✉️",
+            subscribed ? "Alerts on" : "Set alert"
           ),
           open
             ? e(
@@ -3555,6 +3869,43 @@
         );
       }
 
+      // Homepage hero's "Deal of the day" card — a bigger, standalone
+      // treatment of whatever the hottest live deal currently is.
+      function DealOfDayCard({ deal }) {
+        const [imgError, setImgError] = useState(false);
+        const target = deal.affiliate_url || deal.url;
+        const linkRel = deal.affiliate_url ? "sponsored noopener noreferrer" : "noopener noreferrer";
+        const showImage = deal.thumbnail_url && !imgError;
+
+        return e(
+          "a",
+          { href: target, target: "_blank", rel: linkRel, className: "deal-of-day" },
+          deal.is_dead
+            ? null
+            : e("span", { className: "deal-of-day-badge" }, deal.discount_pct >= 30 ? "Hot deal" : "Verified"),
+          e("span", { className: "deal-of-day-eyebrow" }, "Deal of the day"),
+          showImage
+            ? e("img", { src: deal.thumbnail_url, alt: deal.title, loading: "lazy", className: "deal-of-day-media", onError: () => setImgError(true) })
+            : e("div", { className: "deal-of-day-media" }, CATEGORY_ICONS[deal.category] || HERO_ICON),
+          e("p", { className: "deal-of-day-title" }, deal.title),
+          e(
+            "div",
+            { className: "deal-of-day-price-row" },
+            deal.deal_price !== null
+              ? e("span", { className: "deal-of-day-price" }, formatPrice(deal.deal_price, deal.currency))
+              : e("span", { style: { fontSize: 14, color: "#8ca0b8" } }, "See deal"),
+            deal.original_price !== null ? e("span", { className: "deal-of-day-was" }, formatPrice(deal.original_price, deal.currency)) : null,
+            deal.discount_pct ? e("span", { className: "deal-of-day-discount" }, `-${Math.round(deal.discount_pct)}%`) : null
+          ),
+          e(
+            "div",
+            { className: "deal-of-day-meta" },
+            deal.vote_score !== null && deal.vote_score !== undefined ? `▲ ${deal.vote_score} · ` : "",
+            deal.merchant || deal.source
+          )
+        );
+      }
+
       function SkeletonCard() {
         return e(
           "div",
@@ -3784,26 +4135,16 @@
           return () => window.removeEventListener("scroll", onScroll);
         }, []);
 
+        // Homepage-only "Deal of the day" card — the first non-dead deal in
+        // the current (hottest-first) feed.
+        const featuredDeal = !activeCat ? deals.find((d) => !d.is_dead) || null : null;
+
         return e(
           "div",
           { style: { minHeight: "100vh", display: "flex", flexDirection: "column" } },
 
-          /* ── Network bar ── */
-          e(
-            "div",
-            { className: "network-bar" },
-            e(
-              "div",
-              { className: "network-bar-inner", style: { maxWidth: 1152, margin: "0 auto", padding: "6px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" } },
-              e("span", null, "Your source for the best deals on the web"),
-              e(
-                "div",
-                { style: { display: "flex", alignItems: "center", gap: 14 } },
-                e("span", { style: { fontSize: 10 } }, `${total.toLocaleString()} live deals updated continuously`),
-                e(NetworkMenu, null)
-              )
-            )
-          ),
+          /* ── Scrolling deal ticker ── */
+          e(DealTicker, { deals }),
 
           /* ── Site header ── */
           e(
@@ -3819,12 +4160,28 @@
                 { className: "logo-row", style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 12 } },
                 e(
                   "a",
-                  { href: "/", className: "logo" },
+                  { href: "/", className: "logo", onClick: (ev) => { ev.preventDefault(); navigateToCategory(""); } },
                   e(
-                    "svg",
-                    { viewBox: "120 85 570 90", role: "img", "aria-label": "hackthedeal_" },
-                    e("rect", { x: 130, y: 98, width: 22, height: 64, fill: "currentColor" }),
-                    e("text", { x: 170, y: 152, fontFamily: "'Courier New', 'DejaVu Sans Mono', monospace", fontSize: 70, fontWeight: 700, fill: "currentColor" }, "hackthedeal_")
+                    "span",
+                    { className: "brand-logo" },
+                    "Hack",
+                    e("span", { className: "brand-logo-badge" }, "TheDeal")
+                  )
+                ),
+                e(
+                  "nav",
+                  { className: "brand-nav", style: { marginLeft: 28 } },
+                  e("a", { href: "/", onClick: (ev) => { ev.preventDefault(); navigateToCategory(""); } }, "Hot Deals"),
+                  e(
+                    "a",
+                    {
+                      href: "#htd-categories",
+                      onClick: (ev) => {
+                        ev.preventDefault();
+                        document.getElementById("htd-categories")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                      },
+                    },
+                    "Categories"
                   )
                 ),
                 e(
@@ -3855,7 +4212,7 @@
               /* Category + filter row */
               e(
                 "div",
-                { style: { display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6 } },
+                { id: "htd-categories", style: { display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6 } },
                 CATEGORIES.filter(isVisibleCategory).flatMap((c, i) => {
                   const pill = e(
                     "a",
@@ -3893,25 +4250,75 @@
             )
           ),
 
-          /* ── Hero ── */
-          e(
-            "section",
-            { className: "hero" },
-            e("div", { className: "hero-icon" }, HERO_ICON),
-            e(
-              "div",
-              null,
-              e("p", { className: "hero-eyebrow" }, "$ curl hackthedeal.com --live"),
-              e("h1", { className: "hero-title" }, (CATEGORY_COPY[activeCat] || CATEGORY_COPY[""]).h1),
-              e("p", { className: "hero-sub" }, (CATEGORY_COPY[activeCat] || CATEGORY_COPY[""]).description),
-              e(
-                "p",
-                { className: "hero-guide", style: { maxWidth: 640, marginTop: 10, fontSize: 13, lineHeight: 1.6, color: "var(--muted)" } },
-                (CATEGORY_COPY[activeCat] || CATEGORY_COPY[""]).guide + " ",
-                e("a", { href: "/about.html" }, "How we find and verify deals →")
+          /* ── Hero — home gets the badge/CTA/deal-of-day layout from the
+                 rebrand mockup; category views keep the simpler eyebrow/
+                 title/sub layout so the crawler-facing prerendered markup
+                 (see scripts/generate_category_pages.py) stays a close
+                 match. ── */
+          !activeCat
+            ? e(
+                "section",
+                { className: "hero hero-home" },
+                e(
+                  "div",
+                  null,
+                  e(
+                    "span",
+                    { className: "hero-badge" },
+                    e("span", { className: "hero-badge-dot" }),
+                    `${total.toLocaleString()} deals verified today`
+                  ),
+                  e("h1", { className: "hero-home-title" }, CATEGORY_COPY[""].h1),
+                  e("p", { className: "hero-home-sub" }, CATEGORY_COPY[""].description),
+                  e(
+                    "div",
+                    { className: "hero-home-actions" },
+                    e(
+                      "button",
+                      {
+                        type: "button",
+                        className: "hero-btn-primary",
+                        onClick: () => document.getElementById("htd-deals-grid")?.scrollIntoView({ behavior: "smooth", block: "start" }),
+                      },
+                      "Browse hot deals"
+                    ),
+                    e(
+                      "button",
+                      {
+                        type: "button",
+                        className: "hero-btn-secondary",
+                        onClick: () => document.getElementById("htd-notify-trigger")?.click(),
+                      },
+                      "🔔 Get deal alerts"
+                    )
+                  ),
+                  e(
+                    "p",
+                    { className: "hero-home-guide" },
+                    CATEGORY_COPY[""].guide + " ",
+                    e("a", { href: "/about.html" }, "How we find and verify deals →")
+                  )
+                ),
+                featuredDeal ? e(DealOfDayCard, { deal: featuredDeal }) : null
               )
-            )
-          ),
+            : e(
+                "section",
+                { className: "hero" },
+                e("div", { className: "hero-icon" }, HERO_ICON),
+                e(
+                  "div",
+                  null,
+                  e("p", { className: "hero-eyebrow" }, "$ curl hackthedeal.com --live"),
+                  e("h1", { className: "hero-title" }, (CATEGORY_COPY[activeCat] || CATEGORY_COPY[""]).h1),
+                  e("p", { className: "hero-sub" }, (CATEGORY_COPY[activeCat] || CATEGORY_COPY[""]).description),
+                  e(
+                    "p",
+                    { className: "hero-guide", style: { maxWidth: 640, marginTop: 10, fontSize: 13, lineHeight: 1.6, color: "var(--muted)" } },
+                    (CATEGORY_COPY[activeCat] || CATEGORY_COPY[""]).guide + " ",
+                    e("a", { href: "/about.html" }, "How we find and verify deals →")
+                  )
+                )
+              ),
 
           /* ── Category showcase + How it works (homepage only) ── */
           !activeCat
@@ -3958,7 +4365,7 @@
           ? e(AffiliateSection, {})
           : e(
             "main",
-            { style: { maxWidth: 1152, margin: "0 auto", padding: "8px 16px 40px", flex: 1, width: "100%" } },
+            { id: "htd-deals-grid", style: { maxWidth: 1152, margin: "0 auto", padding: "8px 16px 40px", flex: 1, width: "100%" } },
             e(
               "div",
               { className: "section-title-bar" },
@@ -4050,12 +4457,13 @@
               e(
                 "span",
                 null,
-                "© Hack the Deal 2026. ",
+                `© Hack the Deal 2026 · ${total.toLocaleString()} live deals tracked continuously. `,
                 e("strong", { style: { fontWeight: 700 } }, "This site contains affiliate links, including as an Amazon Associate — we earn from qualifying purchases.")
               ),
               e(
                 "div",
                 { style: { display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" } },
+                e(NetworkMenu, null),
                 e(
                   "div",
                   { style: { display: "flex", alignItems: "center", gap: 10 } },

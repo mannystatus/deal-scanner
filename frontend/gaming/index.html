@@ -71,10 +71,19 @@
     <title>Best Gaming Deals Today – Live Price Drops | Hack the Deal</title>
     <meta name="description" content="Live price drops on gaming consoles, PC games, accessories, and peripherals. Hack the Deal tracks gaming deals from top retailers continuously." />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="theme-color" content="#0B1F3A" />
     <link rel="canonical" href="https://www.hackthedeal.com/gaming/" />
     <link rel="icon" href="/favicon-v3.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-v3.ico" sizes="any" />
+
+    <!-- Brand type — used by the ticker/header/hero only; the rest of the
+         page keeps the system font stack. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
@@ -169,6 +178,19 @@
         --danger-bg: #2a1519;
         --danger-text: #f7768e;
         --icon-bg: #1a1b26;
+      }
+
+      /* Brand palette — fixed (not theme-reactive) colors for the ticker,
+         header, and hero, matching the 2026 rebrand. Everything below the
+         hero still follows --bg/--text/etc. and the light/dark toggle. */
+      :root {
+        --brand-cream: #f5f5f0;
+        --brand-navy: #0b1f3a;
+        --brand-green: #00c77a;
+        --brand-green-dark: #00a868;
+        --brand-muted: #5b6472;
+        --brand-border: #dde1e6;
+        --brand-orange: #ff6b35;
       }
 
       * { box-sizing: border-box; }
@@ -291,27 +313,52 @@
         color: var(--text);
       }
 
-      /* Header network bar */
-      .network-bar {
-        background: #1a1b26;
-        color: #a9b1d6;
-        font-size: 11px;
-        letter-spacing: 0.04em;
+      /* Scrolling deal ticker — replaces the old network bar as the
+         top-of-page strip; the fyi network switcher moved to the footer. */
+      .deal-ticker {
+        background: var(--brand-navy);
+        color: var(--brand-cream);
+        overflow: hidden;
+        white-space: nowrap;
       }
-      .network-bar a {
-        color: #aaa;
+      .deal-ticker-track {
+        display: inline-flex;
+        gap: 52px;
+        padding: 9px 0;
+        animation: htdTickerScroll 34s linear infinite;
+        will-change: transform;
+      }
+      .deal-ticker:hover .deal-ticker-track,
+      .deal-ticker:focus-within .deal-ticker-track {
+        animation-play-state: paused;
+      }
+      @keyframes htdTickerScroll {
+        from { transform: translateX(0); }
+        to { transform: translateX(-50%); }
+      }
+      .deal-ticker-item {
+        font-family: "IBM Plex Mono", "SF Mono", monospace;
+        font-size: 12px;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        color: inherit;
         text-decoration: none;
-        transition: color 0.15s;
       }
-      .network-bar a:hover { color: var(--accent); }
-      .network-bar-inner {
-        flex-wrap: wrap;
-        row-gap: 2px;
-        column-gap: 12px;
+      .deal-ticker-item:hover { color: var(--brand-green); }
+      .deal-ticker-tag {
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        font-size: 10.5px;
       }
-      .network-bar-inner span { min-width: 0; }
+      @media (prefers-reduced-motion: reduce) {
+        .deal-ticker-track { animation: none; }
+      }
 
-      /* fyi network switcher — dropdown listing our other sites */
+      /* fyi network switcher — dropdown listing our other sites (lives in
+         the footer now; styling unchanged) */
       .network-menu { position: relative; flex: 0 0 auto; }
       .network-menu-btn {
         display: flex;
@@ -361,25 +408,86 @@
         color: var(--muted);
       }
 
-      /* Main header */
+      /* Main header — fixed brand palette rather than the dark/light toggle
+         (the toggle still drives everything from the deals grid down).
+         Redefining the shared vars here means .cat-pill, .search-input,
+         .theme-toggle-btn, .header-contact-link etc. all pick up the brand
+         colors automatically without duplicating their rules. */
       .site-header {
-        background: var(--surface);
-        border-bottom: 3px solid var(--accent);
+        --bg: var(--brand-cream);
+        --surface: var(--brand-cream);
+        --border: var(--brand-border);
+        --text: var(--brand-navy);
+        --muted: var(--brand-muted);
+        --accent: var(--brand-green);
+        --accent-text: var(--brand-green-dark);
+        background: rgba(245, 245, 240, 0.94);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-bottom: 2px solid var(--brand-navy);
         position: sticky;
         top: 0;
         z-index: 50;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
         transition: transform 0.25s ease;
       }
 
-      /* Logo — plain monospace terminal-style wordmark */
+      /* Nav links row, between the logo and the search/alert controls */
+      .brand-nav {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        font-size: 13.5px;
+        font-weight: 600;
+      }
+      .brand-nav a {
+        color: var(--brand-navy);
+        text-decoration: none;
+        background: none;
+        border: none;
+        font: inherit;
+        cursor: pointer;
+        padding: 0;
+      }
+      .brand-nav a:hover { color: var(--brand-green-dark); }
+
+      /* Logo — "Hack" + green-highlighted "TheDeal" */
       .logo {
         display: flex;
         align-items: center;
         line-height: 1;
-        color: var(--accent-text);
+        text-decoration: none;
       }
-      .logo svg { height: 22px; width: auto; display: block; }
+      .brand-logo {
+        font-family: "Space Grotesk", sans-serif;
+        font-weight: 700;
+        font-size: 21px;
+        color: var(--brand-navy);
+      }
+      .brand-logo-badge {
+        background: var(--brand-green);
+        color: var(--brand-navy);
+        padding: 1px 8px;
+        margin-left: 2px;
+        border-radius: 2px;
+      }
+
+      /* "Set alert" button — the NotifyPanel trigger, restyled as a solid
+         brand button instead of the bare icon it used to be */
+      .set-alert-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--brand-navy);
+        color: var(--brand-cream);
+        padding: 9px 16px;
+        border-radius: 4px;
+        font-weight: 700;
+        font-size: 13px;
+        border: none;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      .set-alert-btn:hover { opacity: 0.9; }
 
       /* Category nav pills */
       .cat-pill {
@@ -443,6 +551,7 @@
       @media (max-width: 640px) {
         .logo-row { flex-wrap: wrap; }
         .logo-row .logo-controls { flex-basis: 100%; }
+        .brand-nav { display: none; }
         .search-input { flex-basis: 100%; }
         /* Hide the sticky header on scroll-down, reveal on scroll-up —
            frees up screen space on small viewports where the header
@@ -452,8 +561,20 @@
       .search-input:focus { border-color: var(--accent); }
       .search-input::placeholder { color: var(--muted); }
 
-      /* Hero */
+      /* Hero — same fixed-brand-palette trick as .site-header, so the hero
+         reads as one continuous brand block with the header above it
+         regardless of the dark/light toggle (which still applies from the
+         deals grid down). */
       .hero {
+        --bg: var(--brand-cream);
+        --surface: var(--brand-cream);
+        --border: var(--brand-border);
+        --text: var(--brand-navy);
+        --muted: var(--brand-muted);
+        --accent: var(--brand-green);
+        --accent-text: var(--brand-green-dark);
+        --accent2-text: var(--brand-green-dark);
+        background: var(--brand-cream);
         max-width: 1152px;
         margin: 0 auto;
         width: 100%;
@@ -471,8 +592,9 @@
         margin: 0 0 10px;
       }
       .hero-title {
+        font-family: "Space Grotesk", sans-serif;
         font-size: 30px;
-        font-weight: 800;
+        font-weight: 700;
         letter-spacing: -0.4px;
         color: var(--text);
         margin: 0 0 10px;
@@ -489,6 +611,129 @@
         .hero { flex-direction: column; text-align: center; padding: 32px 16px 24px; }
         .hero-sub { max-width: none; }
       }
+
+      /* Homepage-only hero: verified-deals badge, headline, CTAs, and a
+         deal-of-the-day card pulled from the live feed. */
+      .hero-home {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 40px;
+        align-items: center;
+        width: 100%;
+      }
+      @media (max-width: 860px) {
+        .hero-home { grid-template-columns: 1fr; }
+      }
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--brand-green-dark);
+        background: rgba(0, 199, 122, 0.1);
+        padding: 5px 12px;
+        border-radius: 20px;
+        margin-bottom: 18px;
+      }
+      .hero-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--brand-green); flex-shrink: 0; }
+      .hero-home-title {
+        font-family: "Space Grotesk", sans-serif;
+        font-weight: 700;
+        font-size: clamp(26px, 4vw, 38px);
+        line-height: 1.1;
+        color: var(--brand-navy);
+        margin: 0 0 14px;
+      }
+      .hero-home-sub {
+        font-size: 15px;
+        color: var(--brand-muted);
+        max-width: 52ch;
+        line-height: 1.6;
+        margin: 0 0 22px;
+      }
+      .hero-home-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+      .hero-btn-primary {
+        background: var(--brand-navy);
+        color: var(--brand-cream);
+        padding: 12px 22px;
+        border-radius: 4px;
+        font-weight: 700;
+        font-size: 14px;
+        border: none;
+        cursor: pointer;
+      }
+      .hero-btn-primary:hover { opacity: 0.9; }
+      .hero-btn-secondary {
+        padding: 12px 20px;
+        border-radius: 4px;
+        font-weight: 700;
+        font-size: 14px;
+        border: 1.5px solid var(--brand-navy);
+        background: transparent;
+        color: var(--brand-navy);
+        cursor: pointer;
+      }
+      .hero-btn-secondary:hover { background: rgba(11, 31, 58, 0.06); }
+      .hero-home-guide {
+        max-width: 60ch;
+        font-size: 12.5px;
+        line-height: 1.6;
+        color: var(--brand-muted);
+        margin: 0;
+      }
+      .hero-home-guide a { color: var(--brand-green-dark); font-weight: 600; }
+
+      .deal-of-day {
+        background: var(--brand-navy);
+        color: var(--brand-cream);
+        padding: 22px;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        position: relative;
+        text-decoration: none;
+      }
+      .deal-of-day-badge {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        background: var(--brand-orange);
+        color: #fff;
+        font-family: "IBM Plex Mono", monospace;
+        font-weight: 700;
+        font-size: 10.5px;
+        padding: 4px 9px;
+        border-radius: 4px;
+      }
+      .deal-of-day-eyebrow {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 10.5px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #8ca0b8;
+      }
+      .deal-of-day-media {
+        aspect-ratio: 4 / 3;
+        width: 100%;
+        object-fit: cover;
+        border-radius: 6px;
+        background: #132a4d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .deal-of-day-media svg { width: 56px; height: 56px; opacity: 0.85; }
+      .deal-of-day-title { font-weight: 600; font-size: 16px; margin: 0; line-height: 1.35; }
+      .deal-of-day-price-row { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+      .deal-of-day-price { font-family: "IBM Plex Mono", monospace; font-weight: 700; font-size: 22px; color: var(--brand-green); }
+      .deal-of-day-was { font-family: "IBM Plex Mono", monospace; font-size: 14px; color: #8ca0b8; text-decoration: line-through; }
+      .deal-of-day-discount { background: var(--brand-green); color: var(--brand-navy); font-family: "IBM Plex Mono", monospace; font-weight: 700; font-size: 12px; padding: 2px 8px; border-radius: 3px; }
+      .deal-of-day-meta { font-family: "IBM Plex Mono", monospace; font-size: 12px; color: #8ca0b8; }
 
       /* Category showcase (homepage only) */
       .cat-showcase {
@@ -813,66 +1058,66 @@
       "@type": "ItemList",
       "name": "Best Gaming Deals Today",
       "itemListElement": [
-{ "@type": "ListItem", "position": 1, "name": "Aulumu A11 Apple Watch Band with metal Mag Buckle now 50% off at Amazon, score one for $20", "url": "https://www.hackthedeal.com/deal/5071-aulumu-a11-apple-watch-band-with-metal-mag-buckle-now-50-off/" },
-{ "@type": "ListItem", "position": 2, "name": "Cover up to 10 customizable zones with Aiper\u2019s IrriSense 2 smart irrigation system + sprinkler at $370 (Save $130)", "url": "https://www.hackthedeal.com/deal/5073-cover-up-to-10-customizable-zones-with-aiper-s-irrisense-2-s/" },
-{ "@type": "ListItem", "position": 3, "name": "Gear up for school with Texas Instruments\u2019 coolest graphing calculator at its lowest price yet \u2013 just $89", "url": "https://www.hackthedeal.com/deal/5074-gear-up-for-school-with-texas-instruments-coolest-graphing-c/" },
-{ "@type": "ListItem", "position": 4, "name": "Get more out of a yard cart with the versatile 8-in-1 Worx Aerocart down at $158 2026 low right now", "url": "https://www.hackthedeal.com/deal/5077-get-more-out-of-a-yard-cart-with-the-versatile-8-in-1-worx-a/" },
-{ "@type": "ListItem", "position": 5, "name": "Whoa! Samsung\u2019s 4TB 990 EVO Plus SSD just plunged 70% to $315 \u2013 lowest since the price hike (Reg. $1,050)", "url": "https://www.hackthedeal.com/deal/5079-whoa-samsung-s-4tb-990-evo-plus-ssd-just-plunged-70-to-315-l/" },
-{ "@type": "ListItem", "position": 6, "name": "Not upgrading to far more pricey Pixel 11 this month? Google\u2019s 2026 Pixel 10a now starts at $385 (Up to $115 off)", "url": "https://www.hackthedeal.com/deal/5080-not-upgrading-to-far-more-pricey-pixel-11-this-month-google/" },
-{ "@type": "ListItem", "position": 7, "name": "Anker\u2019s more powerful 100W 3-port Smart Display Charger is down at $50 on Amazon (Nearly 30% off)", "url": "https://www.hackthedeal.com/deal/5082-anker-s-more-powerful-100w-3-port-smart-display-charger-is-d/" },
-{ "@type": "ListItem", "position": 8, "name": "Score Galaxy Buds 4 Pro for just $20 with Fold 8 pre-orders, but this Amazon bundle deal is even better", "url": "https://www.hackthedeal.com/deal/5083-score-galaxy-buds-4-pro-for-just-20-with-fold-8-pre-orders-b/" },
-{ "@type": "ListItem", "position": 9, "name": "This Lenovo 2.5K tablet bundle with pen and case is a Back to School steal at $150", "url": "https://www.hackthedeal.com/deal/5084-this-lenovo-2-5k-tablet-bundle-with-pen-and-case-is-a-back-t/" },
-{ "@type": "ListItem", "position": 10, "name": "Samsung\u2019s $700 M8 Smart Monitor with built-in webcam is 50% off today at $350", "url": "https://www.hackthedeal.com/deal/5087-samsung-s-700-m8-smart-monitor-with-built-in-webcam-is-50-of/" },
-{ "@type": "ListItem", "position": 11, "name": "Unlocked Google Pixel 10a now $75 off at Amazon, Best Buy open-box from $390 ($110 off)", "url": "https://www.hackthedeal.com/deal/5088-unlocked-google-pixel-10a-now-75-off-at-amazon-best-buy-open/" },
-{ "@type": "ListItem", "position": 12, "name": "Unlocked Samsung Galaxy A56 phone hits Amazon all-time low from $375, A57 model now $125 off", "url": "https://www.hackthedeal.com/deal/5089-unlocked-samsung-galaxy-a56-phone-hits-amazon-all-time-low-f/" },
-{ "@type": "ListItem", "position": 13, "name": "Most affordable Apple Watch Series 11 models now $100 off again starting from $299", "url": "https://www.hackthedeal.com/deal/5090-most-affordable-apple-watch-series-11-models-now-100-off-aga/" },
-{ "@type": "ListItem", "position": 14, "name": "Best Buy launches August Back to School sale: Apple gear, smart TVs from $80, dorm upgrades, more", "url": "https://www.hackthedeal.com/deal/5091-best-buy-launches-august-back-to-school-sale-apple-gear-smar/" },
-{ "@type": "ListItem", "position": 15, "name": "Amazon launches summer Ring doorbell sale at up to 38% off with deals from $50 on latest models", "url": "https://www.hackthedeal.com/deal/4938-amazon-launches-summer-ring-doorbell-sale-at-up-to-38-off-wi/" },
-{ "@type": "ListItem", "position": 16, "name": "Unlocked Google Pixel 10a now $75 off at Amazon, Best Buy open-box from $390 ($110 off)", "url": "https://www.hackthedeal.com/deal/4939-unlocked-google-pixel-10a-now-75-off-at-amazon-best-buy-open/" },
-{ "@type": "ListItem", "position": 17, "name": "Hisense\u2019s 165Hz 2026 U7 mini-LED Google smart TV is $1,000 off for today only at Best Buy", "url": "https://www.hackthedeal.com/deal/4940-hisense-s-165hz-2026-u7-mini-led-google-smart-tv-is-1-000-of/" },
-{ "@type": "ListItem", "position": 18, "name": "Best Buy 2026 Back to School sale: College Tech under $150, Phone deals, TVs from $70, printers, routers, more", "url": "https://www.hackthedeal.com/deal/4941-best-buy-2026-back-to-school-sale-college-tech-under-150-pho/" },
-{ "@type": "ListItem", "position": 19, "name": "Heads up! LEGO Game Boy set just dropped in price again, now $42 (All-time low)", "url": "https://www.hackthedeal.com/deal/4942-heads-up-lego-game-boy-set-just-dropped-in-price-again-now-4/" },
-{ "@type": "ListItem", "position": 20, "name": "9to5Toys Battlestation Weekly: Back to School deals, OLED gaming monitors up to 52% off, more", "url": "https://www.hackthedeal.com/deal/4844-9to5toys-battlestation-weekly-back-to-school-deals-oled-gami/" },
-{ "@type": "ListItem", "position": 21, "name": "Electrified Weekly \u2013 Aventon Level 3 and Pace 4 e-bikes at new $1,299 lows ($600 off), Monarc e-bikes with FREE smart helmet + 2x batteries, more", "url": "https://www.hackthedeal.com/deal/4846-electrified-weekly-aventon-level-3-and-pace-4-e-bikes-at-new/" },
-{ "@type": "ListItem", "position": 22, "name": "9to5Toys Fashion Weekly \u2013 Nike Back to School sale, Cole Haan up to 60% off, adidas kicks from $25, more", "url": "https://www.hackthedeal.com/deal/4847-9to5toys-fashion-weekly-nike-back-to-school-sale-cole-haan-u/" },
-{ "@type": "ListItem", "position": 23, "name": "9to5Toys Steals Weekly \u2013 Twelve South Curve Nano $30, 4-in-1 USB-C travel adapter $17, tomtoc sling bag $26.50, more", "url": "https://www.hackthedeal.com/deal/4848-9to5toys-steals-weekly-twelve-south-curve-nano-30-4-in-1-usb/" },
-{ "@type": "ListItem", "position": 24, "name": "Score up to $1,496 + exclusive bonus savings on Anker SOLIX power stations during the latest Summer Sale \u2013 deals start from $189", "url": "https://www.hackthedeal.com/deal/4283-score-up-to-1-496-exclusive-bonus-savings-on-anker-solix-pow/" },
-{ "@type": "ListItem", "position": 25, "name": "One app. ChatGPT, Claude, and Gemini, now just $30 for a full year", "url": "https://www.hackthedeal.com/deal/4284-one-app-chatgpt-claude-and-gemini-now-just-30-for-a-full-yea/" },
-{ "@type": "ListItem", "position": 26, "name": "Commute for up to 130 miles on Monarc\u2019s latest Tracer urban e-bike + get a FREE smart helmet \u2013 all for $1,899, more", "url": "https://www.hackthedeal.com/deal/4285-commute-for-up-to-130-miles-on-monarc-s-latest-tracer-urban/" },
-{ "@type": "ListItem", "position": 27, "name": "Friday\u2019s Apple Books and audiobook deals from $2 or less", "url": "https://www.hackthedeal.com/deal/4286-friday-s-apple-books-and-audiobook-deals-from-2-or-less/" },
-{ "@type": "ListItem", "position": 28, "name": "This week\u2019s best Apple discounts: M5 MacBook Air $240 of, M5 Pro $500 off, AirPods Pro 3, AirTag 2, much more", "url": "https://www.hackthedeal.com/deal/4288-this-week-s-best-apple-discounts-m5-macbook-air-240-of-m5-pr/" },
-{ "@type": "ListItem", "position": 29, "name": "This 7,000mAh power bank doubles as wall charger with built-in plug and USB-C cable at just $28 today", "url": "https://www.hackthedeal.com/deal/4291-this-7-000mah-power-bank-doubles-as-wall-charger-with-built/" },
-{ "@type": "ListItem", "position": 30, "name": "Segway Back to School EV Sale offers hundreds in savings on e-scooters, e-bikes, more \u2013 all starting from $160", "url": "https://www.hackthedeal.com/deal/4294-segway-back-to-school-ev-sale-offers-hundreds-in-savings-on/" },
-{ "@type": "ListItem", "position": 31, "name": "Get higher-tier performance on a budget with this EGO 21-inch cordless electric mower + 6.0Ah battery at a $400 2026 low", "url": "https://www.hackthedeal.com/deal/4296-get-higher-tier-performance-on-a-budget-with-this-ego-21-inc/" },
-{ "@type": "ListItem", "position": 32, "name": "Today only: Upgrade to this 500Hz QD-OLED gaming monitor for your battlestation while it\u2019s down to $500 all-time low", "url": "https://www.hackthedeal.com/deal/4297-today-only-upgrade-to-this-500hz-qd-oled-gaming-monitor-for/" },
-{ "@type": "ListItem", "position": 33, "name": "This pocket-sized plug-in USB-C mini power bank is down to just $16 today", "url": "https://www.hackthedeal.com/deal/4300-this-pocket-sized-plug-in-usb-c-mini-power-bank-is-down-to-j/" },
-{ "@type": "ListItem", "position": 34, "name": "Just $8 today gets you this ESR 11-card bifold wallet with built-in Apple Find My tracking (60% off)", "url": "https://www.hackthedeal.com/deal/4301-just-8-today-gets-you-this-esr-11-card-bifold-wallet-with-bu/" },
-{ "@type": "ListItem", "position": 35, "name": "For today only pick up Anker\u2019s 288Wh SOLIX C300X AC portable power station + 60W solar panel down at $300", "url": "https://www.hackthedeal.com/deal/4302-for-today-only-pick-up-anker-s-288wh-solix-c300x-ac-portable/" },
-{ "@type": "ListItem", "position": 36, "name": "David Pogue\u2019s \u2018Apple: The First 50 Years\u2019\u00a0hardcover book now just $26 at Amazon (Orig. $50)", "url": "https://www.hackthedeal.com/deal/4303-david-pogue-s-apple-the-first-50-years-hardcover-book-now-ju/" },
-{ "@type": "ListItem", "position": 37, "name": "EcoFlow\u2019s 45L or 55L GLACIER portable dual-zone electric cooler w/ plug-in battery + FREE wagon at new lows from $749", "url": "https://www.hackthedeal.com/deal/4305-ecoflow-s-45l-or-55l-glacier-portable-dual-zone-electric-coo/" },
-{ "@type": "ListItem", "position": 38, "name": "Score Panasonic\u2019s full-frame LUMIX S9 mirrorless camera with 18-40mm lens for $1,328 (Today only, $470 off)", "url": "https://www.hackthedeal.com/deal/4059-score-panasonic-s-full-frame-lumix-s9-mirrorless-camera-with/" },
-{ "@type": "ListItem", "position": 39, "name": "Summer PS5 game deals (on disc): Resident Evil Requiem nearly 25% off, Saros, Stellar Blade, Death Stranding 2, more", "url": "https://www.hackthedeal.com/deal/4061-summer-ps5-game-deals-on-disc-resident-evil-requiem-nearly-2/" },
-{ "@type": "ListItem", "position": 40, "name": "Save $500 on Aventon\u2019s sensor-switching 70-mile Pace 4 smart cruiser e-bike for a new $1,299 low this weekend only", "url": "https://www.hackthedeal.com/deal/4062-save-500-on-aventon-s-sensor-switching-70-mile-pace-4-smart/" },
-{ "@type": "ListItem", "position": 41, "name": "Microsoft\u2019s Surface Laptop/Pro 2-in-1 Copilot+ PCs are starting at $750 with Back to School deals (Up to $450 off)", "url": "https://www.hackthedeal.com/deal/4063-microsoft-s-surface-laptop-pro-2-in-1-copilot-pcs-are-starti/" },
-{ "@type": "ListItem", "position": 42, "name": "Aventon flash sale strikes $600 off the 70-mile Level 3 smart commuter e-bike for a new $1,299 low", "url": "https://www.hackthedeal.com/deal/4065-aventon-flash-sale-strikes-600-off-the-70-mile-level-3-smart/" },
-{ "@type": "ListItem", "position": 43, "name": "The Hobbit leatherette-bound with gold/red foil stamping down at $19.50 via Amazon (52% off orig. price)", "url": "https://www.hackthedeal.com/deal/4066-the-hobbit-leatherette-bound-with-gold-red-foil-stamping-dow/" },
-{ "@type": "ListItem", "position": 44, "name": "EcoFlow second Outdoor Season Sale phase brings back Prime Day pricing on power stations + FREE gifts starting from $169", "url": "https://www.hackthedeal.com/deal/4067-ecoflow-second-outdoor-season-sale-phase-brings-back-prime-d/" },
-{ "@type": "ListItem", "position": 45, "name": "LG\u2019s affordable 2026 mini LED TVs start from just $330 right now, FREE mounting service, more (Up to $300 off)", "url": "https://www.hackthedeal.com/deal/4068-lg-s-affordable-2026-mini-led-tvs-start-from-just-330-right/" },
-{ "@type": "ListItem", "position": 46, "name": "Huge B&H Back to School laptop sale now live: Deals on Windows Copilot+ PCs, MacBooks, and accessories from just $6", "url": "https://www.hackthedeal.com/deal/4069-huge-b-h-back-to-school-laptop-sale-now-live-deals-on-window/" },
-{ "@type": "ListItem", "position": 47, "name": "Inspire XC1 open buds with Bose audio now down at $80 with this code (Nearly 40% off)", "url": "https://www.hackthedeal.com/deal/4070-inspire-xc1-open-buds-with-bose-audio-now-down-at-80-with-th/" },
-{ "@type": "ListItem", "position": 48, "name": "Today only: Save $500 on Dell\u2019s Intel Lunar Lake 16-inch 2-in-1 touchscreen Copilot+ PC", "url": "https://www.hackthedeal.com/deal/4072-today-only-save-500-on-dell-s-intel-lunar-lake-16-inch-2-in/" },
-{ "@type": "ListItem", "position": 49, "name": "Galaxy Z Fold 8/Ultra pre-order deals: $100 off + FREE $200 credit, FREE Galaxy Buds, $300 off Galaxy Watch Ultra 2, more", "url": "https://www.hackthedeal.com/deal/4074-galaxy-z-fold-8-ultra-pre-order-deals-100-off-free-200-credi/" },
-{ "@type": "ListItem", "position": 50, "name": "Get Microsoft Project Professional for $45 and plan projects like a pro ($1,130 value)", "url": "https://www.hackthedeal.com/deal/4078-get-microsoft-project-professional-for-45-and-plan-projects/" },
-{ "@type": "ListItem", "position": 51, "name": "Anker summer charging gear deals continue from just $9: Nano station, docks, power strips, more", "url": "https://www.hackthedeal.com/deal/4080-anker-summer-charging-gear-deals-continue-from-just-9-nano-s/" },
-{ "@type": "ListItem", "position": 52, "name": "Score a Switch 2 console at up to $130 under upcoming price hike while you still can", "url": "https://www.hackthedeal.com/deal/4081-score-a-switch-2-console-at-up-to-130-under-upcoming-price-h/" },
-{ "@type": "ListItem", "position": 53, "name": "Amazon\u2019s Levi\u2019s sale drops men\u2019s, women\u2019s, and kids\u2019 styles to as low as $13", "url": "https://www.hackthedeal.com/deal/4083-amazon-s-levi-s-sale-drops-men-s-women-s-and-kids-styles-to/" },
-{ "@type": "ListItem", "position": 54, "name": "Snag ORICO\u2019s zinc alloy dual-port 64GB flash drive for just $14.50", "url": "https://www.hackthedeal.com/deal/4086-snag-orico-s-zinc-alloy-dual-port-64gb-flash-drive-for-just/" },
-{ "@type": "ListItem", "position": 55, "name": "Easily get everything in your recycling bin with Worx ZipSnip cutting scissors down at $33", "url": "https://www.hackthedeal.com/deal/4087-easily-get-everything-in-your-recycling-bin-with-worx-zipsni/" },
-{ "@type": "ListItem", "position": 56, "name": "Ultra travel-friendly 25W Belkin MagSafe charging pad w/ kickstand and power adapter down at $34", "url": "https://www.hackthedeal.com/deal/4088-ultra-travel-friendly-25w-belkin-magsafe-charging-pad-w-kick/" },
-{ "@type": "ListItem", "position": 57, "name": "Tribit Stormbox 2 is my go-to Bluetooth speaker and it\u2019s down at $70 shipped", "url": "https://www.hackthedeal.com/deal/4089-tribit-stormbox-2-is-my-go-to-bluetooth-speaker-and-it-s-dow/" },
-{ "@type": "ListItem", "position": 58, "name": "This 480Hz LG UltraGear OLED gaming monitor is among the fastest out there, now down to its lowest price at $547", "url": "https://www.hackthedeal.com/deal/4090-this-480hz-lg-ultragear-oled-gaming-monitor-is-among-the-fas/" },
-{ "@type": "ListItem", "position": 59, "name": "Twelve South\u2019s sleek Curve Nano MagSafe Stand folds flat when not in use, now $30", "url": "https://www.hackthedeal.com/deal/4091-twelve-south-s-sleek-curve-nano-magsafe-stand-folds-flat-whe/" },
-{ "@type": "ListItem", "position": 60, "name": "Has your mouse seen better days? This wireless Acer model is only $10 right now", "url": "https://www.hackthedeal.com/deal/4092-has-your-mouse-seen-better-days-this-wireless-acer-model-is/" }
+{ "@type": "ListItem", "position": 1, "name": "\u2018ENDING SOON\u2019 \u2013 Score a Switch 2 console at up to $130 under upcoming price hike while you still can", "url": "https://www.hackthedeal.com/deal/5221-ending-soon-score-a-switch-2-console-at-up-to-130-under-upco/" },
+{ "@type": "ListItem", "position": 2, "name": "Get your hands on enterprise-grade tools for just $12 with this Windows 11 Pro deal (Reg. $200)", "url": "https://www.hackthedeal.com/deal/5222-get-your-hands-on-enterprise-grade-tools-for-just-12-with-th/" },
+{ "@type": "ListItem", "position": 3, "name": "Anker\u2019s 4-port Smart Display Charger with 240W USB-C cable now down at $65 (Nearly 30% off)", "url": "https://www.hackthedeal.com/deal/5223-anker-s-4-port-smart-display-charger-with-240w-usb-c-cable-n/" },
+{ "@type": "ListItem", "position": 4, "name": "Simplify your workflow with this all-in-one AI writing platform for $80 (Reg. up to $1,800)", "url": "https://www.hackthedeal.com/deal/5224-simplify-your-workflow-with-this-all-in-one-ai-writing-platf/" },
+{ "@type": "ListItem", "position": 5, "name": "This ultra-thin metal MagSafe power bank is just 0.3 inches thick, and it\u2019s only $13 today", "url": "https://www.hackthedeal.com/deal/5226-this-ultra-thin-metal-magsafe-power-bank-is-just-0-3-inches/" },
+{ "@type": "ListItem", "position": 6, "name": "Now even less: FLEXISPOT MasterEase massage office chair strikes $150 shipped (Reg. $380)", "url": "https://www.hackthedeal.com/deal/5227-now-even-less-flexispot-masterease-massage-office-chair-stri/" },
+{ "@type": "ListItem", "position": 7, "name": "Ditch the dongle with Acer\u2019s 4K USB-C to HDMI cable, now $10 (Save 29%)", "url": "https://www.hackthedeal.com/deal/5229-ditch-the-dongle-with-acer-s-4k-usb-c-to-hdmi-cable-now-10-s/" },
+{ "@type": "ListItem", "position": 8, "name": "Haul your Switch 2 to gatherings, on vacation, more with this travel case for just $14.50 (Save 31%)", "url": "https://www.hackthedeal.com/deal/5230-haul-your-switch-2-to-gatherings-on-vacation-more-with-this/" },
+{ "@type": "ListItem", "position": 9, "name": "Samsung\u2019s 2TB 9100 PRO Gen 5 SSD drops back near launch price at $303 amid memory shortages", "url": "https://www.hackthedeal.com/deal/5231-samsung-s-2tb-9100-pro-gen-5-ssd-drops-back-near-launch-pric/" },
+{ "@type": "ListItem", "position": 10, "name": "Add Acer\u2019s Type-C card reader and USB-A dongle to your bag for $14 (Save 22%)", "url": "https://www.hackthedeal.com/deal/5232-add-acer-s-type-c-card-reader-and-usb-a-dongle-to-your-bag-f/" },
+{ "@type": "ListItem", "position": 11, "name": "This two-tone ocean-style Apple Watch band is down at $9.50 right now (Save 32%)", "url": "https://www.hackthedeal.com/deal/5233-this-two-tone-ocean-style-apple-watch-band-is-down-at-9-50-r/" },
+{ "@type": "ListItem", "position": 12, "name": "Apple Find My headlines this MagSafe wallet down at $16 Prime shipped (50% off)", "url": "https://www.hackthedeal.com/deal/5234-apple-find-my-headlines-this-magsafe-wallet-down-at-16-prime/" },
+{ "@type": "ListItem", "position": 13, "name": "Score the travel-ready Anker Prime 140W 6-in-1 charging station with an onboard display for $60 right now", "url": "https://www.hackthedeal.com/deal/5235-score-the-travel-ready-anker-prime-140w-6-in-1-charging-stat/" },
+{ "@type": "ListItem", "position": 14, "name": "Colorful adidas sale picks from $12: Bottles, jerseys, shoes, more (Up to 50% off)", "url": "https://www.hackthedeal.com/deal/5236-colorful-adidas-sale-picks-from-12-bottles-jerseys-shoes-mor/" },
+{ "@type": "ListItem", "position": 15, "name": "Get ahead of cool fall weather with this standout quarter-zip sweater for $20 (Save 44%)", "url": "https://www.hackthedeal.com/deal/5237-get-ahead-of-cool-fall-weather-with-this-standout-quarter-zi/" },
+{ "@type": "ListItem", "position": 16, "name": "Score a pair of athletic sweatpants for the gym, around the house, more at just $15 (Reg. $28)", "url": "https://www.hackthedeal.com/deal/5239-score-a-pair-of-athletic-sweatpants-for-the-gym-around-the-h/" },
+{ "@type": "ListItem", "position": 17, "name": "Worx 8A 10-inch electric 2-in-1 chainsaw and pole saw drops to new $80 low ($40 off) or go cordless for $133 ($37 off)", "url": "https://www.hackthedeal.com/deal/5240-worx-8a-10-inch-electric-2-in-1-chainsaw-and-pole-saw-drops/" },
+{ "@type": "ListItem", "position": 18, "name": "EGO\u2019s carbon fiber 16-inch POWERLOAD trimmer + 8-inch edger Multi-Head combo kit is down at $429 ($70 off)", "url": "https://www.hackthedeal.com/deal/5243-ego-s-carbon-fiber-16-inch-powerload-trimmer-8-inch-edger-mu/" },
+{ "@type": "ListItem", "position": 19, "name": "Lectric Back to School Sale offers XP4 750 folding utility e-bike with up to $593 or $603 FREE bundles at $1,299, more from $799", "url": "https://www.hackthedeal.com/deal/5244-lectric-back-to-school-sale-offers-xp4-750-folding-utility-e/" },
+{ "@type": "ListItem", "position": 20, "name": "Lexar\u2019s 2TB magnetic iPhone SSD just dropped $130 to hit lowest price since the hike", "url": "https://www.hackthedeal.com/deal/5245-lexar-s-2tb-magnetic-iphone-ssd-just-dropped-130-to-hit-lowe/" },
+{ "@type": "ListItem", "position": 21, "name": "Aulumu A11 Apple Watch Band with metal Mag Buckle now 50% off at Amazon, score one for $20", "url": "https://www.hackthedeal.com/deal/5071-aulumu-a11-apple-watch-band-with-metal-mag-buckle-now-50-off/" },
+{ "@type": "ListItem", "position": 22, "name": "Cover up to 10 customizable zones with Aiper\u2019s IrriSense 2 smart irrigation system + sprinkler at $370 (Save $130)", "url": "https://www.hackthedeal.com/deal/5073-cover-up-to-10-customizable-zones-with-aiper-s-irrisense-2-s/" },
+{ "@type": "ListItem", "position": 23, "name": "Gear up for school with Texas Instruments\u2019 coolest graphing calculator at its lowest price yet \u2013 just $89", "url": "https://www.hackthedeal.com/deal/5074-gear-up-for-school-with-texas-instruments-coolest-graphing-c/" },
+{ "@type": "ListItem", "position": 24, "name": "Get more out of a yard cart with the versatile 8-in-1 Worx Aerocart down at $158 2026 low right now", "url": "https://www.hackthedeal.com/deal/5077-get-more-out-of-a-yard-cart-with-the-versatile-8-in-1-worx-a/" },
+{ "@type": "ListItem", "position": 25, "name": "Whoa! Samsung\u2019s 4TB 990 EVO Plus SSD just plunged 70% to $315 \u2013 lowest since the price hike (Reg. $1,050)", "url": "https://www.hackthedeal.com/deal/5079-whoa-samsung-s-4tb-990-evo-plus-ssd-just-plunged-70-to-315-l/" },
+{ "@type": "ListItem", "position": 26, "name": "Not upgrading to far more pricey Pixel 11 this month? Google\u2019s 2026 Pixel 10a now starts at $385 (Up to $115 off)", "url": "https://www.hackthedeal.com/deal/5080-not-upgrading-to-far-more-pricey-pixel-11-this-month-google/" },
+{ "@type": "ListItem", "position": 27, "name": "Anker\u2019s more powerful 100W 3-port Smart Display Charger is down at $50 on Amazon (Nearly 30% off)", "url": "https://www.hackthedeal.com/deal/5082-anker-s-more-powerful-100w-3-port-smart-display-charger-is-d/" },
+{ "@type": "ListItem", "position": 28, "name": "Score Galaxy Buds 4 Pro for just $20 with Fold 8 pre-orders, but this Amazon bundle deal is even better", "url": "https://www.hackthedeal.com/deal/5083-score-galaxy-buds-4-pro-for-just-20-with-fold-8-pre-orders-b/" },
+{ "@type": "ListItem", "position": 29, "name": "This Lenovo 2.5K tablet bundle with pen and case is a Back to School steal at $150", "url": "https://www.hackthedeal.com/deal/5084-this-lenovo-2-5k-tablet-bundle-with-pen-and-case-is-a-back-t/" },
+{ "@type": "ListItem", "position": 30, "name": "Samsung\u2019s $700 M8 Smart Monitor with built-in webcam is 50% off today at $350", "url": "https://www.hackthedeal.com/deal/5087-samsung-s-700-m8-smart-monitor-with-built-in-webcam-is-50-of/" },
+{ "@type": "ListItem", "position": 31, "name": "Unlocked Google Pixel 10a now $75 off at Amazon, Best Buy open-box from $390 ($110 off)", "url": "https://www.hackthedeal.com/deal/5088-unlocked-google-pixel-10a-now-75-off-at-amazon-best-buy-open/" },
+{ "@type": "ListItem", "position": 32, "name": "Unlocked Samsung Galaxy A56 phone hits Amazon all-time low from $375, A57 model now $125 off", "url": "https://www.hackthedeal.com/deal/5089-unlocked-samsung-galaxy-a56-phone-hits-amazon-all-time-low-f/" },
+{ "@type": "ListItem", "position": 33, "name": "Most affordable Apple Watch Series 11 models now $100 off again starting from $299", "url": "https://www.hackthedeal.com/deal/5090-most-affordable-apple-watch-series-11-models-now-100-off-aga/" },
+{ "@type": "ListItem", "position": 34, "name": "Best Buy launches August Back to School sale: Apple gear, smart TVs from $80, dorm upgrades, more", "url": "https://www.hackthedeal.com/deal/5091-best-buy-launches-august-back-to-school-sale-apple-gear-smar/" },
+{ "@type": "ListItem", "position": 35, "name": "Amazon launches summer Ring doorbell sale at up to 38% off with deals from $50 on latest models", "url": "https://www.hackthedeal.com/deal/4938-amazon-launches-summer-ring-doorbell-sale-at-up-to-38-off-wi/" },
+{ "@type": "ListItem", "position": 36, "name": "Unlocked Google Pixel 10a now $75 off at Amazon, Best Buy open-box from $390 ($110 off)", "url": "https://www.hackthedeal.com/deal/4939-unlocked-google-pixel-10a-now-75-off-at-amazon-best-buy-open/" },
+{ "@type": "ListItem", "position": 37, "name": "Hisense\u2019s 165Hz 2026 U7 mini-LED Google smart TV is $1,000 off for today only at Best Buy", "url": "https://www.hackthedeal.com/deal/4940-hisense-s-165hz-2026-u7-mini-led-google-smart-tv-is-1-000-of/" },
+{ "@type": "ListItem", "position": 38, "name": "Best Buy 2026 Back to School sale: College Tech under $150, Phone deals, TVs from $70, printers, routers, more", "url": "https://www.hackthedeal.com/deal/4941-best-buy-2026-back-to-school-sale-college-tech-under-150-pho/" },
+{ "@type": "ListItem", "position": 39, "name": "Heads up! LEGO Game Boy set just dropped in price again, now $42 (All-time low)", "url": "https://www.hackthedeal.com/deal/4942-heads-up-lego-game-boy-set-just-dropped-in-price-again-now-4/" },
+{ "@type": "ListItem", "position": 40, "name": "9to5Toys Battlestation Weekly: Back to School deals, OLED gaming monitors up to 52% off, more", "url": "https://www.hackthedeal.com/deal/4844-9to5toys-battlestation-weekly-back-to-school-deals-oled-gami/" },
+{ "@type": "ListItem", "position": 41, "name": "Electrified Weekly \u2013 Aventon Level 3 and Pace 4 e-bikes at new $1,299 lows ($600 off), Monarc e-bikes with FREE smart helmet + 2x batteries, more", "url": "https://www.hackthedeal.com/deal/4846-electrified-weekly-aventon-level-3-and-pace-4-e-bikes-at-new/" },
+{ "@type": "ListItem", "position": 42, "name": "9to5Toys Fashion Weekly \u2013 Nike Back to School sale, Cole Haan up to 60% off, adidas kicks from $25, more", "url": "https://www.hackthedeal.com/deal/4847-9to5toys-fashion-weekly-nike-back-to-school-sale-cole-haan-u/" },
+{ "@type": "ListItem", "position": 43, "name": "9to5Toys Steals Weekly \u2013 Twelve South Curve Nano $30, 4-in-1 USB-C travel adapter $17, tomtoc sling bag $26.50, more", "url": "https://www.hackthedeal.com/deal/4848-9to5toys-steals-weekly-twelve-south-curve-nano-30-4-in-1-usb/" },
+{ "@type": "ListItem", "position": 44, "name": "Score up to $1,496 + exclusive bonus savings on Anker SOLIX power stations during the latest Summer Sale \u2013 deals start from $189", "url": "https://www.hackthedeal.com/deal/4283-score-up-to-1-496-exclusive-bonus-savings-on-anker-solix-pow/" },
+{ "@type": "ListItem", "position": 45, "name": "One app. ChatGPT, Claude, and Gemini, now just $30 for a full year", "url": "https://www.hackthedeal.com/deal/4284-one-app-chatgpt-claude-and-gemini-now-just-30-for-a-full-yea/" },
+{ "@type": "ListItem", "position": 46, "name": "Commute for up to 130 miles on Monarc\u2019s latest Tracer urban e-bike + get a FREE smart helmet \u2013 all for $1,899, more", "url": "https://www.hackthedeal.com/deal/4285-commute-for-up-to-130-miles-on-monarc-s-latest-tracer-urban/" },
+{ "@type": "ListItem", "position": 47, "name": "Friday\u2019s Apple Books and audiobook deals from $2 or less", "url": "https://www.hackthedeal.com/deal/4286-friday-s-apple-books-and-audiobook-deals-from-2-or-less/" },
+{ "@type": "ListItem", "position": 48, "name": "This week\u2019s best Apple discounts: M5 MacBook Air $240 of, M5 Pro $500 off, AirPods Pro 3, AirTag 2, much more", "url": "https://www.hackthedeal.com/deal/4288-this-week-s-best-apple-discounts-m5-macbook-air-240-of-m5-pr/" },
+{ "@type": "ListItem", "position": 49, "name": "This 7,000mAh power bank doubles as wall charger with built-in plug and USB-C cable at just $28 today", "url": "https://www.hackthedeal.com/deal/4291-this-7-000mah-power-bank-doubles-as-wall-charger-with-built/" },
+{ "@type": "ListItem", "position": 50, "name": "Segway Back to School EV Sale offers hundreds in savings on e-scooters, e-bikes, more \u2013 all starting from $160", "url": "https://www.hackthedeal.com/deal/4294-segway-back-to-school-ev-sale-offers-hundreds-in-savings-on/" },
+{ "@type": "ListItem", "position": 51, "name": "Get higher-tier performance on a budget with this EGO 21-inch cordless electric mower + 6.0Ah battery at a $400 2026 low", "url": "https://www.hackthedeal.com/deal/4296-get-higher-tier-performance-on-a-budget-with-this-ego-21-inc/" },
+{ "@type": "ListItem", "position": 52, "name": "Today only: Upgrade to this 500Hz QD-OLED gaming monitor for your battlestation while it\u2019s down to $500 all-time low", "url": "https://www.hackthedeal.com/deal/4297-today-only-upgrade-to-this-500hz-qd-oled-gaming-monitor-for/" },
+{ "@type": "ListItem", "position": 53, "name": "This pocket-sized plug-in USB-C mini power bank is down to just $16 today", "url": "https://www.hackthedeal.com/deal/4300-this-pocket-sized-plug-in-usb-c-mini-power-bank-is-down-to-j/" },
+{ "@type": "ListItem", "position": 54, "name": "Just $8 today gets you this ESR 11-card bifold wallet with built-in Apple Find My tracking (60% off)", "url": "https://www.hackthedeal.com/deal/4301-just-8-today-gets-you-this-esr-11-card-bifold-wallet-with-bu/" },
+{ "@type": "ListItem", "position": 55, "name": "For today only pick up Anker\u2019s 288Wh SOLIX C300X AC portable power station + 60W solar panel down at $300", "url": "https://www.hackthedeal.com/deal/4302-for-today-only-pick-up-anker-s-288wh-solix-c300x-ac-portable/" },
+{ "@type": "ListItem", "position": 56, "name": "David Pogue\u2019s \u2018Apple: The First 50 Years\u2019\u00a0hardcover book now just $26 at Amazon (Orig. $50)", "url": "https://www.hackthedeal.com/deal/4303-david-pogue-s-apple-the-first-50-years-hardcover-book-now-ju/" },
+{ "@type": "ListItem", "position": 57, "name": "EcoFlow\u2019s 45L or 55L GLACIER portable dual-zone electric cooler w/ plug-in battery + FREE wagon at new lows from $749", "url": "https://www.hackthedeal.com/deal/4305-ecoflow-s-45l-or-55l-glacier-portable-dual-zone-electric-coo/" },
+{ "@type": "ListItem", "position": 58, "name": "Score Panasonic\u2019s full-frame LUMIX S9 mirrorless camera with 18-40mm lens for $1,328 (Today only, $470 off)", "url": "https://www.hackthedeal.com/deal/4059-score-panasonic-s-full-frame-lumix-s9-mirrorless-camera-with/" },
+{ "@type": "ListItem", "position": 59, "name": "Summer PS5 game deals (on disc): Resident Evil Requiem nearly 25% off, Saros, Stellar Blade, Death Stranding 2, more", "url": "https://www.hackthedeal.com/deal/4061-summer-ps5-game-deals-on-disc-resident-evil-requiem-nearly-2/" },
+{ "@type": "ListItem", "position": 60, "name": "Save $500 on Aventon\u2019s sensor-switching 70-mile Pace 4 smart cruiser e-bike for a new $1,299 low this weekend only", "url": "https://www.hackthedeal.com/deal/4062-save-500-on-aventon-s-sensor-switching-70-mile-pace-4-smart/" }
       ]
     }
     </script>
@@ -977,7 +1222,347 @@
       </section>
       <main style="max-width:1152px;margin:0 auto;padding:8px 16px 40px">
         <div class="section-title-bar"><span class="section-label">Latest Deals</span></div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px"><a href="/deal/5071-aulumu-a11-apple-watch-band-with-metal-mag-buckle-now-50-off/" class="deal-card">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px"><a href="/deal/5221-ending-soon-score-a-switch-2-console-at-up-to-130-under-upco/" class="deal-card">
+      <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/05/Nintendo-Switch-2-Choose-Your-Game-Bundle.jpg?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="‘ENDING SOON’ – Score a Switch 2 console at up to $130 under upcoming price hike while you still can" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">gaming</span>
+          
+        </div>
+        <p class="deal-title">‘ENDING SOON’ – Score a Switch 2 console at up to $130 under upcoming price hike while you still can</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$130.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>9to5toys</span>
+          <span>Aug 3, 2026</span>
+          
+        </div>
+      </div>
+    </a><a href="/deal/5222-get-your-hands-on-enterprise-grade-tools-for-just-12-with-th/" class="deal-card">
+      <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/08/Microsoft-Windows-11-Pro.jpg?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="Get your hands on enterprise-grade tools for just $12 with this Windows 11 Pro deal (Reg. $200)" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">gaming</span>
+          <span class="discount-badge">94% off</span>
+        </div>
+        <p class="deal-title">Get your hands on enterprise-grade tools for just $12 with this Windows 11 Pro deal (Reg. $200)</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$12.00</span><span class="price-original">$200.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>9to5toys</span>
+          <span>Aug 3, 2026</span>
+          
+        </div>
+      </div>
+    </a><a href="/deal/5223-anker-s-4-port-smart-display-charger-with-240w-usb-c-cable-n/" class="deal-card">
+      <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/04/Anker-140W-Laptop-Charger-deal.png?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="Anker’s 4-port Smart Display Charger with 240W USB-C cable now down at $65 (Nearly 30% off)" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">gaming</span>
+          <span class="discount-badge">30% off</span>
+        </div>
+        <p class="deal-title">Anker’s 4-port Smart Display Charger with 240W USB-C cable now down at $65 (Nearly 30% off)</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$65.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>9to5toys</span>
+          <span>Aug 3, 2026</span>
+          
+        </div>
+      </div>
+    </a><a href="/deal/5224-simplify-your-workflow-with-this-all-in-one-ai-writing-platf/" class="deal-card">
+      <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/08/UmanWrite-All-in-One-AI-Writing-Platform.jpg?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="Simplify your workflow with this all-in-one AI writing platform for $80 (Reg. up to $1,800)" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">gaming</span>
+          <span class="discount-badge">99% off</span>
+        </div>
+        <p class="deal-title">Simplify your workflow with this all-in-one AI writing platform for $80 (Reg. up to $1,800)</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$1.00</span><span class="price-original">$80.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>9to5toys</span>
+          <span>Aug 3, 2026</span>
+          
+        </div>
+      </div>
+    </a><a href="/deal/5226-this-ultra-thin-metal-magsafe-power-bank-is-just-0-3-inches/" class="deal-card">
+      <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2025/10/Baseus-Picogo-5K-metal-power-bank.jpg?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="This ultra-thin metal MagSafe power bank is just 0.3 inches thick, and it’s only $13 today" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">gaming</span>
+          
+        </div>
+        <p class="deal-title">This ultra-thin metal MagSafe power bank is just 0.3 inches thick, and it’s only $13 today</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$13.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>9to5toys</span>
+          <span>Aug 3, 2026</span>
+          
+        </div>
+      </div>
+    </a><a href="/deal/5227-now-even-less-flexispot-masterease-massage-office-chair-stri/" class="deal-card">
+      <div class="deal-card-icon-fallback"></div>
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">gaming</span>
+          <span class="discount-badge">60% off</span>
+        </div>
+        <p class="deal-title">Now even less: FLEXISPOT MasterEase massage office chair strikes $150 shipped (Reg. $380)</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$150.00</span><span class="price-original">$380.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>9to5toys</span>
+          <span>Aug 3, 2026</span>
+          
+        </div>
+      </div>
+    </a><a href="/deal/5229-ditch-the-dongle-with-acer-s-4k-usb-c-to-hdmi-cable-now-10-s/" class="deal-card">
+      <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/08/Acer-4K-USB-C-to-HDMI-Cable.png?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="Ditch the dongle with Acer’s 4K USB-C to HDMI cable, now $10 (Save 29%)" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">gaming</span>
+          
+        </div>
+        <p class="deal-title">Ditch the dongle with Acer’s 4K USB-C to HDMI cable, now $10 (Save 29%)</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$10.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>9to5toys</span>
+          <span>Aug 3, 2026</span>
+          
+        </div>
+      </div>
+    </a><a href="/deal/5230-haul-your-switch-2-to-gatherings-on-vacation-more-with-this/" class="deal-card">
+      <div class="deal-card-icon-fallback"></div>
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">gaming</span>
+          
+        </div>
+        <p class="deal-title">Haul your Switch 2 to gatherings, on vacation, more with this travel case for just $14.50 (Save 31%)</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$14.50</span>
+        </div>
+        <div class="deal-meta">
+          <span>9to5toys</span>
+          <span>Aug 3, 2026</span>
+          
+        </div>
+      </div>
+    </a><a href="/deal/5231-samsung-s-2tb-9100-pro-gen-5-ssd-drops-back-near-launch-pric/" class="deal-card">
+      <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2025/05/Samsung-9100-Pro-Gen-5-SSD.jpg?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="Samsung’s 2TB 9100 PRO Gen 5 SSD drops back near launch price at $303 amid memory shortages" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">gaming</span>
+          
+        </div>
+        <p class="deal-title">Samsung’s 2TB 9100 PRO Gen 5 SSD drops back near launch price at $303 amid memory shortages</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$303.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>9to5toys</span>
+          <span>Aug 3, 2026</span>
+          
+        </div>
+      </div>
+    </a><a href="/deal/5232-add-acer-s-type-c-card-reader-and-usb-a-dongle-to-your-bag-f/" class="deal-card">
+      <div class="deal-card-icon-fallback"></div>
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">gaming</span>
+          
+        </div>
+        <p class="deal-title">Add Acer’s Type-C card reader and USB-A dongle to your bag for $14 (Save 22%)</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$14.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>9to5toys</span>
+          <span>Aug 3, 2026</span>
+          
+        </div>
+      </div>
+    </a><a href="/deal/5233-this-two-tone-ocean-style-apple-watch-band-is-down-at-9-50-r/" class="deal-card">
+      <div class="deal-card-icon-fallback"></div>
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">gaming</span>
+          
+        </div>
+        <p class="deal-title">This two-tone ocean-style Apple Watch band is down at $9.50 right now (Save 32%)</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$9.50</span>
+        </div>
+        <div class="deal-meta">
+          <span>9to5toys</span>
+          <span>Aug 3, 2026</span>
+          
+        </div>
+      </div>
+    </a><a href="/deal/5234-apple-find-my-headlines-this-magsafe-wallet-down-at-16-prime/" class="deal-card">
+      <div class="deal-card-icon-fallback"></div>
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">gaming</span>
+          <span class="discount-badge">50% off</span>
+        </div>
+        <p class="deal-title">Apple Find My headlines this MagSafe wallet down at $16 Prime shipped (50% off)</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$16.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>9to5toys</span>
+          <span>Aug 3, 2026</span>
+          
+        </div>
+      </div>
+    </a><a href="/deal/5235-score-the-travel-ready-anker-prime-140w-6-in-1-charging-stat/" class="deal-card">
+      <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/01/Anker-Anker-140W-Prime-6-in-1-Charging-Station-01.jpg?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="Score the travel-ready Anker Prime 140W 6-in-1 charging station with an onboard display for $60 right now" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">gaming</span>
+          
+        </div>
+        <p class="deal-title">Score the travel-ready Anker Prime 140W 6-in-1 charging station with an onboard display for $60 right now</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$60.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>9to5toys</span>
+          <span>Aug 3, 2026</span>
+          
+        </div>
+      </div>
+    </a><a href="/deal/5236-colorful-adidas-sale-picks-from-12-bottles-jerseys-shoes-mor/" class="deal-card">
+      <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/08/adidas-Aug-3-6.webp?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="Colorful adidas sale picks from $12: Bottles, jerseys, shoes, more (Up to 50% off)" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">gaming</span>
+          <span class="discount-badge">50% off</span>
+        </div>
+        <p class="deal-title">Colorful adidas sale picks from $12: Bottles, jerseys, shoes, more (Up to 50% off)</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$12.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>9to5toys</span>
+          <span>Aug 3, 2026</span>
+          
+        </div>
+      </div>
+    </a><a href="/deal/5237-get-ahead-of-cool-fall-weather-with-this-standout-quarter-zi/" class="deal-card">
+      <div class="deal-card-icon-fallback"></div>
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">gaming</span>
+          
+        </div>
+        <p class="deal-title">Get ahead of cool fall weather with this standout quarter-zip sweater for $20 (Save 44%)</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$20.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>9to5toys</span>
+          <span>Aug 3, 2026</span>
+          
+        </div>
+      </div>
+    </a><a href="/deal/5239-score-a-pair-of-athletic-sweatpants-for-the-gym-around-the-h/" class="deal-card">
+      <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/08/G-Gradual-Athletic-Sweatpants.png?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="Score a pair of athletic sweatpants for the gym, around the house, more at just $15 (Reg. $28)" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">gaming</span>
+          <span class="discount-badge">46% off</span>
+        </div>
+        <p class="deal-title">Score a pair of athletic sweatpants for the gym, around the house, more at just $15 (Reg. $28)</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$15.00</span><span class="price-original">$28.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>9to5toys</span>
+          <span>Aug 3, 2026</span>
+          
+        </div>
+      </div>
+    </a><a href="/deal/5240-worx-8a-10-inch-electric-2-in-1-chainsaw-and-pole-saw-drops/" class="deal-card">
+      <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/08/Worx-10-inch-2-in-1-electric-chainsaw-and-pole-saw.jpg?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="Worx 8A 10-inch electric 2-in-1 chainsaw and pole saw drops to new $80 low ($40 off) or go cordless for $133 ($37 off)" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">gaming</span>
+          <span class="discount-badge">40% off</span>
+        </div>
+        <p class="deal-title">Worx 8A 10-inch electric 2-in-1 chainsaw and pole saw drops to new $80 low ($40 off) or go cordless for $133 ($37 off)</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$80.00</span><span class="price-original">$133.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>9to5toys</span>
+          <span>Aug 3, 2026</span>
+          
+        </div>
+      </div>
+    </a><a href="/deal/5243-ego-s-carbon-fiber-16-inch-powerload-trimmer-8-inch-edger-mu/" class="deal-card">
+      <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/08/EGO-Power-56V-Multi-Head-Combo-16-inch-string-trimmer-and-8-inch-edger.jpg?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="EGO’s carbon fiber 16-inch POWERLOAD trimmer + 8-inch edger Multi-Head combo kit is down at $429 ($70 off)" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">gaming</span>
+          
+        </div>
+        <p class="deal-title">EGO’s carbon fiber 16-inch POWERLOAD trimmer + 8-inch edger Multi-Head combo kit is down at $429 ($70 off)</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$429.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>9to5toys</span>
+          <span>Aug 3, 2026</span>
+          
+        </div>
+      </div>
+    </a><a href="/deal/5244-lectric-back-to-school-sale-offers-xp4-750-folding-utility-e/" class="deal-card">
+      <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/08/Lectric-Back-to-School-Sale-FI.jpg?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="Lectric Back to School Sale offers XP4 750 folding utility e-bike with up to $593 or $603 FREE bundles at $1,299, more from $799" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">gaming</span>
+          <span class="discount-badge">2% off</span>
+        </div>
+        <p class="deal-title">Lectric Back to School Sale offers XP4 750 folding utility e-bike with up to $593 or $603 FREE bundles at $1,299, more from $799</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$593.00</span><span class="price-original">$603.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>9to5toys</span>
+          <span>Aug 3, 2026</span>
+          
+        </div>
+      </div>
+    </a><a href="/deal/5245-lexar-s-2tb-magnetic-iphone-ssd-just-dropped-130-to-hit-lowe/" class="deal-card">
+      <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2025/09/Lexar-ES5-MagSafe-SSD.jpg?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="Lexar’s 2TB magnetic iPhone SSD just dropped $130 to hit lowest price since the hike" loading="lazy" />
+      <div class="deal-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+          <span class="cat-chip">gaming</span>
+          
+        </div>
+        <p class="deal-title">Lexar’s 2TB magnetic iPhone SSD just dropped $130 to hit lowest price since the hike</p>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="price-current">$130.00</span>
+        </div>
+        <div class="deal-meta">
+          <span>9to5toys</span>
+          <span>Aug 3, 2026</span>
+          
+        </div>
+      </div>
+    </a><a href="/deal/5071-aulumu-a11-apple-watch-band-with-metal-mag-buckle-now-50-off/" class="deal-card">
       <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/08/Aulumu-A11-Apple-Watch-11-Band.png?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="Aulumu A11 Apple Watch Band with metal Mag Buckle now 50% off at Amazon, score one for $20" loading="lazy" />
       <div class="deal-card-body">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
@@ -1654,346 +2239,6 @@
         <div class="deal-meta">
           <span>9to5toys</span>
           <span>Jul 31, 2026</span>
-          
-        </div>
-      </div>
-    </a><a href="/deal/4063-microsoft-s-surface-laptop-pro-2-in-1-copilot-pcs-are-starti/" class="deal-card">
-      <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/07/Surface-Laptop-2026.jpg?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="Microsoft’s Surface Laptop/Pro 2-in-1 Copilot+ PCs are starting at $750 with Back to School deals (Up to $450 off)" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">gaming</span>
-          
-        </div>
-        <p class="deal-title">Microsoft’s Surface Laptop/Pro 2-in-1 Copilot+ PCs are starting at $750 with Back to School deals (Up to $450 off)</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$750.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>9to5toys</span>
-          <span>Jul 31, 2026</span>
-          
-        </div>
-      </div>
-    </a><a href="/deal/4065-aventon-flash-sale-strikes-600-off-the-70-mile-level-3-smart/" class="deal-card">
-      <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2025/10/Aventon-Level-3-Smart-Commuter-e-bike-e1761341648189.jpg?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="Aventon flash sale strikes $600 off the 70-mile Level 3 smart commuter e-bike for a new $1,299 low" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">gaming</span>
-          
-        </div>
-        <p class="deal-title">Aventon flash sale strikes $600 off the 70-mile Level 3 smart commuter e-bike for a new $1,299 low</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$1.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>9to5toys</span>
-          <span>Jul 31, 2026</span>
-          
-        </div>
-      </div>
-    </a><a href="/deal/4066-the-hobbit-leatherette-bound-with-gold-red-foil-stamping-dow/" class="deal-card">
-      <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/07/The-Hobbit-or-There-and-Back-Again-collectors-edition.jpg?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="The Hobbit leatherette-bound with gold/red foil stamping down at $19.50 via Amazon (52% off orig. price)" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">gaming</span>
-          <span class="discount-badge">52% off</span>
-        </div>
-        <p class="deal-title">The Hobbit leatherette-bound with gold/red foil stamping down at $19.50 via Amazon (52% off orig. price)</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$19.50</span>
-        </div>
-        <div class="deal-meta">
-          <span>9to5toys</span>
-          <span>Jul 31, 2026</span>
-          
-        </div>
-      </div>
-    </a><a href="/deal/4067-ecoflow-second-outdoor-season-sale-phase-brings-back-prime-d/" class="deal-card">
-      <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/07/EcoFlow-Outdoor-Season-Sale-FI.png?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="EcoFlow second Outdoor Season Sale phase brings back Prime Day pricing on power stations + FREE gifts starting from $169" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">gaming</span>
-          
-        </div>
-        <p class="deal-title">EcoFlow second Outdoor Season Sale phase brings back Prime Day pricing on power stations + FREE gifts starting from $169</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$169.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>9to5toys</span>
-          <span>Jul 31, 2026</span>
-          
-        </div>
-      </div>
-    </a><a href="/deal/4068-lg-s-affordable-2026-mini-led-tvs-start-from-just-330-right/" class="deal-card">
-      <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/07/LG-AI-mini-LED-July-deals.jpg?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="LG’s affordable 2026 mini LED TVs start from just $330 right now, FREE mounting service, more (Up to $300 off)" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">gaming</span>
-          
-        </div>
-        <p class="deal-title">LG’s affordable 2026 mini LED TVs start from just $330 right now, FREE mounting service, more (Up to $300 off)</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$330.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>9to5toys</span>
-          <span>Jul 31, 2026</span>
-          
-        </div>
-      </div>
-    </a><a href="/deal/4069-huge-b-h-back-to-school-laptop-sale-now-live-deals-on-window/" class="deal-card">
-      <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/07/BH-Back-to-School.jpg?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="Huge B&amp;H Back to School laptop sale now live: Deals on Windows Copilot+ PCs, MacBooks, and accessories from just $6" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">gaming</span>
-          
-        </div>
-        <p class="deal-title">Huge B&amp;H Back to School laptop sale now live: Deals on Windows Copilot+ PCs, MacBooks, and accessories from just $6</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$6.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>9to5toys</span>
-          <span>Jul 31, 2026</span>
-          
-        </div>
-      </div>
-    </a><a href="/deal/4070-inspire-xc1-open-buds-with-bose-audio-now-down-at-80-with-th/" class="deal-card">
-      <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/07/Baseus-Inspire-XC1-with-Bose-audio.jpg?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="Inspire XC1 open buds with Bose audio now down at $80 with this code (Nearly 40% off)" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">gaming</span>
-          <span class="discount-badge">40% off</span>
-        </div>
-        <p class="deal-title">Inspire XC1 open buds with Bose audio now down at $80 with this code (Nearly 40% off)</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$80.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>9to5toys</span>
-          <span>Jul 31, 2026</span>
-          
-        </div>
-      </div>
-    </a><a href="/deal/4072-today-only-save-500-on-dell-s-intel-lunar-lake-16-inch-2-in/" class="deal-card">
-      <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/07/BB-DOTD-Dell-copilot-PC.jpg?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="Today only: Save $500 on Dell’s Intel Lunar Lake 16-inch 2-in-1 touchscreen Copilot+ PC" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">gaming</span>
-          
-        </div>
-        <p class="deal-title">Today only: Save $500 on Dell’s Intel Lunar Lake 16-inch 2-in-1 touchscreen Copilot+ PC</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$500.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>9to5toys</span>
-          <span>Jul 31, 2026</span>
-          
-        </div>
-      </div>
-    </a><a href="/deal/4074-galaxy-z-fold-8-ultra-pre-order-deals-100-off-free-200-credi/" class="deal-card">
-      <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/07/Galazy-Z-Fld-8-Ultra-preorder-deals-FREE-buds.jpg?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="Galaxy Z Fold 8/Ultra pre-order deals: $100 off + FREE $200 credit, FREE Galaxy Buds, $300 off Galaxy Watch Ultra 2, more" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">gaming</span>
-          
-        </div>
-        <p class="deal-title">Galaxy Z Fold 8/Ultra pre-order deals: $100 off + FREE $200 credit, FREE Galaxy Buds, $300 off Galaxy Watch Ultra 2, more</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$200.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>9to5toys</span>
-          <span>Jul 31, 2026</span>
-          
-        </div>
-      </div>
-    </a><a href="/deal/4078-get-microsoft-project-professional-for-45-and-plan-projects/" class="deal-card">
-      <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/07/Microsoft-Project-Professional-2024.jpg?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="Get Microsoft Project Professional for $45 and plan projects like a pro ($1,130 value)" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">gaming</span>
-          <span class="discount-badge">98% off</span>
-        </div>
-        <p class="deal-title">Get Microsoft Project Professional for $45 and plan projects like a pro ($1,130 value)</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$1.00</span><span class="price-original">$45.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>9to5toys</span>
-          <span>Jul 30, 2026</span>
-          
-        </div>
-      </div>
-    </a><a href="/deal/4080-anker-summer-charging-gear-deals-continue-from-just-9-nano-s/" class="deal-card">
-      <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/07/Anker-Roundup-July-30-2026.webp?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="Anker summer charging gear deals continue from just $9: Nano station, docks, power strips, more" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">gaming</span>
-          
-        </div>
-        <p class="deal-title">Anker summer charging gear deals continue from just $9: Nano station, docks, power strips, more</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$9.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>9to5toys</span>
-          <span>Jul 30, 2026</span>
-          
-        </div>
-      </div>
-    </a><a href="/deal/4081-score-a-switch-2-console-at-up-to-130-under-upcoming-price-h/" class="deal-card">
-      <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/05/Nintendo-Switch-2-Choose-Your-Game-Bundle.jpg?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="Score a Switch 2 console at up to $130 under upcoming price hike while you still can" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">gaming</span>
-          
-        </div>
-        <p class="deal-title">Score a Switch 2 console at up to $130 under upcoming price hike while you still can</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$130.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>9to5toys</span>
-          <span>Jul 30, 2026</span>
-          
-        </div>
-      </div>
-    </a><a href="/deal/4083-amazon-s-levi-s-sale-drops-men-s-women-s-and-kids-styles-to/" class="deal-card">
-      <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/07/Levis-Roundup-July-30-2026.webp?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="Amazon’s Levi’s sale drops men’s, women’s, and kids’ styles to as low as $13" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">gaming</span>
-          
-        </div>
-        <p class="deal-title">Amazon’s Levi’s sale drops men’s, women’s, and kids’ styles to as low as $13</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$13.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>9to5toys</span>
-          <span>Jul 30, 2026</span>
-          
-        </div>
-      </div>
-    </a><a href="/deal/4086-snag-orico-s-zinc-alloy-dual-port-64gb-flash-drive-for-just/" class="deal-card">
-      <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/07/ORICO-Zinc-Alloy-Dual-Port-64GB-Flash-Drive.png?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="Snag ORICO’s zinc alloy dual-port 64GB flash drive for just $14.50" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">gaming</span>
-          
-        </div>
-        <p class="deal-title">Snag ORICO’s zinc alloy dual-port 64GB flash drive for just $14.50</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$14.50</span>
-        </div>
-        <div class="deal-meta">
-          <span>9to5toys</span>
-          <span>Jul 30, 2026</span>
-          
-        </div>
-      </div>
-    </a><a href="/deal/4087-easily-get-everything-in-your-recycling-bin-with-worx-zipsni/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">gaming</span>
-          
-        </div>
-        <p class="deal-title">Easily get everything in your recycling bin with Worx ZipSnip cutting scissors down at $33</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$33.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>9to5toys</span>
-          <span>Jul 30, 2026</span>
-          
-        </div>
-      </div>
-    </a><a href="/deal/4088-ultra-travel-friendly-25w-belkin-magsafe-charging-pad-w-kick/" class="deal-card">
-      <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/07/Belkin-Qi2.2-25W-Wireless-Charger-Fast-Charging-Pad-with-Kickstand.png?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="Ultra travel-friendly 25W Belkin MagSafe charging pad w/ kickstand and power adapter down at $34" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">gaming</span>
-          
-        </div>
-        <p class="deal-title">Ultra travel-friendly 25W Belkin MagSafe charging pad w/ kickstand and power adapter down at $34</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$34.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>9to5toys</span>
-          <span>Jul 30, 2026</span>
-          
-        </div>
-      </div>
-    </a><a href="/deal/4089-tribit-stormbox-2-is-my-go-to-bluetooth-speaker-and-it-s-dow/" class="deal-card">
-      <div class="deal-card-icon-fallback"></div>
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">gaming</span>
-          
-        </div>
-        <p class="deal-title">Tribit Stormbox 2 is my go-to Bluetooth speaker and it’s down at $70 shipped</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$70.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>9to5toys</span>
-          <span>Jul 30, 2026</span>
-          
-        </div>
-      </div>
-    </a><a href="/deal/4090-this-480hz-lg-ultragear-oled-gaming-monitor-is-among-the-fas/" class="deal-card">
-      <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2025/05/LG-UltraGear-480Hz-gaming-monitor.jpg?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="This 480Hz LG UltraGear OLED gaming monitor is among the fastest out there, now down to its lowest price at $547" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">gaming</span>
-          
-        </div>
-        <p class="deal-title">This 480Hz LG UltraGear OLED gaming monitor is among the fastest out there, now down to its lowest price at $547</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$547.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>9to5toys</span>
-          <span>Jul 30, 2026</span>
-          
-        </div>
-      </div>
-    </a><a href="/deal/4091-twelve-south-s-sleek-curve-nano-magsafe-stand-folds-flat-whe/" class="deal-card">
-      <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/07/Twelve-South-Curve-Nano-MagSafe-Stand.png?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="Twelve South’s sleek Curve Nano MagSafe Stand folds flat when not in use, now $30" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">gaming</span>
-          
-        </div>
-        <p class="deal-title">Twelve South’s sleek Curve Nano MagSafe Stand folds flat when not in use, now $30</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$30.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>9to5toys</span>
-          <span>Jul 30, 2026</span>
-          
-        </div>
-      </div>
-    </a><a href="/deal/4092-has-your-mouse-seen-better-days-this-wireless-acer-model-is/" class="deal-card">
-      <img src="https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/07/Acer-Wireless-6-Button-Adjustable-DPI-Mouse.png?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1" alt="Has your mouse seen better days? This wireless Acer model is only $10 right now" loading="lazy" />
-      <div class="deal-card-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
-          <span class="cat-chip">gaming</span>
-          
-        </div>
-        <p class="deal-title">Has your mouse seen better days? This wireless Acer model is only $10 right now</p>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span class="price-current">$10.00</span>
-        </div>
-        <div class="deal-meta">
-          <span>9to5toys</span>
-          <span>Jul 30, 2026</span>
           
         </div>
       </div>
@@ -3005,6 +3250,73 @@
         );
       }
 
+      // Shown in the ticker before the first /deals fetch resolves (or if
+      // it comes back empty) — deliberately generic, not fabricated deal
+      // copy, since nothing real has loaded yet.
+      const FALLBACK_TICKER_ITEMS = [
+        { key: "f1", tag: "Live", text: "Tracking prices across tech, gaming, Apple, and daily essentials", href: null, rel: null },
+        { key: "f2", tag: "Live", text: "New deals are checked against 90 days of price history before they post", href: null, rel: null },
+      ];
+
+      function DealTicker({ deals }) {
+        const live = (deals || []).filter((d) => !d.is_dead).slice(0, 10);
+        const items = live.length
+          ? live.map((d) => {
+              const tag = d.discount_pct >= 40 ? "Hot" : d.vote_score ? "Community pick" : "New";
+              const text =
+                d.discount_pct
+                  ? `${d.title} — ${Math.round(d.discount_pct)}% off`
+                  : d.deal_price !== null && d.deal_price !== undefined
+                  ? `${d.title} — ${formatPrice(d.deal_price, d.currency)}`
+                  : d.title;
+              return {
+                key: d.id,
+                tag,
+                text,
+                href: d.affiliate_url || d.url,
+                rel: d.affiliate_url ? "sponsored noopener noreferrer" : "noopener noreferrer",
+              };
+            })
+          : FALLBACK_TICKER_ITEMS;
+
+        // Rendered twice so the CSS marquee (translateX(-50%)) loops
+        // seamlessly; the second copy is hidden from assistive tech/tab order.
+        const loop = items.concat(items);
+
+        return e(
+          "div",
+          { className: "deal-ticker" },
+          e(
+            "div",
+            { className: "deal-ticker-track" },
+            loop.map((item, i) => {
+              const hidden = i >= items.length;
+              const tagColor =
+                item.tag === "Ending soon" ? "var(--brand-orange)" : item.tag === "Community pick" ? "#8ca0b8" : "var(--brand-green)";
+              const kids = [
+                e("span", { key: "tag", className: "deal-ticker-tag", style: { color: tagColor } }, item.tag),
+                item.text,
+              ];
+              return item.href
+                ? e(
+                    "a",
+                    {
+                      key: i,
+                      className: "deal-ticker-item",
+                      href: item.href,
+                      target: "_blank",
+                      rel: item.rel,
+                      "aria-hidden": hidden || undefined,
+                      tabIndex: hidden ? -1 : undefined,
+                    },
+                    kids
+                  )
+                : e("span", { key: i, className: "deal-ticker-item", "aria-hidden": hidden || undefined }, kids);
+            })
+          )
+        );
+      }
+
       function NotifyPanel() {
         const supported = "serviceWorker" in navigator && "PushManager" in window;
         const [open, setOpen] = useState(false);
@@ -3116,12 +3428,14 @@
             "button",
             {
               type: "button",
-              className: "theme-toggle-btn",
+              id: "htd-notify-trigger",
+              className: "set-alert-btn",
               "aria-label": "Deal notifications",
               title: "Deal notifications",
               onClick: () => setOpen((v) => !v),
             },
-            supported ? (subscribed ? "🔔" : "🔕") : "✉️"
+            supported ? (subscribed ? "🔔" : "🔕") : "✉️",
+            subscribed ? "Alerts on" : "Set alert"
           ),
           open
             ? e(
@@ -3555,6 +3869,43 @@
         );
       }
 
+      // Homepage hero's "Deal of the day" card — a bigger, standalone
+      // treatment of whatever the hottest live deal currently is.
+      function DealOfDayCard({ deal }) {
+        const [imgError, setImgError] = useState(false);
+        const target = deal.affiliate_url || deal.url;
+        const linkRel = deal.affiliate_url ? "sponsored noopener noreferrer" : "noopener noreferrer";
+        const showImage = deal.thumbnail_url && !imgError;
+
+        return e(
+          "a",
+          { href: target, target: "_blank", rel: linkRel, className: "deal-of-day" },
+          deal.is_dead
+            ? null
+            : e("span", { className: "deal-of-day-badge" }, deal.discount_pct >= 30 ? "Hot deal" : "Verified"),
+          e("span", { className: "deal-of-day-eyebrow" }, "Deal of the day"),
+          showImage
+            ? e("img", { src: deal.thumbnail_url, alt: deal.title, loading: "lazy", className: "deal-of-day-media", onError: () => setImgError(true) })
+            : e("div", { className: "deal-of-day-media" }, CATEGORY_ICONS[deal.category] || HERO_ICON),
+          e("p", { className: "deal-of-day-title" }, deal.title),
+          e(
+            "div",
+            { className: "deal-of-day-price-row" },
+            deal.deal_price !== null
+              ? e("span", { className: "deal-of-day-price" }, formatPrice(deal.deal_price, deal.currency))
+              : e("span", { style: { fontSize: 14, color: "#8ca0b8" } }, "See deal"),
+            deal.original_price !== null ? e("span", { className: "deal-of-day-was" }, formatPrice(deal.original_price, deal.currency)) : null,
+            deal.discount_pct ? e("span", { className: "deal-of-day-discount" }, `-${Math.round(deal.discount_pct)}%`) : null
+          ),
+          e(
+            "div",
+            { className: "deal-of-day-meta" },
+            deal.vote_score !== null && deal.vote_score !== undefined ? `▲ ${deal.vote_score} · ` : "",
+            deal.merchant || deal.source
+          )
+        );
+      }
+
       function SkeletonCard() {
         return e(
           "div",
@@ -3784,26 +4135,16 @@
           return () => window.removeEventListener("scroll", onScroll);
         }, []);
 
+        // Homepage-only "Deal of the day" card — the first non-dead deal in
+        // the current (hottest-first) feed.
+        const featuredDeal = !activeCat ? deals.find((d) => !d.is_dead) || null : null;
+
         return e(
           "div",
           { style: { minHeight: "100vh", display: "flex", flexDirection: "column" } },
 
-          /* ── Network bar ── */
-          e(
-            "div",
-            { className: "network-bar" },
-            e(
-              "div",
-              { className: "network-bar-inner", style: { maxWidth: 1152, margin: "0 auto", padding: "6px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" } },
-              e("span", null, "Your source for the best deals on the web"),
-              e(
-                "div",
-                { style: { display: "flex", alignItems: "center", gap: 14 } },
-                e("span", { style: { fontSize: 10 } }, `${total.toLocaleString()} live deals updated continuously`),
-                e(NetworkMenu, null)
-              )
-            )
-          ),
+          /* ── Scrolling deal ticker ── */
+          e(DealTicker, { deals }),
 
           /* ── Site header ── */
           e(
@@ -3819,12 +4160,28 @@
                 { className: "logo-row", style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 12 } },
                 e(
                   "a",
-                  { href: "/", className: "logo" },
+                  { href: "/", className: "logo", onClick: (ev) => { ev.preventDefault(); navigateToCategory(""); } },
                   e(
-                    "svg",
-                    { viewBox: "120 85 570 90", role: "img", "aria-label": "hackthedeal_" },
-                    e("rect", { x: 130, y: 98, width: 22, height: 64, fill: "currentColor" }),
-                    e("text", { x: 170, y: 152, fontFamily: "'Courier New', 'DejaVu Sans Mono', monospace", fontSize: 70, fontWeight: 700, fill: "currentColor" }, "hackthedeal_")
+                    "span",
+                    { className: "brand-logo" },
+                    "Hack",
+                    e("span", { className: "brand-logo-badge" }, "TheDeal")
+                  )
+                ),
+                e(
+                  "nav",
+                  { className: "brand-nav", style: { marginLeft: 28 } },
+                  e("a", { href: "/", onClick: (ev) => { ev.preventDefault(); navigateToCategory(""); } }, "Hot Deals"),
+                  e(
+                    "a",
+                    {
+                      href: "#htd-categories",
+                      onClick: (ev) => {
+                        ev.preventDefault();
+                        document.getElementById("htd-categories")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                      },
+                    },
+                    "Categories"
                   )
                 ),
                 e(
@@ -3855,7 +4212,7 @@
               /* Category + filter row */
               e(
                 "div",
-                { style: { display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6 } },
+                { id: "htd-categories", style: { display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6 } },
                 CATEGORIES.filter(isVisibleCategory).flatMap((c, i) => {
                   const pill = e(
                     "a",
@@ -3893,25 +4250,75 @@
             )
           ),
 
-          /* ── Hero ── */
-          e(
-            "section",
-            { className: "hero" },
-            e("div", { className: "hero-icon" }, HERO_ICON),
-            e(
-              "div",
-              null,
-              e("p", { className: "hero-eyebrow" }, "$ curl hackthedeal.com --live"),
-              e("h1", { className: "hero-title" }, (CATEGORY_COPY[activeCat] || CATEGORY_COPY[""]).h1),
-              e("p", { className: "hero-sub" }, (CATEGORY_COPY[activeCat] || CATEGORY_COPY[""]).description),
-              e(
-                "p",
-                { className: "hero-guide", style: { maxWidth: 640, marginTop: 10, fontSize: 13, lineHeight: 1.6, color: "var(--muted)" } },
-                (CATEGORY_COPY[activeCat] || CATEGORY_COPY[""]).guide + " ",
-                e("a", { href: "/about.html" }, "How we find and verify deals →")
+          /* ── Hero — home gets the badge/CTA/deal-of-day layout from the
+                 rebrand mockup; category views keep the simpler eyebrow/
+                 title/sub layout so the crawler-facing prerendered markup
+                 (see scripts/generate_category_pages.py) stays a close
+                 match. ── */
+          !activeCat
+            ? e(
+                "section",
+                { className: "hero hero-home" },
+                e(
+                  "div",
+                  null,
+                  e(
+                    "span",
+                    { className: "hero-badge" },
+                    e("span", { className: "hero-badge-dot" }),
+                    `${total.toLocaleString()} deals verified today`
+                  ),
+                  e("h1", { className: "hero-home-title" }, CATEGORY_COPY[""].h1),
+                  e("p", { className: "hero-home-sub" }, CATEGORY_COPY[""].description),
+                  e(
+                    "div",
+                    { className: "hero-home-actions" },
+                    e(
+                      "button",
+                      {
+                        type: "button",
+                        className: "hero-btn-primary",
+                        onClick: () => document.getElementById("htd-deals-grid")?.scrollIntoView({ behavior: "smooth", block: "start" }),
+                      },
+                      "Browse hot deals"
+                    ),
+                    e(
+                      "button",
+                      {
+                        type: "button",
+                        className: "hero-btn-secondary",
+                        onClick: () => document.getElementById("htd-notify-trigger")?.click(),
+                      },
+                      "🔔 Get deal alerts"
+                    )
+                  ),
+                  e(
+                    "p",
+                    { className: "hero-home-guide" },
+                    CATEGORY_COPY[""].guide + " ",
+                    e("a", { href: "/about.html" }, "How we find and verify deals →")
+                  )
+                ),
+                featuredDeal ? e(DealOfDayCard, { deal: featuredDeal }) : null
               )
-            )
-          ),
+            : e(
+                "section",
+                { className: "hero" },
+                e("div", { className: "hero-icon" }, HERO_ICON),
+                e(
+                  "div",
+                  null,
+                  e("p", { className: "hero-eyebrow" }, "$ curl hackthedeal.com --live"),
+                  e("h1", { className: "hero-title" }, (CATEGORY_COPY[activeCat] || CATEGORY_COPY[""]).h1),
+                  e("p", { className: "hero-sub" }, (CATEGORY_COPY[activeCat] || CATEGORY_COPY[""]).description),
+                  e(
+                    "p",
+                    { className: "hero-guide", style: { maxWidth: 640, marginTop: 10, fontSize: 13, lineHeight: 1.6, color: "var(--muted)" } },
+                    (CATEGORY_COPY[activeCat] || CATEGORY_COPY[""]).guide + " ",
+                    e("a", { href: "/about.html" }, "How we find and verify deals →")
+                  )
+                )
+              ),
 
           /* ── Category showcase + How it works (homepage only) ── */
           !activeCat
@@ -3958,7 +4365,7 @@
           ? e(AffiliateSection, {})
           : e(
             "main",
-            { style: { maxWidth: 1152, margin: "0 auto", padding: "8px 16px 40px", flex: 1, width: "100%" } },
+            { id: "htd-deals-grid", style: { maxWidth: 1152, margin: "0 auto", padding: "8px 16px 40px", flex: 1, width: "100%" } },
             e(
               "div",
               { className: "section-title-bar" },
@@ -4050,12 +4457,13 @@
               e(
                 "span",
                 null,
-                "© Hack the Deal 2026. ",
+                `© Hack the Deal 2026 · ${total.toLocaleString()} live deals tracked continuously. `,
                 e("strong", { style: { fontWeight: 700 } }, "This site contains affiliate links, including as an Amazon Associate — we earn from qualifying purchases.")
               ),
               e(
                 "div",
                 { style: { display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" } },
+                e(NetworkMenu, null),
                 e(
                   "div",
                   { style: { display: "flex", alignItems: "center", gap: 10 } },

@@ -71,10 +71,19 @@
     <title>Best Black Friday &amp; Cyber Monday Deals – Live Price Drops | Hack the Deal</title>
     <meta name="description" content="Live Black Friday and Cyber Monday price drops across every category — tech, gaming, fashion, and more. Hack the Deal tracks Black Friday deals from top retailers continuously." />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="theme-color" content="#0B1F3A" />
     <link rel="canonical" href="https://www.hackthedeal.com/black_friday/" />
     <link rel="icon" href="/favicon-v3.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-v3.ico" sizes="any" />
+
+    <!-- Brand type — used by the ticker/header/hero only; the rest of the
+         page keeps the system font stack. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
@@ -169,6 +178,19 @@
         --danger-bg: #2a1519;
         --danger-text: #f7768e;
         --icon-bg: #1a1b26;
+      }
+
+      /* Brand palette — fixed (not theme-reactive) colors for the ticker,
+         header, and hero, matching the 2026 rebrand. Everything below the
+         hero still follows --bg/--text/etc. and the light/dark toggle. */
+      :root {
+        --brand-cream: #f5f5f0;
+        --brand-navy: #0b1f3a;
+        --brand-green: #00c77a;
+        --brand-green-dark: #00a868;
+        --brand-muted: #5b6472;
+        --brand-border: #dde1e6;
+        --brand-orange: #ff6b35;
       }
 
       * { box-sizing: border-box; }
@@ -291,27 +313,52 @@
         color: var(--text);
       }
 
-      /* Header network bar */
-      .network-bar {
-        background: #1a1b26;
-        color: #a9b1d6;
-        font-size: 11px;
-        letter-spacing: 0.04em;
+      /* Scrolling deal ticker — replaces the old network bar as the
+         top-of-page strip; the fyi network switcher moved to the footer. */
+      .deal-ticker {
+        background: var(--brand-navy);
+        color: var(--brand-cream);
+        overflow: hidden;
+        white-space: nowrap;
       }
-      .network-bar a {
-        color: #aaa;
+      .deal-ticker-track {
+        display: inline-flex;
+        gap: 52px;
+        padding: 9px 0;
+        animation: htdTickerScroll 34s linear infinite;
+        will-change: transform;
+      }
+      .deal-ticker:hover .deal-ticker-track,
+      .deal-ticker:focus-within .deal-ticker-track {
+        animation-play-state: paused;
+      }
+      @keyframes htdTickerScroll {
+        from { transform: translateX(0); }
+        to { transform: translateX(-50%); }
+      }
+      .deal-ticker-item {
+        font-family: "IBM Plex Mono", "SF Mono", monospace;
+        font-size: 12px;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        color: inherit;
         text-decoration: none;
-        transition: color 0.15s;
       }
-      .network-bar a:hover { color: var(--accent); }
-      .network-bar-inner {
-        flex-wrap: wrap;
-        row-gap: 2px;
-        column-gap: 12px;
+      .deal-ticker-item:hover { color: var(--brand-green); }
+      .deal-ticker-tag {
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        font-size: 10.5px;
       }
-      .network-bar-inner span { min-width: 0; }
+      @media (prefers-reduced-motion: reduce) {
+        .deal-ticker-track { animation: none; }
+      }
 
-      /* fyi network switcher — dropdown listing our other sites */
+      /* fyi network switcher — dropdown listing our other sites (lives in
+         the footer now; styling unchanged) */
       .network-menu { position: relative; flex: 0 0 auto; }
       .network-menu-btn {
         display: flex;
@@ -361,25 +408,86 @@
         color: var(--muted);
       }
 
-      /* Main header */
+      /* Main header — fixed brand palette rather than the dark/light toggle
+         (the toggle still drives everything from the deals grid down).
+         Redefining the shared vars here means .cat-pill, .search-input,
+         .theme-toggle-btn, .header-contact-link etc. all pick up the brand
+         colors automatically without duplicating their rules. */
       .site-header {
-        background: var(--surface);
-        border-bottom: 3px solid var(--accent);
+        --bg: var(--brand-cream);
+        --surface: var(--brand-cream);
+        --border: var(--brand-border);
+        --text: var(--brand-navy);
+        --muted: var(--brand-muted);
+        --accent: var(--brand-green);
+        --accent-text: var(--brand-green-dark);
+        background: rgba(245, 245, 240, 0.94);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-bottom: 2px solid var(--brand-navy);
         position: sticky;
         top: 0;
         z-index: 50;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
         transition: transform 0.25s ease;
       }
 
-      /* Logo — plain monospace terminal-style wordmark */
+      /* Nav links row, between the logo and the search/alert controls */
+      .brand-nav {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        font-size: 13.5px;
+        font-weight: 600;
+      }
+      .brand-nav a {
+        color: var(--brand-navy);
+        text-decoration: none;
+        background: none;
+        border: none;
+        font: inherit;
+        cursor: pointer;
+        padding: 0;
+      }
+      .brand-nav a:hover { color: var(--brand-green-dark); }
+
+      /* Logo — "Hack" + green-highlighted "TheDeal" */
       .logo {
         display: flex;
         align-items: center;
         line-height: 1;
-        color: var(--accent-text);
+        text-decoration: none;
       }
-      .logo svg { height: 22px; width: auto; display: block; }
+      .brand-logo {
+        font-family: "Space Grotesk", sans-serif;
+        font-weight: 700;
+        font-size: 21px;
+        color: var(--brand-navy);
+      }
+      .brand-logo-badge {
+        background: var(--brand-green);
+        color: var(--brand-navy);
+        padding: 1px 8px;
+        margin-left: 2px;
+        border-radius: 2px;
+      }
+
+      /* "Set alert" button — the NotifyPanel trigger, restyled as a solid
+         brand button instead of the bare icon it used to be */
+      .set-alert-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--brand-navy);
+        color: var(--brand-cream);
+        padding: 9px 16px;
+        border-radius: 4px;
+        font-weight: 700;
+        font-size: 13px;
+        border: none;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      .set-alert-btn:hover { opacity: 0.9; }
 
       /* Category nav pills */
       .cat-pill {
@@ -443,6 +551,7 @@
       @media (max-width: 640px) {
         .logo-row { flex-wrap: wrap; }
         .logo-row .logo-controls { flex-basis: 100%; }
+        .brand-nav { display: none; }
         .search-input { flex-basis: 100%; }
         /* Hide the sticky header on scroll-down, reveal on scroll-up —
            frees up screen space on small viewports where the header
@@ -452,8 +561,20 @@
       .search-input:focus { border-color: var(--accent); }
       .search-input::placeholder { color: var(--muted); }
 
-      /* Hero */
+      /* Hero — same fixed-brand-palette trick as .site-header, so the hero
+         reads as one continuous brand block with the header above it
+         regardless of the dark/light toggle (which still applies from the
+         deals grid down). */
       .hero {
+        --bg: var(--brand-cream);
+        --surface: var(--brand-cream);
+        --border: var(--brand-border);
+        --text: var(--brand-navy);
+        --muted: var(--brand-muted);
+        --accent: var(--brand-green);
+        --accent-text: var(--brand-green-dark);
+        --accent2-text: var(--brand-green-dark);
+        background: var(--brand-cream);
         max-width: 1152px;
         margin: 0 auto;
         width: 100%;
@@ -471,8 +592,9 @@
         margin: 0 0 10px;
       }
       .hero-title {
+        font-family: "Space Grotesk", sans-serif;
         font-size: 30px;
-        font-weight: 800;
+        font-weight: 700;
         letter-spacing: -0.4px;
         color: var(--text);
         margin: 0 0 10px;
@@ -489,6 +611,129 @@
         .hero { flex-direction: column; text-align: center; padding: 32px 16px 24px; }
         .hero-sub { max-width: none; }
       }
+
+      /* Homepage-only hero: verified-deals badge, headline, CTAs, and a
+         deal-of-the-day card pulled from the live feed. */
+      .hero-home {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 40px;
+        align-items: center;
+        width: 100%;
+      }
+      @media (max-width: 860px) {
+        .hero-home { grid-template-columns: 1fr; }
+      }
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--brand-green-dark);
+        background: rgba(0, 199, 122, 0.1);
+        padding: 5px 12px;
+        border-radius: 20px;
+        margin-bottom: 18px;
+      }
+      .hero-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--brand-green); flex-shrink: 0; }
+      .hero-home-title {
+        font-family: "Space Grotesk", sans-serif;
+        font-weight: 700;
+        font-size: clamp(26px, 4vw, 38px);
+        line-height: 1.1;
+        color: var(--brand-navy);
+        margin: 0 0 14px;
+      }
+      .hero-home-sub {
+        font-size: 15px;
+        color: var(--brand-muted);
+        max-width: 52ch;
+        line-height: 1.6;
+        margin: 0 0 22px;
+      }
+      .hero-home-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+      .hero-btn-primary {
+        background: var(--brand-navy);
+        color: var(--brand-cream);
+        padding: 12px 22px;
+        border-radius: 4px;
+        font-weight: 700;
+        font-size: 14px;
+        border: none;
+        cursor: pointer;
+      }
+      .hero-btn-primary:hover { opacity: 0.9; }
+      .hero-btn-secondary {
+        padding: 12px 20px;
+        border-radius: 4px;
+        font-weight: 700;
+        font-size: 14px;
+        border: 1.5px solid var(--brand-navy);
+        background: transparent;
+        color: var(--brand-navy);
+        cursor: pointer;
+      }
+      .hero-btn-secondary:hover { background: rgba(11, 31, 58, 0.06); }
+      .hero-home-guide {
+        max-width: 60ch;
+        font-size: 12.5px;
+        line-height: 1.6;
+        color: var(--brand-muted);
+        margin: 0;
+      }
+      .hero-home-guide a { color: var(--brand-green-dark); font-weight: 600; }
+
+      .deal-of-day {
+        background: var(--brand-navy);
+        color: var(--brand-cream);
+        padding: 22px;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        position: relative;
+        text-decoration: none;
+      }
+      .deal-of-day-badge {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        background: var(--brand-orange);
+        color: #fff;
+        font-family: "IBM Plex Mono", monospace;
+        font-weight: 700;
+        font-size: 10.5px;
+        padding: 4px 9px;
+        border-radius: 4px;
+      }
+      .deal-of-day-eyebrow {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 10.5px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #8ca0b8;
+      }
+      .deal-of-day-media {
+        aspect-ratio: 4 / 3;
+        width: 100%;
+        object-fit: cover;
+        border-radius: 6px;
+        background: #132a4d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .deal-of-day-media svg { width: 56px; height: 56px; opacity: 0.85; }
+      .deal-of-day-title { font-weight: 600; font-size: 16px; margin: 0; line-height: 1.35; }
+      .deal-of-day-price-row { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+      .deal-of-day-price { font-family: "IBM Plex Mono", monospace; font-weight: 700; font-size: 22px; color: var(--brand-green); }
+      .deal-of-day-was { font-family: "IBM Plex Mono", monospace; font-size: 14px; color: #8ca0b8; text-decoration: line-through; }
+      .deal-of-day-discount { background: var(--brand-green); color: var(--brand-navy); font-family: "IBM Plex Mono", monospace; font-weight: 700; font-size: 12px; padding: 2px 8px; border-radius: 3px; }
+      .deal-of-day-meta { font-family: "IBM Plex Mono", monospace; font-size: 12px; color: #8ca0b8; }
 
       /* Category showcase (homepage only) */
       .cat-showcase {
@@ -1721,12 +1966,12 @@
           
         </div>
       </div>
-    </a><a href="/deal/1049-boscov-s-cyber-monday-in-july-sale-up-to-80-off-extra-20-off/" class="deal-card">
+    </a><a href="/deal/1049-boscov-s-cyber-monday-in-july-sale-up-to-80-off-extra-20-off/" class="deal-card is-dead">
       <img src="https://d.dlnws.com/64599/1784564557-boscov-s_logo-svg.webp?h=117&amp;w=250" alt="Boscov&#x27;s Cyber Monday in July Sale: Up to 80% off + extra 20% off   + free shipping w/ $99" loading="lazy" />
       <div class="deal-card-body">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
           <span class="cat-chip">fashion</span>
-          <span class="discount-badge">80% off</span>
+          <span class="expired-badge">Expired</span>
         </div>
         <p class="deal-title">Boscov&#x27;s Cyber Monday in July Sale: Up to 80% off + extra 20% off   + free shipping w/ $99</p>
         <div style="display:flex;align-items:baseline;gap:8px">
@@ -1738,12 +1983,12 @@
           
         </div>
       </div>
-    </a><a href="/deal/979-hp-desktop-pc-black-friday-in-july-deals-at-best-buy-up-to-6/" class="deal-card">
+    </a><a href="/deal/979-hp-desktop-pc-black-friday-in-july-deals-at-best-buy-up-to-6/" class="deal-card is-dead">
       <img src="https://d.dlnws.com/64599/1784559444-f52d12b6-3f43-43c1-a359-bffb877f3a09.webp?h=1024&amp;w=827" alt="HP Desktop PC Black Friday in July Deals at Best Buy: Up to 60% off + free shipping" loading="lazy" />
       <div class="deal-card-body">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
           <span class="cat-chip">computers</span>
-          <span class="discount-badge">60% off</span>
+          <span class="expired-badge">Expired</span>
         </div>
         <p class="deal-title">HP Desktop PC Black Friday in July Deals at Best Buy: Up to 60% off + free shipping</p>
         <div style="display:flex;align-items:baseline;gap:8px">
@@ -1755,12 +2000,12 @@
           
         </div>
       </div>
-    </a><a href="/deal/980-best-buy-black-friday-in-july-ipad-deals-up-to-40-off-free-s/" class="deal-card">
+    </a><a href="/deal/980-best-buy-black-friday-in-july-ipad-deals-up-to-40-off-free-s/" class="deal-card is-dead">
       <img src="https://d.dlnws.com/64599/1784558763-6e6c16f3-947e-4bf8-8490-1374c0fcf12e.webp?h=1019&amp;w=900" alt="Best Buy Black Friday in July iPad Deals: Up to 40% off + free shipping" loading="lazy" />
       <div class="deal-card-body">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
           <span class="cat-chip">computers</span>
-          <span class="discount-badge">40% off</span>
+          <span class="expired-badge">Expired</span>
         </div>
         <p class="deal-title">Best Buy Black Friday in July iPad Deals: Up to 40% off + free shipping</p>
         <div style="display:flex;align-items:baseline;gap:8px">
@@ -1806,12 +2051,12 @@
           
         </div>
       </div>
-    </a><a href="/deal/984-apple-black-friday-in-july-deals-at-best-buy-up-to-50-off-fr/" class="deal-card">
+    </a><a href="/deal/984-apple-black-friday-in-july-deals-at-best-buy-up-to-50-off-fr/" class="deal-card is-dead">
       <img src="https://d.dlnws.com/64599/1784553611-776b4db3-e2f4-4412-b45c-99cbef911bd6.webp?h=545&amp;w=900" alt="Apple Black Friday in July Deals at Best Buy: Up to 50% off + free shipping" loading="lazy" />
       <div class="deal-card-body">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
           <span class="cat-chip">computers</span>
-          <span class="discount-badge">50% off</span>
+          <span class="expired-badge">Expired</span>
         </div>
         <p class="deal-title">Apple Black Friday in July Deals at Best Buy: Up to 50% off + free shipping</p>
         <div style="display:flex;align-items:baseline;gap:8px">
@@ -1823,12 +2068,12 @@
           
         </div>
       </div>
-    </a><a href="/deal/971-best-buy-black-friday-in-july-sale-up-to-71-off-free-shippin/" class="deal-card">
+    </a><a href="/deal/971-best-buy-black-friday-in-july-sale-up-to-71-off-free-shippin/" class="deal-card is-dead">
       <img src="https://d.dlnws.com/64599/1688045127-dn-image-7243106.png?h=800&amp;w=800" alt="Best Buy Black Friday in July Sale: Up to 71% off + free shipping" loading="lazy" />
       <div class="deal-card-body">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
           <span class="cat-chip">computers</span>
-          <span class="discount-badge">71% off</span>
+          <span class="expired-badge">Expired</span>
         </div>
         <p class="deal-title">Best Buy Black Friday in July Sale: Up to 71% off + free shipping</p>
         <div style="display:flex;align-items:baseline;gap:8px">
@@ -2933,6 +3178,73 @@
         );
       }
 
+      // Shown in the ticker before the first /deals fetch resolves (or if
+      // it comes back empty) — deliberately generic, not fabricated deal
+      // copy, since nothing real has loaded yet.
+      const FALLBACK_TICKER_ITEMS = [
+        { key: "f1", tag: "Live", text: "Tracking prices across tech, gaming, Apple, and daily essentials", href: null, rel: null },
+        { key: "f2", tag: "Live", text: "New deals are checked against 90 days of price history before they post", href: null, rel: null },
+      ];
+
+      function DealTicker({ deals }) {
+        const live = (deals || []).filter((d) => !d.is_dead).slice(0, 10);
+        const items = live.length
+          ? live.map((d) => {
+              const tag = d.discount_pct >= 40 ? "Hot" : d.vote_score ? "Community pick" : "New";
+              const text =
+                d.discount_pct
+                  ? `${d.title} — ${Math.round(d.discount_pct)}% off`
+                  : d.deal_price !== null && d.deal_price !== undefined
+                  ? `${d.title} — ${formatPrice(d.deal_price, d.currency)}`
+                  : d.title;
+              return {
+                key: d.id,
+                tag,
+                text,
+                href: d.affiliate_url || d.url,
+                rel: d.affiliate_url ? "sponsored noopener noreferrer" : "noopener noreferrer",
+              };
+            })
+          : FALLBACK_TICKER_ITEMS;
+
+        // Rendered twice so the CSS marquee (translateX(-50%)) loops
+        // seamlessly; the second copy is hidden from assistive tech/tab order.
+        const loop = items.concat(items);
+
+        return e(
+          "div",
+          { className: "deal-ticker" },
+          e(
+            "div",
+            { className: "deal-ticker-track" },
+            loop.map((item, i) => {
+              const hidden = i >= items.length;
+              const tagColor =
+                item.tag === "Ending soon" ? "var(--brand-orange)" : item.tag === "Community pick" ? "#8ca0b8" : "var(--brand-green)";
+              const kids = [
+                e("span", { key: "tag", className: "deal-ticker-tag", style: { color: tagColor } }, item.tag),
+                item.text,
+              ];
+              return item.href
+                ? e(
+                    "a",
+                    {
+                      key: i,
+                      className: "deal-ticker-item",
+                      href: item.href,
+                      target: "_blank",
+                      rel: item.rel,
+                      "aria-hidden": hidden || undefined,
+                      tabIndex: hidden ? -1 : undefined,
+                    },
+                    kids
+                  )
+                : e("span", { key: i, className: "deal-ticker-item", "aria-hidden": hidden || undefined }, kids);
+            })
+          )
+        );
+      }
+
       function NotifyPanel() {
         const supported = "serviceWorker" in navigator && "PushManager" in window;
         const [open, setOpen] = useState(false);
@@ -3044,12 +3356,14 @@
             "button",
             {
               type: "button",
-              className: "theme-toggle-btn",
+              id: "htd-notify-trigger",
+              className: "set-alert-btn",
               "aria-label": "Deal notifications",
               title: "Deal notifications",
               onClick: () => setOpen((v) => !v),
             },
-            supported ? (subscribed ? "🔔" : "🔕") : "✉️"
+            supported ? (subscribed ? "🔔" : "🔕") : "✉️",
+            subscribed ? "Alerts on" : "Set alert"
           ),
           open
             ? e(
@@ -3483,6 +3797,43 @@
         );
       }
 
+      // Homepage hero's "Deal of the day" card — a bigger, standalone
+      // treatment of whatever the hottest live deal currently is.
+      function DealOfDayCard({ deal }) {
+        const [imgError, setImgError] = useState(false);
+        const target = deal.affiliate_url || deal.url;
+        const linkRel = deal.affiliate_url ? "sponsored noopener noreferrer" : "noopener noreferrer";
+        const showImage = deal.thumbnail_url && !imgError;
+
+        return e(
+          "a",
+          { href: target, target: "_blank", rel: linkRel, className: "deal-of-day" },
+          deal.is_dead
+            ? null
+            : e("span", { className: "deal-of-day-badge" }, deal.discount_pct >= 30 ? "Hot deal" : "Verified"),
+          e("span", { className: "deal-of-day-eyebrow" }, "Deal of the day"),
+          showImage
+            ? e("img", { src: deal.thumbnail_url, alt: deal.title, loading: "lazy", className: "deal-of-day-media", onError: () => setImgError(true) })
+            : e("div", { className: "deal-of-day-media" }, CATEGORY_ICONS[deal.category] || HERO_ICON),
+          e("p", { className: "deal-of-day-title" }, deal.title),
+          e(
+            "div",
+            { className: "deal-of-day-price-row" },
+            deal.deal_price !== null
+              ? e("span", { className: "deal-of-day-price" }, formatPrice(deal.deal_price, deal.currency))
+              : e("span", { style: { fontSize: 14, color: "#8ca0b8" } }, "See deal"),
+            deal.original_price !== null ? e("span", { className: "deal-of-day-was" }, formatPrice(deal.original_price, deal.currency)) : null,
+            deal.discount_pct ? e("span", { className: "deal-of-day-discount" }, `-${Math.round(deal.discount_pct)}%`) : null
+          ),
+          e(
+            "div",
+            { className: "deal-of-day-meta" },
+            deal.vote_score !== null && deal.vote_score !== undefined ? `▲ ${deal.vote_score} · ` : "",
+            deal.merchant || deal.source
+          )
+        );
+      }
+
       function SkeletonCard() {
         return e(
           "div",
@@ -3712,26 +4063,16 @@
           return () => window.removeEventListener("scroll", onScroll);
         }, []);
 
+        // Homepage-only "Deal of the day" card — the first non-dead deal in
+        // the current (hottest-first) feed.
+        const featuredDeal = !activeCat ? deals.find((d) => !d.is_dead) || null : null;
+
         return e(
           "div",
           { style: { minHeight: "100vh", display: "flex", flexDirection: "column" } },
 
-          /* ── Network bar ── */
-          e(
-            "div",
-            { className: "network-bar" },
-            e(
-              "div",
-              { className: "network-bar-inner", style: { maxWidth: 1152, margin: "0 auto", padding: "6px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" } },
-              e("span", null, "Your source for the best deals on the web"),
-              e(
-                "div",
-                { style: { display: "flex", alignItems: "center", gap: 14 } },
-                e("span", { style: { fontSize: 10 } }, `${total.toLocaleString()} live deals updated continuously`),
-                e(NetworkMenu, null)
-              )
-            )
-          ),
+          /* ── Scrolling deal ticker ── */
+          e(DealTicker, { deals }),
 
           /* ── Site header ── */
           e(
@@ -3747,12 +4088,28 @@
                 { className: "logo-row", style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 12 } },
                 e(
                   "a",
-                  { href: "/", className: "logo" },
+                  { href: "/", className: "logo", onClick: (ev) => { ev.preventDefault(); navigateToCategory(""); } },
                   e(
-                    "svg",
-                    { viewBox: "120 85 570 90", role: "img", "aria-label": "hackthedeal_" },
-                    e("rect", { x: 130, y: 98, width: 22, height: 64, fill: "currentColor" }),
-                    e("text", { x: 170, y: 152, fontFamily: "'Courier New', 'DejaVu Sans Mono', monospace", fontSize: 70, fontWeight: 700, fill: "currentColor" }, "hackthedeal_")
+                    "span",
+                    { className: "brand-logo" },
+                    "Hack",
+                    e("span", { className: "brand-logo-badge" }, "TheDeal")
+                  )
+                ),
+                e(
+                  "nav",
+                  { className: "brand-nav", style: { marginLeft: 28 } },
+                  e("a", { href: "/", onClick: (ev) => { ev.preventDefault(); navigateToCategory(""); } }, "Hot Deals"),
+                  e(
+                    "a",
+                    {
+                      href: "#htd-categories",
+                      onClick: (ev) => {
+                        ev.preventDefault();
+                        document.getElementById("htd-categories")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                      },
+                    },
+                    "Categories"
                   )
                 ),
                 e(
@@ -3783,7 +4140,7 @@
               /* Category + filter row */
               e(
                 "div",
-                { style: { display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6 } },
+                { id: "htd-categories", style: { display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6 } },
                 CATEGORIES.filter(isVisibleCategory).flatMap((c, i) => {
                   const pill = e(
                     "a",
@@ -3821,25 +4178,75 @@
             )
           ),
 
-          /* ── Hero ── */
-          e(
-            "section",
-            { className: "hero" },
-            e("div", { className: "hero-icon" }, HERO_ICON),
-            e(
-              "div",
-              null,
-              e("p", { className: "hero-eyebrow" }, "$ curl hackthedeal.com --live"),
-              e("h1", { className: "hero-title" }, (CATEGORY_COPY[activeCat] || CATEGORY_COPY[""]).h1),
-              e("p", { className: "hero-sub" }, (CATEGORY_COPY[activeCat] || CATEGORY_COPY[""]).description),
-              e(
-                "p",
-                { className: "hero-guide", style: { maxWidth: 640, marginTop: 10, fontSize: 13, lineHeight: 1.6, color: "var(--muted)" } },
-                (CATEGORY_COPY[activeCat] || CATEGORY_COPY[""]).guide + " ",
-                e("a", { href: "/about.html" }, "How we find and verify deals →")
+          /* ── Hero — home gets the badge/CTA/deal-of-day layout from the
+                 rebrand mockup; category views keep the simpler eyebrow/
+                 title/sub layout so the crawler-facing prerendered markup
+                 (see scripts/generate_category_pages.py) stays a close
+                 match. ── */
+          !activeCat
+            ? e(
+                "section",
+                { className: "hero hero-home" },
+                e(
+                  "div",
+                  null,
+                  e(
+                    "span",
+                    { className: "hero-badge" },
+                    e("span", { className: "hero-badge-dot" }),
+                    `${total.toLocaleString()} deals verified today`
+                  ),
+                  e("h1", { className: "hero-home-title" }, CATEGORY_COPY[""].h1),
+                  e("p", { className: "hero-home-sub" }, CATEGORY_COPY[""].description),
+                  e(
+                    "div",
+                    { className: "hero-home-actions" },
+                    e(
+                      "button",
+                      {
+                        type: "button",
+                        className: "hero-btn-primary",
+                        onClick: () => document.getElementById("htd-deals-grid")?.scrollIntoView({ behavior: "smooth", block: "start" }),
+                      },
+                      "Browse hot deals"
+                    ),
+                    e(
+                      "button",
+                      {
+                        type: "button",
+                        className: "hero-btn-secondary",
+                        onClick: () => document.getElementById("htd-notify-trigger")?.click(),
+                      },
+                      "🔔 Get deal alerts"
+                    )
+                  ),
+                  e(
+                    "p",
+                    { className: "hero-home-guide" },
+                    CATEGORY_COPY[""].guide + " ",
+                    e("a", { href: "/about.html" }, "How we find and verify deals →")
+                  )
+                ),
+                featuredDeal ? e(DealOfDayCard, { deal: featuredDeal }) : null
               )
-            )
-          ),
+            : e(
+                "section",
+                { className: "hero" },
+                e("div", { className: "hero-icon" }, HERO_ICON),
+                e(
+                  "div",
+                  null,
+                  e("p", { className: "hero-eyebrow" }, "$ curl hackthedeal.com --live"),
+                  e("h1", { className: "hero-title" }, (CATEGORY_COPY[activeCat] || CATEGORY_COPY[""]).h1),
+                  e("p", { className: "hero-sub" }, (CATEGORY_COPY[activeCat] || CATEGORY_COPY[""]).description),
+                  e(
+                    "p",
+                    { className: "hero-guide", style: { maxWidth: 640, marginTop: 10, fontSize: 13, lineHeight: 1.6, color: "var(--muted)" } },
+                    (CATEGORY_COPY[activeCat] || CATEGORY_COPY[""]).guide + " ",
+                    e("a", { href: "/about.html" }, "How we find and verify deals →")
+                  )
+                )
+              ),
 
           /* ── Category showcase + How it works (homepage only) ── */
           !activeCat
@@ -3886,7 +4293,7 @@
           ? e(AffiliateSection, {})
           : e(
             "main",
-            { style: { maxWidth: 1152, margin: "0 auto", padding: "8px 16px 40px", flex: 1, width: "100%" } },
+            { id: "htd-deals-grid", style: { maxWidth: 1152, margin: "0 auto", padding: "8px 16px 40px", flex: 1, width: "100%" } },
             e(
               "div",
               { className: "section-title-bar" },
@@ -3978,12 +4385,13 @@
               e(
                 "span",
                 null,
-                "© Hack the Deal 2026. ",
+                `© Hack the Deal 2026 · ${total.toLocaleString()} live deals tracked continuously. `,
                 e("strong", { style: { fontWeight: 700 } }, "This site contains affiliate links, including as an Amazon Associate — we earn from qualifying purchases.")
               ),
               e(
                 "div",
                 { style: { display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" } },
+                e(NetworkMenu, null),
                 e(
                   "div",
                   { style: { display: "flex", alignItems: "center", gap: 10 } },

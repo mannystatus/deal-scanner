@@ -71,10 +71,19 @@
     <title>Samsung Odyssey G8 G81SF 32&quot; 4K HDR 240Hz OLED Gaming Monitor for $900 + free shipping | Hack the Deal</title>
     <meta name="description" content="Samsung Odyssey G8 G81SF 32&quot; 4K HDR 240Hz OLED Gaming Monitor for $900 + free shipping at dealnews — $900.00. Tracked live by Hack the Deal." />
     <meta name="robots" content="noindex, follow" />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="theme-color" content="#0B1F3A" />
     <link rel="canonical" href="https://www.hackthedeal.com/deal/3517-samsung-odyssey-g8-g81sf-32-4k-hdr-240hz-oled-gaming-monitor/" />
     <link rel="icon" href="/favicon-v3.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-v3.ico" sizes="any" />
+
+    <!-- Brand type — used by the ticker/header/hero only; the rest of the
+         page keeps the system font stack. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
@@ -166,6 +175,19 @@
         --danger-bg: #2a1519;
         --danger-text: #f7768e;
         --icon-bg: #1a1b26;
+      }
+
+      /* Brand palette — fixed (not theme-reactive) colors for the ticker,
+         header, and hero, matching the 2026 rebrand. Everything below the
+         hero still follows --bg/--text/etc. and the light/dark toggle. */
+      :root {
+        --brand-cream: #f5f5f0;
+        --brand-navy: #0b1f3a;
+        --brand-green: #00c77a;
+        --brand-green-dark: #00a868;
+        --brand-muted: #5b6472;
+        --brand-border: #dde1e6;
+        --brand-orange: #ff6b35;
       }
 
       * { box-sizing: border-box; }
@@ -288,27 +310,52 @@
         color: var(--text);
       }
 
-      /* Header network bar */
-      .network-bar {
-        background: #1a1b26;
-        color: #a9b1d6;
-        font-size: 11px;
-        letter-spacing: 0.04em;
+      /* Scrolling deal ticker — replaces the old network bar as the
+         top-of-page strip; the fyi network switcher moved to the footer. */
+      .deal-ticker {
+        background: var(--brand-navy);
+        color: var(--brand-cream);
+        overflow: hidden;
+        white-space: nowrap;
       }
-      .network-bar a {
-        color: #aaa;
+      .deal-ticker-track {
+        display: inline-flex;
+        gap: 52px;
+        padding: 9px 0;
+        animation: htdTickerScroll 34s linear infinite;
+        will-change: transform;
+      }
+      .deal-ticker:hover .deal-ticker-track,
+      .deal-ticker:focus-within .deal-ticker-track {
+        animation-play-state: paused;
+      }
+      @keyframes htdTickerScroll {
+        from { transform: translateX(0); }
+        to { transform: translateX(-50%); }
+      }
+      .deal-ticker-item {
+        font-family: "IBM Plex Mono", "SF Mono", monospace;
+        font-size: 12px;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        color: inherit;
         text-decoration: none;
-        transition: color 0.15s;
       }
-      .network-bar a:hover { color: var(--accent); }
-      .network-bar-inner {
-        flex-wrap: wrap;
-        row-gap: 2px;
-        column-gap: 12px;
+      .deal-ticker-item:hover { color: var(--brand-green); }
+      .deal-ticker-tag {
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        font-size: 10.5px;
       }
-      .network-bar-inner span { min-width: 0; }
+      @media (prefers-reduced-motion: reduce) {
+        .deal-ticker-track { animation: none; }
+      }
 
-      /* fyi network switcher — dropdown listing our other sites */
+      /* fyi network switcher — dropdown listing our other sites (lives in
+         the footer now; styling unchanged) */
       .network-menu { position: relative; flex: 0 0 auto; }
       .network-menu-btn {
         display: flex;
@@ -358,25 +405,86 @@
         color: var(--muted);
       }
 
-      /* Main header */
+      /* Main header — fixed brand palette rather than the dark/light toggle
+         (the toggle still drives everything from the deals grid down).
+         Redefining the shared vars here means .cat-pill, .search-input,
+         .theme-toggle-btn, .header-contact-link etc. all pick up the brand
+         colors automatically without duplicating their rules. */
       .site-header {
-        background: var(--surface);
-        border-bottom: 3px solid var(--accent);
+        --bg: var(--brand-cream);
+        --surface: var(--brand-cream);
+        --border: var(--brand-border);
+        --text: var(--brand-navy);
+        --muted: var(--brand-muted);
+        --accent: var(--brand-green);
+        --accent-text: var(--brand-green-dark);
+        background: rgba(245, 245, 240, 0.94);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-bottom: 2px solid var(--brand-navy);
         position: sticky;
         top: 0;
         z-index: 50;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
         transition: transform 0.25s ease;
       }
 
-      /* Logo — plain monospace terminal-style wordmark */
+      /* Nav links row, between the logo and the search/alert controls */
+      .brand-nav {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        font-size: 13.5px;
+        font-weight: 600;
+      }
+      .brand-nav a {
+        color: var(--brand-navy);
+        text-decoration: none;
+        background: none;
+        border: none;
+        font: inherit;
+        cursor: pointer;
+        padding: 0;
+      }
+      .brand-nav a:hover { color: var(--brand-green-dark); }
+
+      /* Logo — "Hack" + green-highlighted "TheDeal" */
       .logo {
         display: flex;
         align-items: center;
         line-height: 1;
-        color: var(--accent-text);
+        text-decoration: none;
       }
-      .logo svg { height: 22px; width: auto; display: block; }
+      .brand-logo {
+        font-family: "Space Grotesk", sans-serif;
+        font-weight: 700;
+        font-size: 21px;
+        color: var(--brand-navy);
+      }
+      .brand-logo-badge {
+        background: var(--brand-green);
+        color: var(--brand-navy);
+        padding: 1px 8px;
+        margin-left: 2px;
+        border-radius: 2px;
+      }
+
+      /* "Set alert" button — the NotifyPanel trigger, restyled as a solid
+         brand button instead of the bare icon it used to be */
+      .set-alert-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--brand-navy);
+        color: var(--brand-cream);
+        padding: 9px 16px;
+        border-radius: 4px;
+        font-weight: 700;
+        font-size: 13px;
+        border: none;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      .set-alert-btn:hover { opacity: 0.9; }
 
       /* Category nav pills */
       .cat-pill {
@@ -440,6 +548,7 @@
       @media (max-width: 640px) {
         .logo-row { flex-wrap: wrap; }
         .logo-row .logo-controls { flex-basis: 100%; }
+        .brand-nav { display: none; }
         .search-input { flex-basis: 100%; }
         /* Hide the sticky header on scroll-down, reveal on scroll-up —
            frees up screen space on small viewports where the header
@@ -449,8 +558,20 @@
       .search-input:focus { border-color: var(--accent); }
       .search-input::placeholder { color: var(--muted); }
 
-      /* Hero */
+      /* Hero — same fixed-brand-palette trick as .site-header, so the hero
+         reads as one continuous brand block with the header above it
+         regardless of the dark/light toggle (which still applies from the
+         deals grid down). */
       .hero {
+        --bg: var(--brand-cream);
+        --surface: var(--brand-cream);
+        --border: var(--brand-border);
+        --text: var(--brand-navy);
+        --muted: var(--brand-muted);
+        --accent: var(--brand-green);
+        --accent-text: var(--brand-green-dark);
+        --accent2-text: var(--brand-green-dark);
+        background: var(--brand-cream);
         max-width: 1152px;
         margin: 0 auto;
         width: 100%;
@@ -468,8 +589,9 @@
         margin: 0 0 10px;
       }
       .hero-title {
+        font-family: "Space Grotesk", sans-serif;
         font-size: 30px;
-        font-weight: 800;
+        font-weight: 700;
         letter-spacing: -0.4px;
         color: var(--text);
         margin: 0 0 10px;
@@ -486,6 +608,129 @@
         .hero { flex-direction: column; text-align: center; padding: 32px 16px 24px; }
         .hero-sub { max-width: none; }
       }
+
+      /* Homepage-only hero: verified-deals badge, headline, CTAs, and a
+         deal-of-the-day card pulled from the live feed. */
+      .hero-home {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 40px;
+        align-items: center;
+        width: 100%;
+      }
+      @media (max-width: 860px) {
+        .hero-home { grid-template-columns: 1fr; }
+      }
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--brand-green-dark);
+        background: rgba(0, 199, 122, 0.1);
+        padding: 5px 12px;
+        border-radius: 20px;
+        margin-bottom: 18px;
+      }
+      .hero-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--brand-green); flex-shrink: 0; }
+      .hero-home-title {
+        font-family: "Space Grotesk", sans-serif;
+        font-weight: 700;
+        font-size: clamp(26px, 4vw, 38px);
+        line-height: 1.1;
+        color: var(--brand-navy);
+        margin: 0 0 14px;
+      }
+      .hero-home-sub {
+        font-size: 15px;
+        color: var(--brand-muted);
+        max-width: 52ch;
+        line-height: 1.6;
+        margin: 0 0 22px;
+      }
+      .hero-home-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+      .hero-btn-primary {
+        background: var(--brand-navy);
+        color: var(--brand-cream);
+        padding: 12px 22px;
+        border-radius: 4px;
+        font-weight: 700;
+        font-size: 14px;
+        border: none;
+        cursor: pointer;
+      }
+      .hero-btn-primary:hover { opacity: 0.9; }
+      .hero-btn-secondary {
+        padding: 12px 20px;
+        border-radius: 4px;
+        font-weight: 700;
+        font-size: 14px;
+        border: 1.5px solid var(--brand-navy);
+        background: transparent;
+        color: var(--brand-navy);
+        cursor: pointer;
+      }
+      .hero-btn-secondary:hover { background: rgba(11, 31, 58, 0.06); }
+      .hero-home-guide {
+        max-width: 60ch;
+        font-size: 12.5px;
+        line-height: 1.6;
+        color: var(--brand-muted);
+        margin: 0;
+      }
+      .hero-home-guide a { color: var(--brand-green-dark); font-weight: 600; }
+
+      .deal-of-day {
+        background: var(--brand-navy);
+        color: var(--brand-cream);
+        padding: 22px;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        position: relative;
+        text-decoration: none;
+      }
+      .deal-of-day-badge {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        background: var(--brand-orange);
+        color: #fff;
+        font-family: "IBM Plex Mono", monospace;
+        font-weight: 700;
+        font-size: 10.5px;
+        padding: 4px 9px;
+        border-radius: 4px;
+      }
+      .deal-of-day-eyebrow {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 10.5px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #8ca0b8;
+      }
+      .deal-of-day-media {
+        aspect-ratio: 4 / 3;
+        width: 100%;
+        object-fit: cover;
+        border-radius: 6px;
+        background: #132a4d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .deal-of-day-media svg { width: 56px; height: 56px; opacity: 0.85; }
+      .deal-of-day-title { font-weight: 600; font-size: 16px; margin: 0; line-height: 1.35; }
+      .deal-of-day-price-row { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+      .deal-of-day-price { font-family: "IBM Plex Mono", monospace; font-weight: 700; font-size: 22px; color: var(--brand-green); }
+      .deal-of-day-was { font-family: "IBM Plex Mono", monospace; font-size: 14px; color: #8ca0b8; text-decoration: line-through; }
+      .deal-of-day-discount { background: var(--brand-green); color: var(--brand-navy); font-family: "IBM Plex Mono", monospace; font-weight: 700; font-size: 12px; padding: 2px 8px; border-radius: 3px; }
+      .deal-of-day-meta { font-family: "IBM Plex Mono", monospace; font-size: 12px; color: #8ca0b8; }
 
       /* Category showcase (homepage only) */
       .cat-showcase {
