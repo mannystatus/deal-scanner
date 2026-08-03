@@ -1,0 +1,13 @@
+{
+  "name": "Hack the Deal",
+  "short_name": "HackTheDeal",
+  "description": "Live deal tracker for tech, gaming, Apple, cameras, trading cards, and daily essentials — every deal checked against 90 days of price history.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F5F5F0",
+  "theme_color": "#0B1F3A",
+  "icons": [
+    { "src": "/assets/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/assets/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

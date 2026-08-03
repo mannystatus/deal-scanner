@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
-  <title id="title">Hack the Deal — favicon</title>
-  <rect width="512" height="512" rx="112" fill="#0d0e14"/>
-  <text x="150" y="300" font-family="'Courier New', 'DejaVu Sans Mono', monospace" font-size="150" font-weight="700" fill="#6c8cff" text-anchor="middle">$</text>
-  <rect x="230" y="330" width="120" height="22" fill="#93e6a6"/>
+  <title id="title">Hack the Deal — icon</title>
+  <rect width="512" height="512" rx="112" fill="#0B1F3A"/>
+  <rect x="184" y="144" width="48" height="224" fill="#00C77A"/>
+  <rect x="280" y="144" width="48" height="224" fill="#00C77A"/>
+  <rect x="184" y="232" width="144" height="48" fill="#00C77A"/>
 </svg>
