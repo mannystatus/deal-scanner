@@ -1,0 +1,1192 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Consent Mode v2 — sets default consent state (denied unless already
+         granted on a past visit) before any tag below loads, so GTM/GA still
+         fire on every visit but only send cookieless, anonymized signals
+         until the user accepts the cookie notice further down the page.
+         Also puts AdSense into restricted-data-processing mode (non-
+         personalized ads only) by default — required for EEA/UK traffic
+         under Google's EU User Consent Policy.
+         https://developers.google.com/tag-platform/security/guides/consent -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      window.gtag = gtag;
+      var htdGranted = localStorage.getItem('htd_consent_v1') === 'granted';
+      gtag('consent', 'default', {
+        'ad_storage': htdGranted ? 'granted' : 'denied',
+        'ad_user_data': htdGranted ? 'granted' : 'denied',
+        'ad_personalization': htdGranted ? 'granted' : 'denied',
+        'analytics_storage': htdGranted ? 'granted' : 'denied',
+        'wait_for_update': 500
+      });
+      window.adsbygoogle = window.adsbygoogle || [];
+      window.adsbygoogle.push({ google_ad_client: 'ca-pub-6138840929831792', google_restrict_data_processing: !htdGranted });
+
+      // Awin's Publisher MasterTag sets affiliate click/conversion-tracking
+      // cookies, which isn't a Google product Consent Mode covers — gated
+      // separately here, and only injected once consent is granted (either
+      // already stored, or via the Accept button below).
+      window.htdLoadAwin = window.htdLoadAwin || function () {
+        if (window.htdAwinLoaded) return;
+        window.htdAwinLoaded = true;
+        var s = document.createElement('script');
+        s.src = 'https://www.dwin2.com/pub.2991473.min.js';
+        document.head.appendChild(s);
+      };
+      if (htdGranted) { window.htdLoadAwin(); }
+    </script>
+    <!-- End Consent Mode -->
+
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-T7MD3LW5');</script>
+    <!-- End Google Tag Manager -->
+
+    <!-- Google Analytics (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LFR5HP4FDC"></script>
+    <script>
+      gtag('js', new Date());
+      gtag('config', 'G-LFR5HP4FDC');
+    </script>
+    <!-- End Google Analytics -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Apply the saved/system theme before first paint, so there's no
+         flash of the wrong theme on load. -->
+    <script>
+      (function () {
+        var saved = localStorage.getItem('htd_theme');
+        var theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
+
+    <!-- Primary SEO -->
+    <title>Acer’s motorized Prime 3-in-1 Qi2 charging station just returned to $40 | Hack the Deal</title>
+    <meta name="description" content="Acer’s motorized Prime 3-in-1 Qi2 charging station just returned to $40 at 9to5toys — $40.00. Tracked live by Hack the Deal." />
+    <meta name="robots" content="noindex, follow" />
+    <meta name="theme-color" content="#0B1F3A" />
+    <link rel="canonical" href="https://www.hackthedeal.com/deal/5563-acer-s-motorized-prime-3-in-1-qi2-charging-station-just-retu/" />
+    <link rel="icon" href="/favicon-v3.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-v3.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- Brand type — used by the ticker/header/hero only; the rest of the
+         page keeps the system font stack. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.hackthedeal.com/deal/5563-acer-s-motorized-prime-3-in-1-qi2-charging-station-just-retu/" />
+    <meta property="og:title" content="Acer’s motorized Prime 3-in-1 Qi2 charging station just returned to $40 | Hack the Deal" />
+    <meta property="og:description" content="Acer’s motorized Prime 3-in-1 Qi2 charging station just returned to $40 at 9to5toys — $40.00. Tracked live by Hack the Deal." />
+    <meta property="og:site_name" content="Hack the Deal" />
+    <meta property="og:image" content="https://www.hackthedeal.com/assets/og-image.png" />
+    <meta property="og:image:width" content="2400" />
+    <meta property="og:image:height" content="1260" />
+    <meta property="og:image:type" content="image/png" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Acer’s motorized Prime 3-in-1 Qi2 charging station just returned to $40 | Hack the Deal" />
+    <meta name="twitter:description" content="Acer’s motorized Prime 3-in-1 Qi2 charging station just returned to $40 at 9to5toys — $40.00. Tracked live by Hack the Deal." />
+    <meta name="twitter:image" content="https://www.hackthedeal.com/assets/og-image.png" />
+
+    <!-- Resource hints -->
+    <link rel="preconnect" href="https://esm.sh" crossorigin />
+    <link rel="preconnect" href="https://deal-scanner-api.onrender.com" crossorigin />
+
+    <!-- Structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Hack the Deal",
+      "url": "https://www.hackthedeal.com/",
+      "description": "Live deal tracker for tech, gaming, Apple, cameras, trading cards, and daily essentials.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://www.hackthedeal.com/?search={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Hack the Deal",
+      "url": "https://www.hackthedeal.com/",
+      "logo": "https://www.hackthedeal.com/assets/icon-512.png",
+      "sameAs": [
+        "https://www.instagram.com/hackthedeal_",
+        "https://www.threads.net/@hackthedeal_",
+        "https://x.com/hackthedeal"
+      ]
+    }
+    </script>
+
+    <!-- Google AdSense -->
+    <meta name="google-adsense-account" content="ca-pub-6138840929831792">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6138840929831792"
+     crossorigin="anonymous"></script>
+
+    <!-- Awin affiliate tracking (Publisher MasterTag) — loaded conditionally
+         by htdLoadAwin() in the Consent Mode script above, not statically
+         here, since it needs to wait on consent like everything else. -->
+
+    <style>
+      :root {
+        --bg: #f4f5fa;
+        --surface: #ffffff;
+        --border: #e1e3ee;
+        --text: #1a1b26;
+        --muted: #5a5f7a;
+        --accent: #93e6a6;
+        --accent-text: #1d7c33;
+        --accent-dim: rgba(147, 230, 166, 0.12);
+        --accent2: #0284c7;
+        --accent2-text: #0369a1;
+        --danger-bg: #fde2e7;
+        --danger-text: #be123c;
+        --icon-bg: #eceef7;
+      }
+      :root[data-theme="dark"] {
+        --bg: #1a1b26;
+        --surface: #20222f;
+        --border: #2a2d3f;
+        --text: #c0caf5;
+        --muted: #a9b1d6;
+        --accent: #93e6a6;
+        --accent-text: #93e6a6;
+        --accent-dim: rgba(147, 230, 166, 0.14);
+        --accent2: #7dcfff;
+        --accent2-text: #7dcfff;
+        --danger-bg: #2a1519;
+        --danger-text: #f7768e;
+        --icon-bg: #1a1b26;
+      }
+
+      /* Brand palette — fixed (not theme-reactive) colors for the ticker,
+         header, and hero, matching the 2026 rebrand. Everything below the
+         hero still follows --bg/--text/etc. and the light/dark toggle. */
+      :root {
+        --brand-cream: #f5f5f0;
+        --brand-navy: #0b1f3a;
+        --brand-green: #00c77a;
+        --brand-green-dark: #00a868;
+        --brand-muted: #5b6472;
+        --brand-border: #dde1e6;
+        --brand-orange: #ff6b35;
+      }
+
+      * { box-sizing: border-box; }
+
+      /* overflow-x: clip (not hidden) — hidden creates a scroll container
+         that breaks position: sticky on .site-header further down. */
+      html, body { overflow-x: clip; max-width: 100%; }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      }
+
+      /* Scrollbar */
+      ::-webkit-scrollbar { width: 6px; height: 6px; }
+      ::-webkit-scrollbar-track { background: var(--bg); }
+      ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+      /* Amazon affiliate disclosure — slim, always visible above the fold */
+      .disclosure-bar {
+        background: #fff8e6;
+        color: #6b5a1e;
+        font-size: 11px;
+        text-align: center;
+        padding: 4px 16px;
+      }
+
+      /* Privacy / cookie consent banner — non-blocking: sits at the bottom
+         without a page-covering scrim, so visitors can keep browsing while
+         it's up instead of being gated behind it. */
+      .consent-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 999;
+        align-items: flex-end;
+        justify-content: center;
+        padding: 16px;
+        pointer-events: none;
+      }
+      .consent-box {
+        pointer-events: auto;
+        max-width: 560px;
+        width: 100%;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 18px 20px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      .consent-text {
+        flex: 1 1 320px;
+      }
+      .consent-title {
+        margin: 0 0 4px;
+        font-size: 14px;
+        font-weight: 800;
+      }
+      .consent-box p {
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.5;
+        color: var(--text);
+      }
+      .consent-box a {
+        color: var(--accent-text);
+        font-weight: 600;
+      }
+      .consent-actions {
+        display: flex;
+        flex: 0 0 auto;
+        gap: 10px;
+      }
+      .consent-box button {
+        flex: 0 0 auto;
+        background: var(--accent);
+        color: #000;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 24px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .consent-box button:hover {
+        opacity: 0.85;
+      }
+      .consent-box .consent-reject-btn {
+        background: transparent;
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+      .consent-box .consent-reject-btn:hover {
+        opacity: 1;
+        background: var(--bg);
+      }
+
+      /* Reopens the cookie banner so a visitor can change their choice
+         later — kept as static markup outside #root (like consent-overlay
+         itself) so it works identically for prerendered/no-JS pages and
+         after the React app mounts. */
+      .cookie-settings-btn {
+        position: fixed;
+        left: 12px;
+        bottom: 12px;
+        z-index: 998;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 11px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        cursor: pointer;
+      }
+      .cookie-settings-btn:hover {
+        color: var(--text);
+      }
+
+      /* fyi network bar — sits between the ticker and the header. Same
+         navy as the ticker (just a faint separator line) so the two read
+         as one continuous dark strip instead of clashing shades. */
+      .network-bar {
+        background: var(--brand-navy);
+        color: rgba(245, 245, 240, 0.72);
+        border-top: 1px solid rgba(245, 245, 240, 0.12);
+        font-size: 11px;
+        letter-spacing: 0.04em;
+      }
+      /* Deliberately no ".network-bar a" color rule — the only <a> tags
+         inside .network-bar are the dropdown's .network-menu-item links,
+         which live in a popover that escapes the bar visually but not in
+         the DOM. A bar-wide anchor rule previously clobbered their
+         var(--text) color with translucent cream, unreadable on the
+         popover's light-mode white background. */
+      .network-bar-inner {
+        flex-wrap: wrap;
+        row-gap: 2px;
+        column-gap: 12px;
+      }
+      .network-bar-inner span { min-width: 0; }
+
+      /* Scrolling deal ticker */
+      .deal-ticker {
+        background: var(--brand-navy);
+        color: var(--brand-cream);
+        overflow: hidden;
+        white-space: nowrap;
+      }
+      .deal-ticker-track {
+        display: inline-flex;
+        gap: 52px;
+        padding: 9px 0;
+        animation: htdTickerScroll 34s linear infinite;
+        will-change: transform;
+      }
+      .deal-ticker:hover .deal-ticker-track,
+      .deal-ticker:focus-within .deal-ticker-track {
+        animation-play-state: paused;
+      }
+      @keyframes htdTickerScroll {
+        from { transform: translateX(0); }
+        to { transform: translateX(-50%); }
+      }
+      .deal-ticker-item {
+        font-family: "IBM Plex Mono", "SF Mono", monospace;
+        font-size: 12px;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        color: inherit;
+        text-decoration: none;
+      }
+      .deal-ticker-item:hover { color: var(--brand-green); }
+      .deal-ticker-tag {
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        font-size: 10.5px;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .deal-ticker-track { animation: none; }
+      }
+
+      /* fyi network switcher — dropdown listing our other sites */
+      .network-menu { position: relative; flex: 0 0 auto; }
+      .network-menu-btn {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        background: none;
+        border: none;
+        color: #a9b1d6;
+        font: inherit;
+        font-size: 11px;
+        letter-spacing: 0.04em;
+        cursor: pointer;
+        padding: 0;
+      }
+      .network-menu-btn:hover { color: var(--accent); }
+      .network-menu-btn .chevron { font-size: 9px; }
+      .network-menu-list {
+        position: absolute;
+        top: calc(100% + 8px);
+        right: 0;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 6px;
+        min-width: 190px;
+        z-index: 60;
+        list-style: none;
+        margin: 0;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.22);
+      }
+      .network-menu-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        border-radius: 6px;
+        font-size: 12.5px;
+        letter-spacing: normal;
+        color: var(--text);
+        text-decoration: none;
+      }
+      .network-menu-item:hover { background: var(--bg); color: var(--accent-text); }
+      .network-menu-item.current { color: var(--muted); }
+      .network-menu-tag {
+        margin-left: auto;
+        font-size: 10px;
+        color: var(--muted);
+      }
+
+      /* Main header — fixed brand palette rather than the dark/light toggle
+         (the toggle still drives everything from the deals grid down).
+         Redefining the shared vars here means .cat-pill, .search-input,
+         .theme-toggle-btn, .header-contact-link etc. all pick up the brand
+         colors automatically without duplicating their rules. */
+      .site-header {
+        --bg: var(--brand-cream);
+        --surface: var(--brand-cream);
+        --border: var(--brand-border);
+        --text: var(--brand-navy);
+        --muted: var(--brand-muted);
+        --accent: var(--brand-green);
+        --accent-text: var(--brand-green-dark);
+        background: rgba(245, 245, 240, 0.94);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-bottom: 2px solid var(--brand-navy);
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        transition: transform 0.25s ease;
+      }
+
+      /* Nav links row, between the logo and the search/alert controls */
+      .brand-nav {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        font-size: 13.5px;
+        font-weight: 600;
+      }
+      .brand-nav a {
+        color: var(--brand-navy);
+        text-decoration: none;
+        background: none;
+        border: none;
+        font: inherit;
+        cursor: pointer;
+        padding: 0;
+      }
+      .brand-nav a:hover { color: var(--brand-green-dark); }
+
+      /* Logo — "Hack" + green-highlighted "TheDeal" */
+      .logo {
+        display: flex;
+        align-items: center;
+        line-height: 1;
+        text-decoration: none;
+      }
+      .brand-logo {
+        font-family: "Space Grotesk", sans-serif;
+        font-weight: 700;
+        font-size: 21px;
+        color: var(--brand-navy);
+      }
+      .brand-logo-badge {
+        background: var(--brand-green);
+        color: var(--brand-navy);
+        padding: 1px 8px;
+        margin-left: 2px;
+        border-radius: 2px;
+      }
+
+      /* "Set alert" button — the NotifyPanel trigger, restyled as a solid
+         brand button instead of the bare icon it used to be */
+      .set-alert-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--brand-navy);
+        color: var(--brand-cream);
+        padding: 9px 16px;
+        border-radius: 4px;
+        font-weight: 700;
+        font-size: 13px;
+        border: none;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      .set-alert-btn:hover { opacity: 0.9; }
+
+      /* Category nav pills */
+      .cat-pill {
+        display: inline-block;
+        font-size: 12px;
+        font-weight: 600;
+        padding: 5px 14px;
+        border-radius: 999px;
+        border: 1.5px solid var(--border);
+        background: transparent;
+        color: var(--muted);
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.15s;
+        white-space: nowrap;
+      }
+      .cat-pill:hover {
+        border-color: var(--accent);
+        color: var(--accent-text);
+      }
+      .cat-pill.active {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #0a0c12;
+      }
+
+      /* Search input */
+      .search-input {
+        font-size: 13px;
+        padding: 6px 12px;
+        border-radius: 6px;
+        border: 1.5px solid var(--border);
+        background: var(--bg);
+        color: var(--text);
+        outline: none;
+        transition: border-color 0.15s;
+        min-width: 0;
+        flex: 1 1 120px;
+      }
+
+      /* Theme toggle */
+      .theme-toggle-btn {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        font-size: 15px;
+        line-height: 1;
+        border-radius: 999px;
+        border: 1.5px solid var(--border);
+        background: transparent;
+        color: var(--text);
+        cursor: pointer;
+        transition: border-color 0.15s;
+      }
+      .theme-toggle-btn:hover { border-color: var(--accent); }
+
+      /* Small screens: let the header row wrap instead of overflowing */
+      @media (max-width: 640px) {
+        .logo-row { flex-wrap: wrap; }
+        .logo-row .logo-controls { flex-basis: 100%; }
+        .brand-nav { display: none; }
+        .search-input { flex-basis: 100%; }
+        /* Hide the sticky header on scroll-down, reveal on scroll-up —
+           frees up screen space on small viewports where the header
+           can grow to several stacked rows. */
+        .site-header--hidden { transform: translateY(-100%); }
+      }
+      .search-input:focus { border-color: var(--accent); }
+      .search-input::placeholder { color: var(--muted); }
+
+      /* Hero — same fixed-brand-palette trick as .site-header, so the hero
+         reads as one continuous brand block with the header above it
+         regardless of the dark/light toggle (which still applies from the
+         deals grid down). */
+      .hero {
+        --bg: var(--brand-cream);
+        --surface: var(--brand-cream);
+        --border: var(--brand-border);
+        --text: var(--brand-navy);
+        --muted: var(--brand-muted);
+        --accent: var(--brand-green);
+        --accent-text: var(--brand-green-dark);
+        --accent2-text: var(--brand-green-dark);
+        background: var(--brand-cream);
+        max-width: 1152px;
+        margin: 0 auto;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 36px;
+        padding: 40px 16px 32px;
+      }
+      .hero-icon { flex-shrink: 0; width: 120px; height: 120px; }
+      .hero-icon svg { width: 100%; height: 100%; }
+      .hero-eyebrow {
+        font-family: "SF Mono", "Courier New", monospace;
+        font-size: 13px;
+        color: var(--accent2-text);
+        margin: 0 0 10px;
+      }
+      .hero-title {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 30px;
+        font-weight: 700;
+        letter-spacing: -0.4px;
+        color: var(--text);
+        margin: 0 0 10px;
+        line-height: 1.15;
+      }
+      .hero-sub {
+        font-size: 14px;
+        color: var(--muted);
+        max-width: 560px;
+        line-height: 1.6;
+        margin: 0;
+      }
+      @media (max-width: 700px) {
+        .hero { flex-direction: column; text-align: center; padding: 32px 16px 24px; }
+        .hero-sub { max-width: none; }
+      }
+
+      /* Homepage-only hero: verified-deals badge, headline, CTAs, and a
+         deal-of-the-day card pulled from the live feed. */
+      .hero-home {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 40px;
+        align-items: center;
+        width: 100%;
+      }
+      @media (max-width: 860px) {
+        .hero-home { grid-template-columns: 1fr; }
+      }
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--brand-green-dark);
+        background: rgba(0, 199, 122, 0.1);
+        padding: 5px 12px;
+        border-radius: 20px;
+        margin-bottom: 18px;
+      }
+      .hero-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--brand-green); flex-shrink: 0; }
+      .hero-home-title {
+        font-family: "Space Grotesk", sans-serif;
+        font-weight: 700;
+        font-size: clamp(26px, 4vw, 38px);
+        line-height: 1.1;
+        color: var(--brand-navy);
+        margin: 0 0 14px;
+      }
+      .hero-home-sub {
+        font-size: 15px;
+        color: var(--brand-muted);
+        max-width: 52ch;
+        line-height: 1.6;
+        margin: 0 0 22px;
+      }
+      .hero-home-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+      .hero-btn-primary {
+        background: var(--brand-navy);
+        color: var(--brand-cream);
+        padding: 12px 22px;
+        border-radius: 4px;
+        font-weight: 700;
+        font-size: 14px;
+        border: none;
+        cursor: pointer;
+      }
+      .hero-btn-primary:hover { opacity: 0.9; }
+      .hero-btn-secondary {
+        padding: 12px 20px;
+        border-radius: 4px;
+        font-weight: 700;
+        font-size: 14px;
+        border: 1.5px solid var(--brand-navy);
+        background: transparent;
+        color: var(--brand-navy);
+        cursor: pointer;
+      }
+      .hero-btn-secondary:hover { background: rgba(11, 31, 58, 0.06); }
+      .hero-home-guide {
+        max-width: 60ch;
+        font-size: 12.5px;
+        line-height: 1.6;
+        color: var(--brand-muted);
+        margin: 0;
+      }
+      .hero-home-guide a { color: var(--brand-green-dark); font-weight: 600; }
+
+      .deal-of-day {
+        background: var(--brand-navy);
+        color: var(--brand-cream);
+        padding: 22px;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        position: relative;
+        text-decoration: none;
+      }
+      .deal-of-day-badge {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        background: var(--brand-orange);
+        color: #fff;
+        font-family: "IBM Plex Mono", monospace;
+        font-weight: 700;
+        font-size: 10.5px;
+        padding: 4px 9px;
+        border-radius: 4px;
+      }
+      .deal-of-day-eyebrow {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 10.5px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #8ca0b8;
+      }
+      .deal-of-day-media {
+        aspect-ratio: 4 / 3;
+        width: 100%;
+        object-fit: cover;
+        border-radius: 6px;
+        background: #132a4d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .deal-of-day-media svg { width: 56px; height: 56px; opacity: 0.85; }
+      .deal-of-day-title { font-weight: 600; font-size: 16px; margin: 0; line-height: 1.35; }
+      .deal-of-day-price-row { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+      .deal-of-day-price { font-family: "IBM Plex Mono", monospace; font-weight: 700; font-size: 22px; color: var(--brand-green); }
+      .deal-of-day-was { font-family: "IBM Plex Mono", monospace; font-size: 14px; color: #8ca0b8; text-decoration: line-through; }
+      .deal-of-day-discount { background: var(--brand-green); color: var(--brand-navy); font-family: "IBM Plex Mono", monospace; font-weight: 700; font-size: 12px; padding: 2px 8px; border-radius: 3px; }
+      .deal-of-day-meta { font-family: "IBM Plex Mono", monospace; font-size: 12px; color: #8ca0b8; }
+
+      /* Category showcase (homepage only) */
+      .cat-showcase {
+        max-width: 1152px;
+        margin: 0 auto;
+        width: 100%;
+        padding: 0 16px 40px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+        gap: 14px;
+      }
+      .cat-showcase-item {
+        text-align: center;
+        cursor: pointer;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 20px 8px 16px;
+        transition: border-color 0.15s, transform 0.15s;
+      }
+      .cat-showcase-item:hover { border-color: var(--accent); transform: translateY(-2px); }
+      .cat-showcase-item svg { width: 48px; height: 48px; }
+      .cat-showcase-label { font-size: 12px; font-weight: 600; color: var(--muted); margin-top: 10px; }
+
+      /* How it works */
+      .how-it-works { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 36px 0; }
+      .how-row {
+        max-width: 1152px;
+        margin: 0 auto;
+        padding: 0 16px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 20px;
+      }
+      .how-step { text-align: center; }
+      .how-step svg { width: 44px; height: 44px; }
+      .how-step-label { font-size: 12.5px; font-weight: 700; color: var(--text); margin-top: 10px; }
+      .how-step-desc { font-size: 11.5px; color: var(--muted); margin-top: 3px; line-height: 1.4; }
+
+      /* Deal card */
+      .deal-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        overflow: hidden;
+        transition: box-shadow 0.15s, transform 0.15s, border-color 0.15s;
+        display: flex;
+        flex-direction: column;
+        text-decoration: none;
+        color: inherit;
+      }
+      .deal-card:hover {
+        box-shadow: 0 6px 24px rgba(0,0,0,0.10);
+        transform: translateY(-2px);
+        border-color: var(--accent);
+      }
+      .deal-card img {
+        width: 100%;
+        height: 160px;
+        object-fit: cover;
+        display: block;
+        background: var(--bg);
+      }
+      /* Shown instead of .deal-card img when a deal has no thumbnail —
+         the category's own mascot icon on a subtle backdrop, rather than
+         leaving blank space. */
+      .deal-card-icon-fallback {
+        width: 100%;
+        height: 160px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--icon-bg);
+      }
+      .deal-card-icon-fallback svg { width: 64px; height: 64px; }
+      .deal-card-body { padding: 14px; flex: 1; display: flex; flex-direction: column; }
+
+      /* Category chip on card */
+      .cat-chip {
+        display: inline-block;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        padding: 2px 8px;
+        border-radius: 4px;
+        background: var(--accent-dim);
+        color: var(--accent-text);
+      }
+
+      /* Discount badge */
+      .discount-badge {
+        font-size: 11px;
+        font-weight: 800;
+        padding: 3px 9px;
+        border-radius: 8px;
+        background: var(--danger-bg);
+        color: var(--danger-text);
+        white-space: nowrap;
+      }
+
+      /* Neutral/muted rather than --danger-*'s red — "expired" is a status,
+         not an alarm, and needs to read as visually distinct from the
+         discount badge it sits next to on the same card. */
+      .expired-badge {
+        font-size: 11px;
+        font-weight: 800;
+        padding: 3px 9px;
+        border-radius: 8px;
+        background: var(--border);
+        color: var(--muted);
+        white-space: nowrap;
+      }
+
+      .deal-card.is-dead {
+        opacity: 0.6;
+      }
+
+      /* Price */
+      .price-current {
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--accent-text);
+        letter-spacing: -0.3px;
+      }
+      .price-original {
+        font-size: 13px;
+        color: var(--muted);
+        text-decoration: line-through;
+      }
+
+      /* Deal title */
+      .deal-title {
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 1.4;
+        color: var(--text);
+        margin: 8px 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        flex: 1;
+      }
+
+      /* Merchant / time row */
+      .deal-meta {
+        font-size: 11px;
+        color: var(--muted);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid var(--border);
+      }
+
+      /* Affiliate card */
+      .aff-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        text-decoration: none;
+        color: inherit;
+        transition: box-shadow 0.15s, border-color 0.15s;
+      }
+      .aff-card:hover {
+        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        border-color: var(--accent);
+      }
+      .aff-thumb {
+        height: 76px;
+        margin: -12px -12px 10px -12px;
+        border-radius: 14px 14px 0 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .aff-thumb svg { width: 26px; height: 26px; }
+      .aff-thumb.icon-star   { background: rgba(255, 153, 0, 0.12); color: #c47500; }
+      .aff-thumb.icon-box    { background: var(--accent-dim); color: var(--accent-text); }
+      .aff-thumb.icon-cpu    { background: rgba(59, 130, 246, 0.12); color: #2563eb; }
+      .aff-thumb.icon-camera { background: rgba(168, 85, 247, 0.12); color: #7c3aed; }
+      .aff-thumb.icon-cards  { background: rgba(244, 63, 94, 0.12); color: #be123c; }
+      .aff-thumb.icon-sparkle { background: rgba(99, 102, 241, 0.12); color: #4f46e5; }
+      .aff-thumb.icon-heart  { background: rgba(220, 38, 38, 0.12); color: #dc2626; }
+      .aff-thumb.icon-shirt  { background: rgba(219, 39, 119, 0.12); color: #db2777; }
+      .aff-thumb.icon-lipstick { background: rgba(234, 88, 12, 0.12); color: #ea580c; }
+      .aff-thumb.icon-shoe   { background: rgba(8, 145, 178, 0.12); color: #0891b2; }
+      .aff-thumb.icon-suitcase { background: rgba(147, 230, 166, 0.12); color: #1d7c33; }
+      .aff-thumb.icon-bag    { background: rgba(180, 83, 9, 0.12); color: #b45309; }
+
+      .aff-badge {
+        display: inline-block;
+        font-size: 9px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        padding: 2px 7px;
+        border-radius: 4px;
+        background: rgba(255, 153, 0, 0.12);
+        color: #c47500;
+        align-self: flex-start;
+      }
+      .aff-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text);
+        line-height: 1.4;
+        margin-top: 8px;
+        flex: 1;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .aff-cta {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--accent-text);
+        margin-top: 10px;
+        letter-spacing: 0.02em;
+      }
+
+      /* Section heading */
+      .section-label {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+      }
+
+      /* Divider accent */
+      .section-title-bar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+      .section-title-bar::after {
+        content: '';
+        flex: 1;
+        height: 2px;
+        background: var(--border);
+        border-radius: 1px;
+      }
+
+      /* Discount slider */
+      input[type="range"] {
+        accent-color: var(--accent);
+        cursor: pointer;
+      }
+
+      /* Footer */
+      .site-footer {
+        background: #1a1b26;
+        color: #7982a9;
+        border-top: 3px solid var(--accent);
+      }
+      .site-footer a {
+        color: var(--accent);
+        text-decoration: none;
+        transition: opacity 0.15s;
+      }
+      .site-footer a:hover { opacity: 0.8; }
+      .footer-contact-link {
+        font-weight: 800 !important;
+        color: #ff5f00 !important;
+      }
+
+      /* Header contact CTA — sized to match .cat-pill exactly so it sits
+         flush in the category row without looking out of place */
+      .header-contact-link {
+        display: inline-block;
+        font-size: 12px;
+        font-weight: 800;
+        color: #fff;
+        background: #ff5f00;
+        text-decoration: none;
+        padding: 5px 14px;
+        border: 1.5px solid #ff5f00;
+        border-radius: 999px;
+        white-space: nowrap;
+        transition: opacity 0.15s;
+      }
+      .header-contact-link:hover { opacity: 0.85; }
+
+      /* Loading skeleton */
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+      }
+      .skeleton {
+        background: var(--border);
+        border-radius: 6px;
+        animation: pulse 1.5s ease-in-out infinite;
+      }
+    </style>
+    <!-- Per-page structured data (BreadcrumbList/ItemList/Product) is
+         regenerated between these markers on every run of
+         scripts/generate_category_pages.py — replaced wholesale each time,
+         never appended, so reruns can't accumulate stale duplicate blocks. -->
+    <!-- SEO:START -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": "Acer\u2019s motorized Prime 3-in-1 Qi2 charging station just returned to $40",
+      "url": "https://www.hackthedeal.com/deal/5563-acer-s-motorized-prime-3-in-1-qi2-charging-station-just-retu/",
+      "offers": {
+        "@type": "Offer",
+        "url": "https://www.hackthedeal.com/deal/5563-acer-s-motorized-prime-3-in-1-qi2-charging-station-just-retu/",
+        "priceCurrency": "USD",
+        "price": "40.00",
+        "priceValidUntil": "2026-09-03"
+      }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.hackthedeal.com/" },
+{ "@type": "ListItem", "position": 2, "name": "Gaming", "item": "https://www.hackthedeal.com/gaming" },
+{ "@type": "ListItem", "position": 3, "name": "Acer\u2019s motorized Prime 3-in-1 Qi2 charging station just retu", "item": "https://www.hackthedeal.com/deal/5563-acer-s-motorized-prime-3-in-1-qi2-charging-station-just-retu/" }
+      ]
+    }
+    </script>
+<!-- SEO:END -->
+  </head>
+  <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T7MD3LW5"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager -->
+
+    <!-- Amazon Associates disclosure — static markup, guaranteed visible
+         immediately and to non-JS crawlers. -->
+    <div class="disclosure-bar">
+      This site contains affiliate links, including as an Amazon Associate — we earn from qualifying purchases at no extra cost to you.
+    </div>
+
+    <div id="consent-overlay" class="consent-overlay" style="display: none;">
+      <div class="consent-box">
+        <div class="consent-text">
+          <p class="consent-title">🍪 We use cookies</p>
+          <p>
+            This site uses cookies to measure site performance and improve your experience, and
+            works with Google Analytics and AdSense, which may use cookies for analytics and to
+            show personalized ads. See our <a href="/privacy.html">Privacy Policy</a> for details.
+          </p>
+        </div>
+        <div class="consent-actions">
+          <button id="consent-reject" type="button" class="consent-reject-btn">Reject</button>
+          <button id="consent-ok" type="button">Accept</button>
+        </div>
+      </div>
+    </div>
+    <button id="cookie-settings-btn" type="button" class="cookie-settings-btn">Cookie Settings</button>
+    <script>
+      (function () {
+        function setConsent(granted) {
+          localStorage.setItem('htd_consent_v1', granted ? 'granted' : 'denied');
+          document.getElementById('consent-overlay').style.display = 'none';
+          gtag('consent', 'update', {
+            'ad_storage': granted ? 'granted' : 'denied',
+            'ad_user_data': granted ? 'granted' : 'denied',
+            'ad_personalization': granted ? 'granted' : 'denied',
+            'analytics_storage': granted ? 'granted' : 'denied'
+          });
+          window.adsbygoogle = window.adsbygoogle || [];
+          window.adsbygoogle.push({ google_ad_client: 'ca-pub-6138840929831792', google_restrict_data_processing: !granted });
+          if (granted && window.htdLoadAwin) { window.htdLoadAwin(); }
+        }
+        if (!localStorage.getItem('htd_consent_v1')) {
+          document.getElementById('consent-overlay').style.display = 'flex';
+        }
+        document.getElementById('consent-ok').addEventListener('click', function () { setConsent(true); });
+        document.getElementById('consent-reject').addEventListener('click', function () { setConsent(false); });
+        document.getElementById('cookie-settings-btn').addEventListener('click', function () {
+          document.getElementById('consent-overlay').style.display = 'flex';
+        });
+      })();
+    </script>
+
+    <div style="max-width:900px;margin:0 auto;padding:24px 16px 60px">
+      <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--muted);margin-bottom:20px">
+        <a href="/">Home</a> <span aria-hidden="true">›</span> <a href="/gaming/">Gaming</a> <span aria-hidden="true">›</span> Acer’s motorized Prime 3-in-1 Qi2 charging station just retu
+      </nav>
+      <div style="display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start">
+        <div class="deal-card-icon-fallback" style="width:320px;max-width:100%;height:220px"></div>
+        <div style="flex:1;min-width:260px">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px">
+            <span class="cat-chip">gaming</span>
+            
+          </div>
+          <h1 style="font-size:22px;line-height:1.3;margin:0 0 12px">Acer’s motorized Prime 3-in-1 Qi2 charging station just returned to $40</h1>
+          <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:10px"><span class="price-current" style="font-size:22px">$40.00</span></div>
+          <p style="color:var(--muted);font-size:13px;margin:0 0 18px">Sold by 9to5toys · Posted Aug 4, 2026</p>
+          <a href="https://9to5toys.com/2026/08/04/acer-prime-motorized-3-in-1-qi2-charging-station/" target="_blank" rel="noopener noreferrer"
+             style="display:inline-block;background:var(--accent);color:#0a0c12;font-weight:700;font-size:14px;padding:12px 26px;border-radius:999px;text-decoration:none">
+            Get This Deal →
+          </a>
+          <p style="font-size:11px;color:var(--muted);margin-top:12px;max-width:420px">
+            Price and availability last confirmed Aug 4, 2026; subject to change on the retailer's site.
+            This is an affiliate link — Hack the Deal may earn a commission at no extra cost to you.
+          </p>
+        </div>
+      </div>
+      <p style="margin-top:36px;font-size:13px"><a href="/gaming/">← See more Gaming deals</a></p>
+    </div>
+<footer class="site-footer">
+      <div style="max-width:1152px;margin:0 auto;padding:16px 16px 0;display:flex;flex-wrap:wrap;gap:14px;font-size:12px">
+        <a href="/amazon_finds/">Amazon Finds</a><a href="/black_friday/">Black Friday Deals</a><a href="/christmas/">Christmas Deals</a><a href="/back_to_school/">Back to School Deals</a><a href="/computers/">Computers Deals</a><a href="/gaming/">Gaming Deals</a><a href="/apple/">Apple Deals</a><a href="/cameras/">Cameras Deals</a><a href="/software/">Software Deals</a><a href="/streaming/">Streaming Deals</a><a href="/trading_cards/">Trading Cards Deals</a><a href="/fashion/">Fashion Deals</a><a href="/beauty/">Beauty Deals</a><a href="/shoes/">Shoes Deals</a><a href="/travel/">Travel Deals</a><a href="/drones/">Drones Deals</a><a href="/3d_printing/">3D Printing Deals</a><a href="/filament/">3D Filament Deals</a>
+      </div>
+      <div style="max-width:1152px;margin:0 auto;padding:12px 16px 20px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;font-size:12px">
+        <span>© Hack the Deal 2026. <strong>This site contains affiliate links, including as an Amazon Associate — we earn from qualifying purchases.</strong></span>
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <a href="/about.html">How We Find Deals</a>
+          <a href="/contact.html" class="footer-contact-link">Partner With Us</a>
+          <a href="/privacy.html">Privacy Policy</a>
+          <a href="/terms.html">Terms of Use</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
