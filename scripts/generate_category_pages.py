@@ -3,7 +3,8 @@
 Generates the site's static, crawlable surface from live deal data:
 
   1. frontend/<slug>/index.html for every category route (Cloudflare Pages
-     serves this at both /<slug> and /<slug>/ automatically), and
+     serves this at /<slug>/ — the no-trailing-slash form needs the 301 in
+     frontend/_redirects, it is NOT resolved automatically), and
      frontend/index.html for the homepage — same per-category
      <title>/meta/canonical/OG/BreadcrumbList swap this script always did,
      PLUS real deal cards + an ItemList JSON-LD block rendered into the page
@@ -18,7 +19,12 @@ Generates the site's static, crawlable surface from live deal data:
      just the category they live in. Regenerated from scratch every run —
      deals that have aged out (see MAX_DEAL_AGE_DAYS) get their page deleted
      rather than left around as stale/expired thin content.
-  3. frontend/sitemap.xml — every static page, category page, and active
+  3. frontend/404.html — Cloudflare Pages serves this with a real 404
+     status for any unmatched request. Without it, Pages falls back to
+     serving index.html as a 200 for typos/expired-deal-links/anything
+     else that doesn't match a static asset, which reads to Google as
+     soft-404 duplicate content.
+  4. frontend/sitemap.xml — every static page, category page, and active
      deal permalink, with real lastmod dates.
 
 Run after every ingest (see .github/workflows/ingest.yml) so the static
@@ -746,6 +752,49 @@ def build_deal_page(head_template: str, deal: Deal) -> str:
     return head + body
 
 
+# ── 404 page ─────────────────────────────────────────────────────────────
+
+def build_404_page(head_template: str) -> str:
+    # Cloudflare Pages serves this file with a real 404 status for any
+    # request that doesn't match a static asset. Without it, Pages falls
+    # back to serving index.html as a 200 — every typo, expired deal
+    # permalink, and no-trailing-slash category URL was silently returning
+    # the homepage's exact content, which Search Console flags as soft-404/
+    # duplicate content. See frontend/_redirects for the companion fix
+    # (no-trailing-slash category URLs 301 to their canonical form instead
+    # of landing here at all).
+    url = f"{BASE_URL}/404.html"
+    title = "Page Not Found | Hack the Deal"
+    description = "This page doesn't exist, or the deal it pointed to has expired and been removed. Browse live deals on Hack the Deal instead."
+    head = swap_head_meta(head_template, title, description, url)
+    head = head.replace(
+        '<meta name="robots" content="index, follow" />',
+        '<meta name="robots" content="noindex, nofollow" />',
+    )
+
+    body = f"""  <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T7MD3LW5"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager -->
+{DISCLOSURE_AND_CONSENT_HTML}
+    <div style="max-width:640px;margin:0 auto;padding:80px 16px;text-align:center">
+      <p class="hero-eyebrow">404</p>
+      <h1 style="font-size:26px;margin:0 0 12px">Page Not Found</h1>
+      <p style="color:var(--muted);font-size:14px;margin:0 0 24px">
+        The page you're looking for doesn't exist, or the deal it pointed to has expired and been removed.
+      </p>
+      <a href="/" style="display:inline-block;background:var(--accent);color:#0a0c12;font-weight:700;font-size:14px;padding:12px 26px;border-radius:999px;text-decoration:none">
+        ← Back to live deals
+      </a>
+    </div>
+{render_static_footer()}
+  </body>
+</html>
+"""
+    return head + body
+
+
 # ── Sitemap ──────────────────────────────────────────────────────────────
 
 STATIC_PAGES = [
@@ -811,6 +860,10 @@ def main() -> None:
             page_dir.mkdir(parents=True, exist_ok=True)
             (page_dir / "index.html").write_text(build_deal_page(head_template, deal), encoding="utf-8")
         print(f"wrote {len(all_deals)} deal permalink pages under {deal_dir.relative_to(ROOT)}")
+
+    not_found_path = ROOT / "frontend" / "404.html"
+    not_found_path.write_text(build_404_page(head_template), encoding="utf-8")
+    print(f"wrote {not_found_path.relative_to(ROOT)}")
 
     sitemap_path = ROOT / "frontend" / "sitemap.xml"
     sitemap_path.write_text(build_sitemap(all_deals), encoding="utf-8")
